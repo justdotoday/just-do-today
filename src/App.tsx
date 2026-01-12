@@ -1,7 +1,7 @@
 // App.tsx
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
-import Signup from './component/SignUp';
+import Signup from './pages/SignUp';
 
 function App() {
   return (
