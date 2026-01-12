@@ -1,2 +1,56 @@
 .DS_Store
 .idea/
+############################
+# Common / OS
+############################
+.DS_Store
+*.log
+
+############################
+# Env (never commit)
+############################
+.env
+.env.*
+**/.env
+**/.env.*
+
+############################
+# IDE
+############################
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+############################
+# Server (Spring Boot / Gradle) - monorepo paths
+############################
+app/server/.gradle/
+app/server/**/build/
+app/server/**/out/
+app/server/bin/
+app/server/.classpath
+app/server/.project
+app/server/.settings/
+app/server/.springBeans
+app/server/.sts4-cache
+app/server/.factorypath
+app/server/.apt_generated
+
+# keep gradle wrapper jar
+!app/server/gradle/wrapper/gradle-wrapper.jar
+
+############################
+# Client (React / Vite) - monorepo paths
+############################
+app/client/**/node_modules/
+app/client/**/dist/
+app/client/**/.vite/
+app/client/**/.cache/
+app/client/**/coverage/
+
+# if using pnpm/yarn
+app/client/**/.pnpm-store/
+app/client/**/.yarn/
+app/client/**/.pnp.*
