@@ -2,6 +2,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import Signup from './pages/SignUp';
+import KakaoCallback from './pages/auth/KakaoCallBack';
 
 function App() {
   return (
@@ -12,8 +13,9 @@ function App() {
           path="/"
           element={
             <>
-              <div className="font-black">main</div>
-              <div className="text-blue-400 bg-amber-50">테스트테스트</div>
+              <div className="font-black">
+                홈화면 구성 전 회원가입 버튼 테스트용
+              </div>
               <Link to="/signup" className="text-blue-400 bg-green-50">
                 회원가입
               </Link>
@@ -23,6 +25,7 @@ function App() {
 
         {/* 회원가입 페이지 */}
         <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
       </Routes>
     </>
   );
