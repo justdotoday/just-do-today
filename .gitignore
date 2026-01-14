@@ -53,4 +53,4 @@ app/client/**/coverage/
 # if using pnpm/yarn
 app/client/**/.pnpm-store/
 app/client/**/.yarn/
-app/client/**/.pnp.*
+app/client/**/.pnp.***/.DS_Store
