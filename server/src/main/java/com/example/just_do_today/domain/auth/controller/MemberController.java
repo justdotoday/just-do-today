@@ -1,4 +1,4 @@
-package com.example.just_do_today.domain.member.controller;
+package com.example.just_do_today.domain.auth.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
