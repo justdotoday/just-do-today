@@ -15,7 +15,7 @@ spring:
     default-schema: just_do_today
 
 springdoc:
-  packages-to-scan: com.example.just_do_today.domain.controllers
+  packages-to-scan: com.example.just_do_today.domain.auth
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
