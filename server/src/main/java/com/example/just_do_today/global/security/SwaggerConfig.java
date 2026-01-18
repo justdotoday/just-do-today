@@ -1,4 +1,4 @@
-package com.example.just_do_today.global.config;
+package com.example.just_do_today.global.security;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
