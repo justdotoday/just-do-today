@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import Signup from './pages/SignUp';
-import KakaoCallback from './auth/KaKaoCallback';
+// import KakaoCallback from './auth/KaKaoCallback';
 import MainPage from './pages/MainPage';
 import Home from './pages/Home';
 import CreateHabit from './pages/habbit/CreateHabit';
@@ -43,7 +43,7 @@ function App() {
       </Route>
 
       {/* Layout 없이 따로 빼고 싶은 라우트가 있으면 여기 */}
-      <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
+      {/* <Route path="/auth/kakao/callback" element={<KakaoCallback />} /> */}
     </Routes>
   );
 }
