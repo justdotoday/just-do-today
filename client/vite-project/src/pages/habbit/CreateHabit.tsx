@@ -120,7 +120,6 @@ const CreateHabit = () => {
 
       {/* 본문 */}
       <main className="mx-auto w-full max-w-[420px] md:max-w-[720px] px-4 md:px-8 pt-4 pb-[calc(120px+env(safe-area-inset-bottom))]">
-        {' '}
         {/* 습관명 */}
         <section className="mt-8 space-y-2">
           <h2 className="text-[13px] font-semibold text-zinc-900">
@@ -165,7 +164,7 @@ const CreateHabit = () => {
             </button>
           </div>
         </section>
-        빈도
+        {/* 빈도 */}
         <section className="mt-8 space-y-3">
           <h2 className="text-[18px] font-bold text-zinc-900">
             얼마나 자주 할 건가요?
