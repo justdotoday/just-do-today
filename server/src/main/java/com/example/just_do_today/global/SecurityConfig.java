@@ -1,4 +1,4 @@
-package com.example.just_do_today.global.config;
+package com.example.just_do_today.global;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
