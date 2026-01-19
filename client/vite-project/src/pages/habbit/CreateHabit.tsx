@@ -21,8 +21,8 @@ const CreateHabit = () => {
     '코딩',
   ];
 
-  // 요일 배열
-  const day = ['일', '월', '화', '수', '목', '금', '토'];
+  //날짜 배열
+  const day = ['월', '화', '수', '목', '금', '토', '일'];
 
   // 습관 제목 상태관리
   const [name, setName] = useState('');
@@ -60,6 +60,7 @@ const CreateHabit = () => {
     );
   };
 
+  //완료 버튼 계산식
   const canSubmit =
     name.trim().length > 0 &&
     selectedCategory !== null &&
@@ -164,7 +165,7 @@ const CreateHabit = () => {
             </button>
           </div>
         </section>
-        {/* 빈도 */}
+        빈도
         <section className="mt-8 space-y-3">
           <h2 className="text-[18px] font-bold text-zinc-900">
             얼마나 자주 할 건가요?
@@ -174,11 +175,7 @@ const CreateHabit = () => {
             <button
               type="button"
               onClick={() => setFrequency('DAILY')}
-              className={
-                frequency === 'DAILY'
-                  ? 'h-12 rounded-xl bg-blue-600 text-white text-[14px] font-semibold active:bg-blue-700'
-                  : 'h-12 rounded-xl border-2 border-blue-500 text-blue-600 text-[14px] font-semibold active:bg-blue-50'
-              }
+              className={frequency === 'DAILY' ? filledBtn : outlineBtn}
             >
               매일
             </button>
@@ -186,11 +183,7 @@ const CreateHabit = () => {
             <button
               type="button"
               onClick={() => setFrequency('WEEKLY')}
-              className={
-                frequency === 'WEEKLY'
-                  ? 'h-12 rounded-xl bg-blue-600 text-white text-[14px] font-semibold active:bg-blue-700'
-                  : 'h-12 rounded-xl border-2 border-blue-500 text-blue-600 text-[14px] font-semibold active:bg-blue-50'
-              }
+              className={frequency === 'WEEKLY' ? filledBtn : outlineBtn}
             >
               일주일에 한 번
             </button>
@@ -198,11 +191,7 @@ const CreateHabit = () => {
             <button
               type="button"
               onClick={() => setFrequency('MONTHLY')}
-              className={
-                frequency === 'MONTHLY'
-                  ? 'h-12 rounded-xl bg-blue-600 text-white text-[14px] font-semibold active:bg-blue-700'
-                  : 'h-12 rounded-xl border-2 border-blue-500 text-blue-600 text-[14px] font-semibold active:bg-blue-50'
-              }
+              className={frequency === 'MONTHLY' ? filledBtn : outlineBtn}
             >
               한 달에 한 번
             </button>
@@ -210,32 +199,44 @@ const CreateHabit = () => {
             <button
               type="button"
               onClick={() => setFrequency('CUSTOM')}
-              className={
-                frequency === 'CUSTOM'
-                  ? 'h-12 rounded-xl bg-blue-600 text-white text-[14px] font-semibold active:bg-blue-700'
-                  : 'h-12 rounded-xl border-2 border-blue-500 text-blue-600 text-[14px] font-semibold active:bg-blue-50'
-              }
+              className={frequency === 'CUSTOM' ? filledBtn : outlineBtn}
             >
               요일로 선택
             </button>
           </div>
           {/* 요일별 선택 로직 */}
           {frequency === 'CUSTOM' && (
-            <div className="flex flex-center justify-between mt-3 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]">
-              {day.map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => toggleDay(d)}
-                  className={
-                    selectedDays.includes(d)
-                      ? 'h-11 w-11 rounded-xl bg-blue-600 text-white'
-                      : 'h-11 w-11 rounded-xl border-2 border-blue-500 text-blue-600'
-                  }
-                >
-                  {d}
-                </button>
-              ))}
+            <div className="mt-4 rounded-2xl bg-zinc-200/70 p-4">
+              <p className="text-[13px] font-medium text-zinc-500 leading-none">
+                요일을 선택하세요!
+              </p>
+
+              <div className="mt-4 grid grid-cols-7 place-items-center">
+                {day.map((d) => {
+                  const active = selectedDays.includes(d);
+
+                  return (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => toggleDay(d)}
+                      className="flex flex-col items-center gap-3"
+                    >
+                      {/* 체크박스 */}
+                      <span
+                        className={[
+                          'h-5 w-5 rounded-[2px] border-2 border-zinc-900 bg-white',
+                          active ? 'bg-zinc-900' : '',
+                        ].join(' ')}
+                      />
+                      {/* 요일 텍스트 */}
+                      <span className="text-[14px] font-semibold text-zinc-900">
+                        {d}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </section>
@@ -302,8 +303,14 @@ const CreateHabit = () => {
         <div className="mx-auto w-full max-w-[420px] md:max-w-[720px] border-t border-zinc-200 px-4 md:px-8 pt-3 pb-[calc(16px+env(safe-area-inset-bottom))]">
           {' '}
           <button
+            disabled={!canSubmit}
             type="button"
-            className="h-12 w-full rounded-2xl bg-zinc-200 text-[14px] font-semibold text-zinc-500"
+            className={[
+              'h-12 w-full rounded-2xl text-[14px] font-semibold transition',
+              canSubmit
+                ? 'bg-blue-600 text-white active:bg-blue-700'
+                : 'bg-zinc-200 text-zinc-500 cursor-not-allowed',
+            ].join(' ')}
           >
             완료
           </button>
