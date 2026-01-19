@@ -4,7 +4,7 @@ import Signup from './pages/SignUp';
 import KakaoCallback from './auth/KaKaoCallback';
 import MainPage from './pages/MainPage';
 import Home from './pages/Home';
-import CreateHabit from './pages/habbit/CreateHabit';
+import CreateHabit from './pages/habit/CreateHabit';
 import Layout from './layout/Layout';
 
 function App() {
