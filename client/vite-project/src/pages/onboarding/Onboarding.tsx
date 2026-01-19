@@ -4,6 +4,8 @@ import Step2 from './Step2';
 import Step4 from './Step4';
 import Step3 from './Step3';
 
+// 온보딩 모달
+
 const Onboarding = () => {
   const [step, setStep] = useState(0);
 
@@ -12,12 +14,12 @@ const Onboarding = () => {
       {/* Backdrop */}
       <div className="fixed inset-0 bg-black/40 z-40" />
 
-      {/* Bottom Sheet */}
+      {/* 온보딩 모달 css */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50
-                      bg-white rounded-t-2xl
-                      transition-transform duration-300
-                      translate-y-0"
+        className="fixed inset-0 z-50
+             bg-white
+             transition-transform duration-300
+             translate-y-0"
       >
         {/* 온보딩 1단계 시작, 다음 */}
         {step === 0 && <Step1 onNext={() => setStep(1)} />}

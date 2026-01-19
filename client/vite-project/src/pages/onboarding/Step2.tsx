@@ -7,10 +7,21 @@ type Step2Props = {
 const Step2 = ({ onNext }: Step2Props) => {
   return (
     <div className="flex flex-col">
-      <p className="text-2xl p-1 m-1">반가워요! username님!</p>
-      <p className="font-bold text-2xl p-1 m-1">먼저, 습관을 생성해볼까요?</p>
+      {/* step 진행도 바 */}
+      <div className="flex flex-row justify-around gap-2 m-2 mt-10 mb-40">
+        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
+        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
+        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
+        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
+      </div>
+
+      {/* 메인섹터 */}
+      <p className="text-2xl p-1 m-2">반가워요! username님!</p>
+      <p className="font-bold text-2xl p-1 m-1"></p>
 
       <p className="p-1 m-1">어떤 습관을 생성해볼까요?</p>
+
+      {/* 입력창 */}
       <input
         className="border-2 border-gray-300 p-2 m-2"
         placeholder="예) 하루 운동 30분하기, 물 2L 마시기, 영단어 20개 외우기..."
@@ -41,12 +52,21 @@ const Step2 = ({ onNext }: Step2Props) => {
         </div>
       </div>
 
-      <button
-        className="bg-black text-white rounded-2xl cursor-pointer m-1 p-4"
-        onClick={onNext}
-      >
-        다음으로
-      </button>
+      {/* next 버튼 */}
+      <div className="flex justify-center">
+        <button
+          className="fixed bottom-16 text-gray-500 rounded-2xl cursor-pointer m-2 p-4"
+          onClick={onNext}
+        >
+          넘어가기
+        </button>
+        <button
+          className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4"
+          onClick={onNext}
+        >
+          다음으로
+        </button>
+      </div>
     </div>
   );
 };

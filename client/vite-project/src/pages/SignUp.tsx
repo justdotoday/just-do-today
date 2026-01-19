@@ -14,7 +14,7 @@ const SignUp = () => {
       {/* 버튼 영역 */}
       <div className="mb-16 px-6 space-y-4">
         <a
-          href="#"
+          href="https://www.googleapis.com/oauth2/v2/userinfo"
           className="block w-full bg-gray-800 text-white py-3 rounded-lg text-base hover:bg-gray-700"
         >
           구글 아이디로 시작하기

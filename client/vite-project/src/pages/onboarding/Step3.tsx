@@ -30,12 +30,15 @@ const Step3 = ({ onNext }: Step3Props) => {
         <p>토글</p>
       </div>
 
-      <button
-        className="bg-black text-white rounded-2xl cursor-pointer m-1 p-4"
-        onClick={onNext}
-      >
-        시작하기
-      </button>
+      {/* next 버튼 */}
+      <div className="flex justify-center">
+        <button
+          className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4"
+          onClick={onNext}
+        >
+          다음으로
+        </button>
+      </div>
     </div>
   );
 };
