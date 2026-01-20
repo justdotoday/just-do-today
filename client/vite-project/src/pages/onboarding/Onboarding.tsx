@@ -26,7 +26,7 @@ const Onboarding = () => {
         {/* 온보딩 2단계, 다음 */}
         {step === 1 && <Step2 onNext={() => setStep(2)} />}
         {/* 온보딩 3단계, 완료 */}
-        {step === 2 && <Step3 onNext={() => {}} />}
+        {step === 2 && <Step3 onNext={() => setStep(3)} />}
         {/*  */}
         {step === 3 && <Step4 onFinish={() => {}} />}
       </div>
