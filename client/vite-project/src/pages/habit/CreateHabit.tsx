@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import Toggle from '../../components/Toggle';
+import { mapDaysToServer } from '../../api/utils';
+import { createHabit } from '../../api/habit';
+import type { CreateHabitPayload } from '../../types/habitType';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+
 const CreateHabit = () => {
   const navigate = useNavigate();
 
@@ -65,6 +71,29 @@ const CreateHabit = () => {
     name.trim().length > 0 &&
     selectedCategory !== null &&
     (frequency !== 'CUSTOM' || selectedDays.length > 0);
+
+  //api 연결
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    const payload: CreateHabitPayload = {
+      name: name.trim(),
+      category: selectedCategory!,
+      frequency,
+      days: frequency === 'CUSTOM' ? mapDaysToServer(selectedDays) : undefined,
+      isPublic,
+    };
+    try {
+      await createHabit(payload);
+      toast.success('습관이 생성되었습니다!');
+      // navigate('/habit'); << 이건 추후 상의
+    } catch (error) {
+      if (axios.isAxiosError(error) && !error.response) {
+        toast.error('서버 연결 X');
+        return;
+      }
+      toast.error('습관 생성 실패');
+    }
+  };
 
   // 반응형 ui
   /**
@@ -302,6 +331,7 @@ const CreateHabit = () => {
         <div className="mx-auto w-full max-w-[420px] md:max-w-[720px] border-t border-zinc-200 px-4 md:px-8 pt-3 pb-[calc(16px+env(safe-area-inset-bottom))]">
           {' '}
           <button
+            onClick={handleSubmit}
             disabled={!canSubmit}
             type="button"
             className={[
