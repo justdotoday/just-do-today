@@ -10,7 +10,7 @@ const Step2 = ({ onNext }: Step2Props) => {
       {/* step 진행도 바 */}
       <div className="flex flex-row justify-around gap-2 m-2 mt-10 mb-40">
         <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
+        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
         <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
         <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
       </div>
@@ -23,9 +23,9 @@ const Step2 = ({ onNext }: Step2Props) => {
 
       {/* 입력창 */}
       <input
-        className="border-2 border-gray-300 p-2 m-2"
-        placeholder="예) 하루 운동 30분하기, 물 2L 마시기, 영단어 20개 외우기..."
-      />
+        className="border-2 rounded-2xl border-gray-300 p-2 m-2"
+        placeholder="예) 하루 30분 운동하기, 물 2L 마시기, 단어 30개 외우기..."
+      ></input>
 
       <div className="p-1 m-1">
         <p className="mb-2">습관 카테고리를 선택해주세요.</p>
