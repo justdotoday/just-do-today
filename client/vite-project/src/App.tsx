@@ -37,7 +37,7 @@ function App() {
         />
 
         <Route path="/signup" element={<Signup />} />
-        <Route path="/main" element={<MainPage />} />
+
         <Route path="/home" element={<Home />} />
         <Route path="/createHabit" element={<CreateHabit />} />
       </Route>
@@ -45,6 +45,7 @@ function App() {
       {/* Layout 없이 따로 빼고 싶은 라우트가 있으면 여기 */}
       {/* kakao callback 잠시 미사용처리 */}
       {/* <Route path="/auth/kakao/callback" element={<KakaoCallback />} /> */}
+      <Route path="/main" element={<MainPage />} />
     </Routes>
   );
 }
