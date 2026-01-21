@@ -58,12 +58,22 @@ const CreateHabit = () => {
   const [hour, setHour] = useState('12');
   const [minute, setMinute] = useState('00');
 
-  //요일 선택 상태볂화
+  //요일 선택 상태변화
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const toggleDay = (d: string) => {
     setSelectedDays((prev) =>
       prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
     );
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const resetForm = () => {
+    setName('');
+    setSelectedCategory(null);
+    setFrequency('DAILY');
+    setSelectedDays([]);
+    setIsPublic(true);
   };
 
   //완료 버튼 계산식
@@ -72,30 +82,45 @@ const CreateHabit = () => {
     selectedCategory !== null &&
     (frequency !== 'CUSTOM' || selectedDays.length > 0);
 
-  //api 연결
+  //완료 버튼 api
   const handleSubmit = async () => {
-    if (!canSubmit) return;
+    // 기본 유효성 검사 및 로딩 중 중복 클릭 방지
+    if (!canSubmit || isLoading) return;
+
     const payload: CreateHabitPayload = {
       name: name.trim(),
       category: selectedCategory!,
       frequency,
-      days: frequency === 'CUSTOM' ? mapDaysToServer(selectedDays) : undefined,
+      ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,
     };
     try {
+      setIsLoading(true); //로딩 상태 시작
       await createHabit(payload);
+
       toast.success('습관이 생성되었습니다!');
-      // navigate('/habit'); << 이건 추후 상의
+
+      //성공 후 처리 : 폼 초기화 혹은 페이지 이동
+      resetForm();
+      // navigate('/habit');
     } catch (error) {
-      if (axios.isAxiosError(error) && !error.response) {
-        toast.error('서버 연결 X');
-        return;
+      if (axios.isAxiosError(error)) {
+        if (!error.response) {
+          toast.error(
+            '서버와의 연결이 원활하지 않습니다. 네트워크를 확인해주세요.'
+          );
+        } else if (error.response.status === 400) {
+          toast.error('입력값이 올바르지 않습니다.');
+        } else {
+          toast.error('습관 생성 중 오류가 발생했습니다.');
+        }
       }
-      toast.error('습관 생성 실패');
+    } finally {
+      setIsLoading(false); // 성공/실패 여부와 상관없이 로딩 종료
     }
   };
 
-  // 반응형 ui
+  // 반응형 UI
   /**
    * Layout & Responsive Guide (CreateHabit)
    *
@@ -332,16 +357,16 @@ const CreateHabit = () => {
           {' '}
           <button
             onClick={handleSubmit}
-            disabled={!canSubmit}
+            disabled={!canSubmit || isLoading}
             type="button"
             className={[
               'h-12 w-full rounded-2xl text-[14px] font-semibold transition',
-              canSubmit
-                ? 'bg-blue-600 text-white active:bg-blue-700'
-                : 'bg-zinc-200 text-zinc-500 cursor-not-allowed',
+              !canSubmit || isLoading
+                ? 'h-12 w-full rounded-2xl bg-zinc-200 text-[14px] font-semibold text-zinc-500'
+                : 'h-12 w-full rounded-2xl bg-blue-600 text-[14px] font-semibold text-white active:bg-blue-700',
             ].join(' ')}
           >
-            완료
+            {isLoading ? '생성 중...' : '완료'}
           </button>
         </div>
       </div>
