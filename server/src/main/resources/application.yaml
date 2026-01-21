@@ -17,3 +17,15 @@ spring:
 logging:
   level:
     org.flywaydb: DEBUG
+
+#소셜로그인 - 카카오
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
+
+app:
+  oauth-success-redirect: ${OAUTH_SUCCESS_REDIRECT}
+  jwt:
+    secret: ${JWT_SECRET}
+    access-exp-min: 60
