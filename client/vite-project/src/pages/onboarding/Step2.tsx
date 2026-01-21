@@ -1,25 +1,40 @@
 // 온보딩 2 : 습관설정 입력단계
+import { IoChevronBack } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 type Step2Props = {
   onNext: () => void;
 };
 
 const Step2 = ({ onNext }: Step2Props) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col">
-      {/* step 진행도 바 */}
-      <div className="flex flex-row justify-around gap-2 m-2 mt-10 mb-40">
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
+      <div className="flex flex-row items-center justify-between px-4 mt-10 mb-40">
+        {/* 뒤로가기 버튼 및 진행도 */}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
+          aria-label="뒤로가기"
+        >
+          <IoChevronBack className="text-2xl text-zinc-900" />
+        </button>
+
+        {/* 진행도 텍스트 */}
+        <p className="text-[15px] font-semibold text-zinc-900">2/3</p>
       </div>
 
       {/* 메인섹터 */}
-      <p className="text-2xl p-1 m-2">반가워요! username님!</p>
-      <p className="font-bold text-2xl p-1 m-1"></p>
+      <h2>
+        <p className="font-bold text-2xl p-1 m-2">
+          <span className="text-blue-600">종달새</span>님! 반가워요!
+        </p>
+        <p className="font-bold text-2xl p-1 m-1"></p>
 
-      <p className="p-1 m-1">어떤 습관을 생성해볼까요?</p>
+        <p className="p-1 m-1">어떤 습관을 생성해볼까요?</p>
+      </h2>
 
       {/* 입력창 */}
       <input
