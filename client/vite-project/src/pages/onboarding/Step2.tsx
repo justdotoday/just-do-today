@@ -1,6 +1,8 @@
 // 온보딩 2 : 습관설정 입력단계
+import { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import ColorPalette from '../../components/ColorPalette';
 
 type Step2Props = {
   onNext: () => void;
@@ -9,9 +11,22 @@ type Step2Props = {
 const Step2 = ({ onNext }: Step2Props) => {
   const navigate = useNavigate();
 
+  // 컬러 팔레트 모달 이벤트
+  const [showPalette, setShowPalette] = useState(false);
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-row items-center justify-between px-4 mt-10 mb-40">
+        {/* 모달 조건부 렌더링 */}
+        <div>
+          {showPalette && (
+            <ColorPalette
+              onClose={() => setShowPalette(false)}
+              onSelect={(color) => console.log('선택된 색상:', color)}
+            />
+          )}
+        </div>
+
         {/* 뒤로가기 버튼 및 진행도 */}
         <button
           type="button"
@@ -37,10 +52,17 @@ const Step2 = ({ onNext }: Step2Props) => {
       </h2>
 
       {/* 입력창 */}
-      <input
-        className="border-2 rounded-2xl border-gray-300 p-2 m-2"
-        placeholder="예) 하루 30분 운동하기, 물 2L 마시기, 단어 30개 외우기..."
-      ></input>
+      <div className="relative m-2">
+        <input
+          className="w-full border-2 rounded-2xl border-gray-300 pl-12 p-2 pr-16"
+          placeholder="예) 하루 30분 운동하기, 물 2L 마시기, 단어 30개 외우기..."
+        />
+        <button
+          type="button"
+          onClick={() => setShowPalette(true)}
+          className="absolute left-3 top-1/2 -translate-y-1/2 bg-blue-500 rounded-full h-6 w-6 cursor-pointer"
+        ></button>
+      </div>
 
       <div className="p-1 m-1">
         <p className="mb-2">습관 카테고리를 선택해주세요.</p>
