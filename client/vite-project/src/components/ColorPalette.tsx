@@ -5,7 +5,7 @@ type ColorPaletteProps = {
   onClose: () => void;
 };
 
-const ColorPalette = ({ onClose, onSelect }: ColorPaletteProps) => {
+const ColorPalette = ({ onClose }: ColorPaletteProps) => {
   // 팔레트에 적용될 색상
   const colors = [
     '#FF6B6B', // Red 1
