@@ -19,7 +19,7 @@ const Step1 = ({ onNext }: Step1Props) => {
           className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
           aria-label="뒤로가기"
         >
-          <IoChevronBack className="text-2xl text-zinc-900" />
+          <IoChevronBack className="block text-2xl text-zinc-900" />
         </button>
 
         {/* 진행도 텍스트 */}

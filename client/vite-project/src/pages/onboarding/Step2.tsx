@@ -14,56 +14,59 @@ const Step2 = ({ onNext }: Step2Props) => {
   // 컬러 팔레트 모달 이벤트
   const [showPalette, setShowPalette] = useState(false);
 
+  // 선택된 색상 상태 (입력창/버튼에만 반영)
+  const [selectedColor, setSelectedColor] = useState<string>('#ccc');
+
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row items-center justify-between px-4 mt-10 mb-40">
-        {/* 모달 조건부 렌더링 */}
-        <div>
-          {showPalette && (
-            <ColorPalette
-              onClose={() => setShowPalette(false)}
-              onSelect={(color) => console.log('선택된 색상:', color)}
-            />
-          )}
-        </div>
+      {/* 모달 조건부 렌더링 */}
+      {showPalette && (
+        <ColorPalette
+          onClose={() => setShowPalette(false)}
+          onSelect={(color) => {
+            setSelectedColor(color); // 선택된 색상 저장
+            setShowPalette(false);
+          }}
+        />
+      )}
 
-        {/* 뒤로가기 버튼 및 진행도 */}
+      {/* 뒤로가기 버튼 및 진행도 */}
+      <div className="flex flex-row items-center justify-between px-4 mt-10 mb-6">
         <button
           type="button"
           onClick={() => navigate(-1)}
           className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
           aria-label="뒤로가기"
         >
-          <IoChevronBack className="text-2xl text-zinc-900" />
+          <IoChevronBack className="block text-2xl text-zinc-900" />
         </button>
-
-        {/* 진행도 텍스트 */}
         <p className="text-[15px] font-semibold text-zinc-900">2/3</p>
       </div>
 
-      {/* 메인섹터 */}
+      {/* 메인 섹션 */}
       <h2>
         <p className="font-bold text-2xl p-1 m-2">
           <span className="text-blue-600">종달새</span>님! 반가워요!
         </p>
-        <p className="font-bold text-2xl p-1 m-1"></p>
-
         <p className="p-1 m-1">어떤 습관을 생성해볼까요?</p>
       </h2>
 
       {/* 입력창 */}
       <div className="relative m-2">
         <input
-          className="w-full border-2 rounded-2xl border-gray-300 pl-12 p-2 pr-16"
+          className="w-full border-2 rounded-2xl pl-12 p-2 pr-16"
+          style={{ borderColor: selectedColor }} // 선택된 색상 테두리 반영
           placeholder="예) 하루 30분 운동하기, 물 2L 마시기, 단어 30개 외우기..."
         />
         <button
           type="button"
           onClick={() => setShowPalette(true)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 bg-blue-500 rounded-full h-6 w-6 cursor-pointer"
+          className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full h-6 w-6 cursor-pointer"
+          style={{ backgroundColor: selectedColor }} // 버튼 색상 반영
         ></button>
       </div>
 
+      {/* 카테고리 선택 (항상 회색 유지) */}
       <div className="p-1 m-1">
         <p className="mb-2">습관 카테고리를 선택해주세요.</p>
         <ul>
@@ -90,12 +93,12 @@ const Step2 = ({ onNext }: Step2Props) => {
       </div>
 
       {/* next 버튼 */}
-      <div className="flex justify-center">
+      <div className="fixed bottom-12 w-full flex flex-col items-center gap-2">
         <button
-          className="fixed bottom-16 text-gray-500 rounded-2xl cursor-pointer m-2 p-4"
+          className="text-gray-500 rounded-2xl cursor-pointer m-2 p-4"
           onClick={onNext}
         >
-          넘어가기
+          나중에 할래요
         </button>
         <button
           className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4"
