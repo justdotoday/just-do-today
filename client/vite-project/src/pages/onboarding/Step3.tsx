@@ -101,6 +101,8 @@ const Step3 = ({ onNext }: Step3Props) => {
               <p className="text-[13px] font-medium text-zinc-500">
                 요일을 선택하세요!
               </p>
+
+              {/* 요일로 선택 버튼 */}
               <div className="mt-4 grid grid-cols-7 place-items-center">
                 {days.map((d) => {
                   const active = selectedDays.includes(d);
@@ -109,14 +111,15 @@ const Step3 = ({ onNext }: Step3Props) => {
                       key={d}
                       type="button"
                       onClick={() => toggleDay(d)}
-                      className="flex flex-col items-center gap-3"
+                      className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold text-[14px] transition-colors duration-200
+        ${
+          active
+            ? 'border border-blue-500 text-blue-600 bg-white'
+            : 'border border-zinc-300 text-zinc-900 bg-white'
+        }
+      `}
                     >
-                      <span
-                        className={`h-5 w-5 rounded-2xl border-2 border-zinc-900 ${active ? 'bg-zinc-900' : 'bg-white'}`}
-                      />
-                      <span className="text-[14px] font-semibold text-zinc-900">
-                        {d}
-                      </span>
+                      {d}
                     </button>
                   );
                 })}

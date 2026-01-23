@@ -68,7 +68,7 @@ const Step2 = ({ onNext }: Step2Props) => {
         ></button>
       </div>
 
-      {/* 카테고리 선택 (항상 회색 유지) */}
+      {/* 카테고리 선택 */}
       <div className="p-1 m-1">
         <p className="mb-2">습관 카테고리를 선택해주세요.</p>
         <ul>

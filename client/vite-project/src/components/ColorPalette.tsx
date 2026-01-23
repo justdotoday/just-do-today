@@ -42,7 +42,7 @@ const ColorPalette = ({ onClose, onSelect }: ColorPaletteProps) => {
           {colors.map((color) => (
             <button
               key={color}
-              className="w-10 h-10 rounded-full border-2"
+              className="w-10 h-10 rounded-full"
               style={{ backgroundColor: color }}
               onClick={() => {
                 onSelect(color); // 선택된 색상 전달
