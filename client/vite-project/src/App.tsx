@@ -3,7 +3,7 @@ import './App.css';
 import Signup from './pages/SignUp';
 import KakaoCallback from './auth/KaKaoCallback';
 import MainPage from './pages/MainPage';
-import Home from './pages/Home';
+import Home from './pages/habit/Home';
 import CreateHabit from './pages/habit/CreateHabit';
 import Layout from './layout/Layout';
 import { Toaster } from 'react-hot-toast';

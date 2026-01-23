@@ -7,25 +7,25 @@ import { createHabit } from '../../api/habit';
 import type { CreateHabitPayload } from '../../types/habitType';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-
+import CategoryAddModal from '../../components/CategoryAddModal';
+import CategoryChips from '../../components/CategoryChips';
 const CreateHabit = () => {
   const navigate = useNavigate();
 
   // 카테고리 배열
-  const categories = [
-    '외국어',
-    '자격증',
-    '포트폴리오',
-    '독서',
-    '강의수강',
-    '헬스/홈트',
-    '스트레칭',
-    '물 마시기',
-    '다이어트',
-    '생활루틴',
-    '건강관리',
-    '코딩',
-  ];
+  type CategoryItem = { name: string; icon?: string };
+
+  const [categories, setCategories] = useState<CategoryItem[]>([
+    { name: '건강관리', icon: '💊' },
+    { name: '마음챙김', icon: '☕️' },
+    { name: '운동', icon: '🏋️' },
+    { name: '생활습관', icon: '✅' },
+    { name: '자기계발', icon: '📝' },
+    { name: '독서', icon: '📖' },
+    { name: '공부', icon: '📘' },
+    { name: '커리어', icon: '💼' },
+    { name: '모닝루틴', icon: '🌞' },
+  ]);
 
   //날짜 배열
   const day = ['월', '화', '수', '목', '금', '토', '일'];
@@ -120,6 +120,16 @@ const CreateHabit = () => {
     }
   };
 
+  //카테고리 모달 상태관리
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
+  const handleAddCategory = (name: string) => {
+    const newCategory = { name };
+    setCategories((prev) => [...prev, newCategory]);
+    setSelectedCategory(name);
+    setIsCategoryModalOpen(false);
+  };
+
   // 반응형 UI
   /**
    * Layout & Responsive Guide (CreateHabit)
@@ -166,7 +176,7 @@ const CreateHabit = () => {
           </button>
 
           <h1 className="text-[15px] font-semibold text-zinc-900">
-            미션 생성하기
+            습관 생성하기
           </h1>
         </div>
         <div className="h-px w-full bg-zinc-100" />
@@ -192,31 +202,18 @@ const CreateHabit = () => {
             습관 카테고리를 선택해 주세요.
           </h2>
 
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setSelectedCategory(c)}
-                className={`min-h-[40px] rounded-full px-3.5 py-2 text-[12px] font-semibold
-                  ${
-                    selectedCategory === c
-                      ? 'bg-zinc-900 text-white'
-                      : 'bg-zinc-100 text-zinc-700 active:bg-zinc-200'
-                  }
-                `}
-              >
-                {c}
-              </button>
-            ))}
+          <CategoryChips
+            categories={categories}
+            selected={selectedCategory}
+            onSelect={setSelectedCategory}
+            onOpenAdd={() => setIsCategoryModalOpen(true)}
+          />
 
-            <button
-              type="button"
-              className="min-h-[40px] rounded-full border border-dashed border-zinc-300 bg-white px-3.5 py-2 text-[12px] font-semibold text-zinc-700 active:bg-zinc-50"
-            >
-              직접 작성 <span className="ml-1">+</span>
-            </button>
-          </div>
+          <CategoryAddModal
+            open={isCategoryModalOpen}
+            onClose={() => setIsCategoryModalOpen(false)}
+            onSubmit={handleAddCategory}
+          />
         </section>
         {/* 빈도 */}
         <section className="mt-8 space-y-3">
