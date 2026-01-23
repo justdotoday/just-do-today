@@ -3,9 +3,10 @@
 // 타입선언
 type ColorPaletteProps = {
   onClose: () => void;
+  onSelect: (color: string) => void; // 추가
 };
 
-const ColorPalette = ({ onClose }: ColorPaletteProps) => {
+const ColorPalette = ({ onClose, onSelect }: ColorPaletteProps) => {
   // 팔레트에 적용될 색상
   const colors = [
     '#FF6B6B', // Red 1
@@ -44,8 +45,8 @@ const ColorPalette = ({ onClose }: ColorPaletteProps) => {
               className="w-10 h-10 rounded-full border-2"
               style={{ backgroundColor: color }}
               onClick={() => {
-                onSelect(color);
-                onClose();
+                onSelect(color); // 선택된 색상 전달
+                onClose(); // 모달 닫기
               }}
             />
           ))}

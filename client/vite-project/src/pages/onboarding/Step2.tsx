@@ -48,7 +48,9 @@ const Step2 = ({ onNext }: Step2Props) => {
         <p className="font-bold text-2xl p-1 m-2">
           <span className="text-blue-600">종달새</span>님! 반가워요!
         </p>
-        <p className="p-1 m-1">어떤 습관을 생성해볼까요?</p>
+        <p className="font-bold text-2xl p-1 m-2">
+          지금 바로 습관 하나 등록해볼까요?
+        </p>
       </h2>
 
       {/* 입력창 */}

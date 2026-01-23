@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import Toggle from '../../components/Toggle';
+import { useNavigate } from 'react-router-dom';
+import { IoChevronBack } from 'react-icons/io5';
 
 type Step3Props = {
   onNext: () => void;
@@ -34,17 +36,33 @@ const Step3 = ({ onNext }: Step3Props) => {
     );
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-white">
-      {/* step 진행도 바 */}
-      <div className="flex flex-row justify-around gap-2 m-2 mt-10 mb-40">
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-500"></p>
-        <p className="rounded-2xl w-1/4 p-2 bg-gray-300"></p>
+      {/* 뒤로가기 버튼 및 진행도 */}
+      <div className="flex flex-row items-center justify-between px-4 mt-10 mb-6">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
+          aria-label="뒤로가기"
+        >
+          <IoChevronBack className="block text-2xl text-zinc-900" />
+        </button>
+        <p className="text-[15px] font-semibold text-zinc-900">2/3</p>
       </div>
 
-      {/* 본문 */}
+      {/* 메인 섹션 */}
+      <h2>
+        <p className="font-bold text-2xl p-1 m-2">
+          <span className="text-blue-600">종달새</span>님! 반가워요!
+        </p>
+        <p className="font-bold text-2xl p-1 m-2">
+          지금 바로 습관 하나 등록해볼까요?
+        </p>
+      </h2>
+
       <main className="mx-auto w-full px-4 md:px-8 pt-4 pb-[calc(120px+env(safe-area-inset-bottom))]">
         {/* 빈도 */}
         <section className="mt-8 space-y-3">
@@ -94,7 +112,7 @@ const Step3 = ({ onNext }: Step3Props) => {
                       className="flex flex-col items-center gap-3"
                     >
                       <span
-                        className={`h-5 w-5 rounded-[2px] border-2 border-zinc-900 ${active ? 'bg-zinc-900' : 'bg-white'}`}
+                        className={`h-5 w-5 rounded-2xl border-2 border-zinc-900 ${active ? 'bg-zinc-900' : 'bg-white'}`}
                       />
                       <span className="text-[14px] font-semibold text-zinc-900">
                         {d}
@@ -115,22 +133,19 @@ const Step3 = ({ onNext }: Step3Props) => {
             </h2>
             <Toggle checked={alarmEnabled} onChange={setAlarmEnabled} />
           </div>
-          <div className="grid grid-cols-[1fr_1fr_auto_1fr] items-center gap-3">
+
+          {/* 오전 오후 토글 */}
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
             <button
-              onClick={() => setAmpm('AM')}
+              onClick={() => setAmpm(ampm === 'AM' ? 'PM' : 'AM')}
               disabled={!alarmEnabled}
-              className={ampm === 'AM' ? filledBtn : outlineBtn}
+              className={filledBtn}
             >
-              오전
+              {ampm === 'AM' ? '오전' : '오후'}
             </button>
-            <button
-              onClick={() => setAmpm('PM')}
-              disabled={!alarmEnabled}
-              className={ampm === 'PM' ? filledBtn : outlineBtn}
-            >
-              오후
-            </button>
+
             <span className="text-zinc-400 font-bold">:</span>
+
             <div className="grid grid-cols-2 gap-3">
               <input
                 disabled={!alarmEnabled}
