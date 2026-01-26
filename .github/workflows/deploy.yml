@@ -1,0 +1,85 @@
+name: JustDoToday CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: client/vite-project/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('client/vite-project/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Build Spring Boot application
+        working-directory: ./server
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: Build React application
+        working-directory: ./client/vite-project
+        run: |
+          npm install
+          npm run build
+
+      - name: Transfer build files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          source: "server/build/libs/*.jar,client/vite-project/dist/*"
+          target: "~/app/deployment_temp"
+          strip_components: 0
+
+      - name: Execute deployment script on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /var/www/html/client/*
+            sudo cp -r ~/app/deployment_temp/client/vite-project/dist/* /var/www/html/client/
+            
+            mkdir -p ~/app/backend
+            cp ~/app/deployment_temp/server/build/libs/*[!plain].jar ~/app/backend/application.jar
+
+            rm -rf ~/app/deployment_temp
+            
+            sudo systemctl restart justdotoday
+            
+            echo "Deployment completed successfully!"
