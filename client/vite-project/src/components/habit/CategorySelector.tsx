@@ -5,15 +5,16 @@ import React from 'react';
 export type CategoryItem = { name: string; icon?: string };
 
 type Props = {
+  title?: string;
   categories: CategoryItem[];
   selected: string | null;
   onSelect: (name: string) => void;
-
   onOpenAdd?: () => void; // "직접 추가" 버튼 클릭
-  addButtonClassName?: string; // 직접추가 버튼 스타일(원하면)
+  addButtonClassName?: string; // "직접 추가" 버튼의 추가 클래스 이름
 };
 
-export default function CategoryChips({
+export default function CategorySelector({
+  title = '습관 카테고리를 선택해 주세요',
   categories,
   selected,
   onSelect,
@@ -27,6 +28,10 @@ export default function CategoryChips({
 
   return (
     <div className="flex flex-wrap gap-2">
+      <h2 className="w-full text-[18px] font-semibold text-zinc-950">
+        {title}
+      </h2>
+
       {categories.map((c) => {
         const active = selected === c.name;
 
