@@ -3,7 +3,7 @@ name: JustDoToday CI/CD
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   build-and-deploy:
@@ -61,8 +61,8 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          source: "server/build/libs/*.jar,client/vite-project/dist/*"
-          target: "~/app/deployment_temp"
+          source: 'server/build/libs/*.jar,client/vite-project/dist/*'
+          target: '~/app/deployment_temp'
           strip_components: 0
 
       - name: Execute deployment script on EC2
@@ -74,12 +74,12 @@ jobs:
           script: |
             sudo rm -rf /var/www/html/client/*
             sudo cp -r ~/app/deployment_temp/client/vite-project/dist/* /var/www/html/client/
-            
+
             mkdir -p ~/app/backend
             cp ~/app/deployment_temp/server/build/libs/*[!plain].jar ~/app/backend/application.jar
 
             rm -rf ~/app/deployment_temp
-            
+
             sudo systemctl restart justdotoday
-            
+
             echo "Deployment completed successfully!"
