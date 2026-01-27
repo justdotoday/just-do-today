@@ -4,7 +4,6 @@ import MainFooter from './MainFooter';
 export default function Layout() {
   const { pathname } = useLocation();
 
-  // 네 라우트가 "createHabit" 이니까 여기가 핵심
   const hideFooter = pathname === '/createHabit';
 
   return (
