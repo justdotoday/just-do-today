@@ -1,7 +1,5 @@
 //카테고리 선택 컴포넌트
 
-import React from 'react';
-
 export type CategoryItem = { name: string; icon?: string };
 
 type Props = {
