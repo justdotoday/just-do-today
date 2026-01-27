@@ -5,7 +5,9 @@ import bgAuth from '../assets/bg-auth.png';
 
 export default function SocialSignUp() {
   const handleKakao = () => {
-    // TODO: kakao oauth
+    window.location.href = `${
+      import.meta.env.VITE_API_BASE_URL
+    }/oauth2/authorization/kakao`;
   };
 
   const handleGoogle = () => {
