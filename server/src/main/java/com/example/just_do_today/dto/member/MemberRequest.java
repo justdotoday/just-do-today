@@ -1,5 +1,6 @@
 package com.example.just_do_today.dto.member;
 
+import com.example.just_do_today.dto.member.constant.Role;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -9,15 +10,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberResponse {
+public class MemberRequest {
 
-    private Long id;
     private String nickname;
     private String profileImageUrl;
     private String userCode;
     private String provider;
     private String providerId;
-    private String userRole;
+
+    @Builder.Default
+    private String userRole = Role.USER.getKey();
+
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 }
