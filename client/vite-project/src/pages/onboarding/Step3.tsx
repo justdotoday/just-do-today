@@ -1,16 +1,15 @@
 import { useState } from 'react';
-
 import Toggle from '../../components/Toggle';
-import { useNavigate } from 'react-router-dom';
 import { IoChevronBack } from 'react-icons/io5';
 
 type Step3Props = {
   onNext: () => void;
+  onBack: () => void;
 };
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
-const Step3 = ({ onNext }: Step3Props) => {
+const Step3 = ({ onNext, onBack }: Step3Props) => {
   // 상태 관리
   const [frequency, setFrequency] = useState<Frequency>('DAILY');
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -36,21 +35,19 @@ const Step3 = ({ onNext }: Step3Props) => {
     );
   };
 
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-white">
       {/* 뒤로가기 버튼 및 진행도 */}
       <div className="flex flex-row items-center justify-between px-4 mt-10 mb-6">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={onBack} // navigate(-1) 대신 부모에서 내려준 onBack 호출
           className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
           aria-label="뒤로가기"
         >
           <IoChevronBack className="block text-2xl text-zinc-900" />
         </button>
-        <p className="text-[15px] font-semibold text-zinc-900">2/3</p>
+        <p className="text-[15px] font-semibold text-zinc-900">3/4</p>
       </div>
 
       {/* 메인 섹션 */}
@@ -112,12 +109,11 @@ const Step3 = ({ onNext }: Step3Props) => {
                       type="button"
                       onClick={() => toggleDay(d)}
                       className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold text-[14px] transition-colors duration-200
-        ${
-          active
-            ? 'border border-blue-500 text-blue-600 bg-white'
-            : 'border border-zinc-300 text-zinc-900 bg-white'
-        }
-      `}
+                        ${
+                          active
+                            ? 'border border-blue-500 text-blue-600 bg-white'
+                            : 'border border-zinc-300 text-zinc-900 bg-white'
+                        }`}
                     >
                       {d}
                     </button>
@@ -179,15 +175,21 @@ const Step3 = ({ onNext }: Step3Props) => {
         </section>
       </main>
 
-      {/* 다음 버튼 */}
-      <footer className="fixed bottom-0 left-0 w-full px-4 pb-[env(safe-area-inset-bottom)] bg-white">
+      {/* next 버튼 */}
+      <div className="fixed bottom-12 w-full flex flex-col items-center gap-2">
         <button
-          className="w-full h-14 bg-blue-500 text-white rounded-2xl cursor-pointer font-semibold"
+          className="text-gray-500 rounded-2xl cursor-pointer m-2 p-4"
+          onClick={onNext}
+        >
+          나중에 할래요
+        </button>
+        <button
+          className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4"
           onClick={onNext}
         >
           다음으로
         </button>
-      </footer>
+      </div>
     </div>
   );
 };

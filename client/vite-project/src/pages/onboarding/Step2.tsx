@@ -1,16 +1,14 @@
 // 온보딩 2 : 습관설정 입력단계
 import { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
 import ColorPalette from '../../components/ColorPalette';
 
 type Step2Props = {
   onNext: () => void;
+  onBack: () => void; // 부모에서 내려주는 뒤로가기 핸들러
 };
 
-const Step2 = ({ onNext }: Step2Props) => {
-  const navigate = useNavigate();
-
+const Step2 = ({ onNext, onBack }: Step2Props) => {
   // 컬러 팔레트 모달 이벤트
   const [showPalette, setShowPalette] = useState(false);
 
@@ -34,7 +32,7 @@ const Step2 = ({ onNext }: Step2Props) => {
       <div className="flex flex-row items-center justify-between px-4 mt-10 mb-6">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={onBack} // navigate(-1) 대신 부모에서 내려준 onBack 호출
           className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
           aria-label="뒤로가기"
         >
