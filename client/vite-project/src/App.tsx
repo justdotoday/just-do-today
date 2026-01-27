@@ -1,6 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
-import Signup from './pages/SignUp';
+import Signup from './auth/SocialSignUp';
 // import KakaoCallback from './auth/KaKaoCallback';
 import MainPage from './pages/MainPage';
 import Home from './pages/habit/Home';
