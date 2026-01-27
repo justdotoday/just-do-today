@@ -6,41 +6,39 @@ import MainPage from './pages/MainPage';
 import Home from './pages/Home';
 import CreateHabit from './pages/habit/CreateHabit';
 import Layout from './layout/Layout';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
-    <Routes>
-      {/* Layout 적용 구간 */}
-      <Route element={<Layout />}>
-        <Route
-          path="/"
-          element={
-            <>
-              <div className="font-black">추후 통합</div>
-              <div className="flex flex-col">
-                <Link to="/signup" className="text-blue-400 bg-green-50">
-                  회원가입
-                </Link>
-                <Link to="/main" className="text-blue-400 bg-green-50">
-                  메인페이지
-                </Link>
+    <>
+      <Toaster position="top-center" />
 
-                <Link to="/home" className="text-blue-400 bg-green-50">
-                  홈
-                </Link>
-                <Link to="/createHabit" className="text-blue-400 bg-green-50">
-                  습관 생성
-                </Link>
-              </div>
-            </>
-          }
-        />
+      <Routes>
+        {/* Layout 적용 구간 */}
+        <Route element={<Layout />}>
+          <Route
+            path="/"
+            element={
+              <>
+                <div className="font-black">추후 통합</div>
+                <div className="flex flex-col">
+                  <Link to="/signup" className="text-blue-400 bg-green-50">
+                    회원가입
+                  </Link>
+                  <Link to="/main" className="text-blue-400 bg-green-50">
+                    메인페이지
+                  </Link>
 
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/createHabit" element={<CreateHabit />} />
-      </Route>
+                  <Link to="/home" className="text-blue-400 bg-green-50">
+                    홈
+                  </Link>
+                  <Link to="/createHabit" className="text-blue-400 bg-green-50">
+                    습관 생성
+                  </Link>
+                </div>
+              </>
+            }
+          />
 
       {/* Layout 없이 따로 빼고 싶은 라우트가 있으면 여기 */}
       {/* kakao callback 잠시 미사용처리 */}
