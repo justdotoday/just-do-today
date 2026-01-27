@@ -6,11 +6,24 @@ type Props = {
   onSubmit: (categoryName: string) => void;
 };
 
-const CategoryAddModal = ({ open, onClose }: Props) => {
+const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
   const [value, setValue] = useState('');
-  const canSubmit = value.trim().length > 0;
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleSubmit();
+    if (e.key === 'Escape') onClose();
+  };
+
+  const trimmed = value.trim();
+  const canSubmit = trimmed.length > 0;
 
   if (!open) return null;
+
+  const handleSubmit = () => {
+    if (!canSubmit) return;
+    onSubmit(trimmed);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-[999]">
@@ -27,8 +40,10 @@ const CategoryAddModal = ({ open, onClose }: Props) => {
         </h2>
 
         <input
+          autoFocus
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="카테고리를 입력해 주세요"
           className="mb-4 h-12 w-full rounded-full border border-zinc-200 px-4 text-[14px] outline-none focus:border-[#2563EB]"
         />
@@ -39,7 +54,7 @@ const CategoryAddModal = ({ open, onClose }: Props) => {
             'h-14 w-full rounded-full text-[16px] font-medium',
             canSubmit ? 'bg-blue-600 text-white' : 'bg-zinc-200 text-zinc-500',
           ].join(' ')}
-          onClick={onClose}
+          onClick={handleSubmit}
           disabled={!canSubmit}
         >
           완료

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import Toggle from '../../components/Toggle';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
 import type { CreateHabitPayload } from '../../types/habitType';
@@ -98,10 +97,27 @@ const CreateHabit = () => {
     }
   };
 
+  // 카테고리 직접 추가 처리
   const handleAddCategory = (name: string) => {
-    setCategories((prev) => [...prev, { name }]);
-    setSelectedCategory(name);
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    const hasSameCategory = categories.some((c) => c.name === trimmed);
+
+    if (hasSameCategory) {
+      // 중복 입력 시: 새로 추가하지 않고 기존 카테고리를 선택
+      toast('이미 있는 카테고리예요', { icon: '⚠️' });
+      setSelectedCategory(trimmed);
+      setIsCategoryModalOpen(false);
+      return;
+    }
+
+    // 신규 카테고리 추가 + 해당 카테고리를 선택 상태로 설정
+    setCategories((prev) => [...prev, { name: trimmed }]);
+    setSelectedCategory(trimmed); //  추가한 것만 선택(싱글)
     setIsCategoryModalOpen(false);
+
+    toast.success('카테고리가 추가되었어요');
   };
 
   return (
@@ -180,11 +196,13 @@ const CreateHabit = () => {
         </div>
       </div>
 
-      <CategoryAddModal
-        open={isCategoryModalOpen}
-        onClose={() => setIsCategoryModalOpen(false)}
-        onSubmit={handleAddCategory}
-      />
+      {isCategoryModalOpen && (
+        <CategoryAddModal
+          open={isCategoryModalOpen}
+          onClose={() => setIsCategoryModalOpen(false)}
+          onSubmit={handleAddCategory}
+        />
+      )}
     </div>
   );
 };
