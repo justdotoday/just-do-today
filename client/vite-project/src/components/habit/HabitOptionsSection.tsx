@@ -1,4 +1,3 @@
-import React from 'react';
 import Toggle from '../../components/Toggle';
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';

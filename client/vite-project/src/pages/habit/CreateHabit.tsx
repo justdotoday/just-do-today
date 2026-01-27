@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { mapDaysToServer } from '../../api/utils';
@@ -90,7 +90,7 @@ const CreateHabit = () => {
       await createHabit(payload);
       toast.success('습관이 생성되었습니다!');
       navigate('/');
-    } catch (error) {
+    } catch {
       toast.error('습관 생성 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
