@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import Onboarding from './onboarding/Onboarding';
 
 const MainPage = () => {
   const needsOnboarding = true; // 지금은 임시
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
 
   return (
     <div className="relative h-screen">
@@ -13,7 +15,10 @@ const MainPage = () => {
         <button>습관 등록하기</button>
       </div>
 
-      {needsOnboarding && <Onboarding />}
+      {/* 온보딩 모달 */}
+      {needsOnboarding && isOnboardingOpen && (
+        <Onboarding onFinish={() => setIsOnboardingOpen(false)} />
+      )}
     </div>
   );
 };

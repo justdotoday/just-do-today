@@ -3,7 +3,7 @@ import './App.css';
 import Signup from './pages/SignUp';
 // import KakaoCallback from './auth/KaKaoCallback';
 import MainPage from './pages/MainPage';
-import Home from './pages/Home';
+import Home from './pages/habit/Home';
 import CreateHabit from './pages/habit/CreateHabit';
 import Layout from './layout/Layout';
 import { Toaster } from 'react-hot-toast';
@@ -14,7 +14,7 @@ function App() {
       <Toaster position="top-center" />
 
       <Routes>
-        {/* Layout 적용 구간 */}
+        햐{/* Layout 적용 구간 */}
         <Route element={<Layout />}>
           <Route
             path="/"
@@ -28,7 +28,6 @@ function App() {
                   <Link to="/main" className="text-blue-400 bg-green-50">
                     메인페이지
                   </Link>
-
                   <Link to="/home" className="text-blue-400 bg-green-50">
                     홈
                   </Link>
@@ -39,11 +38,15 @@ function App() {
               </>
             }
           />
-
-      {/* Layout 없이 따로 빼고 싶은 라우트가 있으면 여기 */}
-      {/* kakao callback 잠시 미사용처리 */}
-      {/* <Route path="/auth/kakao/callback" element={<KakaoCallback />} /> */}
-    </Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/createHabit" element={<CreateHabit />} />
+        </Route>
+        {/* Layout 없이 따로 빼고 싶은 라우트 */}
+        {/* <Route path="/auth/kakao/callback" element={<KakaoCallback />} /> */}
+      </Routes>
+    </>
   );
 }
 
