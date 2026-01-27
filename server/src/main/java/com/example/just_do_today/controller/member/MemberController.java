@@ -11,7 +11,6 @@ import java.util.Map;
 public class MemberController {
 
 
-    @GetMapping("/")
     public String getTest() {
         return "TEST Controller 연결";
     }
