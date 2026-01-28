@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// import Toggle from '../../components/Toggle';
 import { IoChevronBack } from 'react-icons/io5';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
 
@@ -10,8 +9,17 @@ type Step3Props = {
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
+const ProgressDots = () => {
+  return (
+    <div className="flex gap-1 items-center justify-center h-6">
+      <span className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:0ms]" />
+      <span className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:150ms]" />
+      <span className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:300ms]" />
+    </div>
+  );
+};
+
 const Step3 = ({ onNext, onBack }: Step3Props) => {
-  // 상태 관리
   const [frequency, setFrequency] = useState<Frequency>('DAILY');
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [alarmEnabled, setAlarmEnabled] = useState(true);
@@ -19,21 +27,24 @@ const Step3 = ({ onNext, onBack }: Step3Props) => {
   const [hour, setHour] = useState('12');
   const [minute, setMinute] = useState('00');
   const [isPublic, setIsPublic] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 데이터
-  const days = ['월', '화', '수', '목', '금', '토', '일'];
-
-  // 버튼 스타일
   const outlineBtn =
     'h-12 rounded-xl border-2 border-blue-500 text-blue-600 text-[14px] font-semibold active:bg-blue-50';
   const filledBtn =
     'h-12 rounded-xl bg-blue-600 text-white text-[14px] font-semibold active:bg-blue-700';
 
-  // 요일 토글
   const toggleDay = (d: string) => {
     setSelectedDays((prev) =>
       prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
     );
+  };
+
+  const handleNext = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      onNext();
+    }, 800);
   };
 
   return (
@@ -42,7 +53,7 @@ const Step3 = ({ onNext, onBack }: Step3Props) => {
       <div className="flex flex-row items-center justify-between px-4 mt-10 mb-6">
         <button
           type="button"
-          onClick={onBack} // navigate(-1) 대신 부모에서 내려준 onBack 호출
+          onClick={onBack}
           className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
           aria-label="뒤로가기"
         >
@@ -64,7 +75,7 @@ const Step3 = ({ onNext, onBack }: Step3Props) => {
       </h2>
 
       {/* 습관 컨포넌트 */}
-      <div>
+      <div className="p-2">
         <HabitOptionsSection
           frequency={frequency}
           setFrequency={setFrequency}
@@ -104,10 +115,11 @@ const Step3 = ({ onNext, onBack }: Step3Props) => {
           나중에 할래요
         </button>
         <button
-          className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4"
-          onClick={onNext}
+          className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4 flex items-center justify-center"
+          onClick={handleNext}
+          disabled={isLoading}
         >
-          다음으로
+          {isLoading ? <ProgressDots /> : '다음으로'}
         </button>
       </div>
     </div>
