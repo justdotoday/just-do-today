@@ -1,18 +1,3 @@
-//카테고리 선택 컴포넌트
-
-import React from 'react';
-
-export type CategoryItem = { name: string; icon?: string };
-
-type Props = {
-  title?: string;
-  categories: CategoryItem[];
-  selected: string | null;
-  onSelect: (name: string) => void;
-  onOpenAdd?: () => void; // "직접 추가" 버튼 클릭
-  addButtonClassName?: string; // "직접 추가" 버튼의 추가 클래스 이름
-};
-
 export default function CategorySelector({
   title = '습관 카테고리를 선택해 주세요',
   categories,
@@ -21,14 +6,9 @@ export default function CategorySelector({
   onOpenAdd,
   addButtonClassName,
 }: Props) {
-  const chipBase =
-    'inline-flex items-center justify-center gap-2 rounded-full ' +
-    'h-10 px-4 ' +
-    'text-[13px] font-medium leading-none';
-
   return (
-    <div className="flex flex-wrap gap-2">
-      <h2 className="w-full text-[18px] font-semibold text-zinc-950">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <h2 className="col-span-full text-[18px] font-semibold text-zinc-950 mb-2">
         {title}
       </h2>
 
@@ -40,24 +20,16 @@ export default function CategorySelector({
             key={c.name}
             type="button"
             onClick={() => onSelect(c.name)}
-            className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 transition
+            className={`flex items-center gap-2 px-4 py-2 rounded-full shadow-sm transition
               ${
                 active
-                  ? 'bg-blue-50 border-blue-400'
-                  : 'bg-white border-zinc-200'
+                  ? 'bg-blue-100 border border-blue-400 text-blue-600'
+                  : 'bg-gray-100 text-gray-700'
               }
             `}
           >
-            {c.icon && (
-              <span className="text-[18px] leading-none">{c.icon}</span>
-            )}
-            <span
-              className={`text-[14px] font-semibold ${
-                active ? 'text-blue-600' : 'text-zinc-600'
-              }`}
-            >
-              {c.name}
-            </span>
+            {c.icon && <span className="text-xl leading-none">{c.icon}</span>}
+            <span className="text-sm font-semibold">{c.name}</span>
           </button>
         );
       })}
@@ -68,18 +40,11 @@ export default function CategorySelector({
           onClick={onOpenAdd}
           className={
             addButtonClassName ??
-            [
-              chipBase,
-              'bg-white border border-dashed border-zinc-300 text-zinc-700',
-            ].join(' ')
+            'flex items-center gap-2 px-4 py-2 rounded-full border-2 border-dashed border-gray-300 text-gray-600 bg-white'
           }
         >
-          <span className="text-[18px] leading-none font-bold text-zinc-700">
-            +
-          </span>
-          <span className="text-[14px] font-semibold text-zinc-600">
-            직접 추가
-          </span>
+          <span className="text-xl font-bold text-gray-700">+</span>
+          <span className="text-sm font-semibold text-gray-600">직접 추가</span>
         </button>
       )}
     </div>

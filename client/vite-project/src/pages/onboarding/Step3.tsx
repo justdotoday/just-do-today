@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import Toggle from '../../components/Toggle';
+// import Toggle from '../../components/Toggle';
 import { IoChevronBack } from 'react-icons/io5';
+import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
 
 type Step3Props = {
   onNext: () => void;
@@ -47,7 +48,9 @@ const Step3 = ({ onNext, onBack }: Step3Props) => {
         >
           <IoChevronBack className="block text-2xl text-zinc-900" />
         </button>
-        <p className="text-[15px] font-semibold text-zinc-900">3/4</p>
+        <p className="text-[15px] font-semibold text-zinc-900">
+          <span className="text-blue-600">2</span>/3
+        </p>
       </div>
 
       {/* 메인 섹션 */}
@@ -60,120 +63,37 @@ const Step3 = ({ onNext, onBack }: Step3Props) => {
         </p>
       </h2>
 
-      <main className="mx-auto w-full px-4 md:px-8 pt-4 pb-[calc(120px+env(safe-area-inset-bottom))]">
-        {/* 빈도 */}
-        <section className="mt-8 space-y-3">
-          <h2 className="text-[18px] font-bold text-zinc-900">
-            얼마나 자주 할 건가요?
-          </h2>
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => setFrequency('DAILY')}
-              className={frequency === 'DAILY' ? filledBtn : outlineBtn}
-            >
-              매일
-            </button>
-            <button
-              onClick={() => setFrequency('WEEKLY')}
-              className={frequency === 'WEEKLY' ? filledBtn : outlineBtn}
-            >
-              일주일에 한 번
-            </button>
-            <button
-              onClick={() => setFrequency('MONTHLY')}
-              className={frequency === 'MONTHLY' ? filledBtn : outlineBtn}
-            >
-              한 달에 한 번
-            </button>
-            <button
-              onClick={() => setFrequency('CUSTOM')}
-              className={frequency === 'CUSTOM' ? filledBtn : outlineBtn}
-            >
-              요일로 선택
-            </button>
-          </div>
-
-          {frequency === 'CUSTOM' && (
-            <div className="mt-4 rounded-2xl bg-zinc-200/70 p-4">
-              <p className="text-[13px] font-medium text-zinc-500">
-                요일을 선택하세요!
-              </p>
-
-              {/* 요일로 선택 버튼 */}
-              <div className="mt-4 grid grid-cols-7 place-items-center">
-                {days.map((d) => {
-                  const active = selectedDays.includes(d);
-                  return (
-                    <button
-                      key={d}
-                      type="button"
-                      onClick={() => toggleDay(d)}
-                      className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold text-[14px] transition-colors duration-200
-                        ${
-                          active
-                            ? 'border border-blue-500 text-blue-600 bg-white'
-                            : 'border border-zinc-300 text-zinc-900 bg-white'
-                        }`}
-                    >
-                      {d}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </section>
-
-        {/* 알림 */}
-        <section className="mt-8 space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[18px] font-bold text-zinc-900">
-              알림을 받으시겠어요?
-            </h2>
-            <Toggle checked={alarmEnabled} onChange={setAlarmEnabled} />
-          </div>
-
-          {/* 오전 오후 토글 */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <button
-              onClick={() => setAmpm(ampm === 'AM' ? 'PM' : 'AM')}
-              disabled={!alarmEnabled}
-              className={filledBtn}
-            >
-              {ampm === 'AM' ? '오전' : '오후'}
-            </button>
-
-            <span className="text-zinc-400 font-bold">:</span>
-
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                disabled={!alarmEnabled}
-                value={hour}
-                onChange={(e) => setHour(e.target.value)}
-                className="h-12 w-full rounded-xl border-2 border-blue-500 text-center text-blue-600 font-semibold outline-none disabled:opacity-40"
-                inputMode="numeric"
-              />
-              <input
-                disabled={!alarmEnabled}
-                value={minute}
-                onChange={(e) => setMinute(e.target.value)}
-                className="h-12 w-full rounded-xl border-2 border-blue-500 text-center text-blue-600 font-semibold outline-none disabled:opacity-40"
-                inputMode="numeric"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* 공개 여부 */}
-        <section className="mt-10">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[13px] font-semibold text-zinc-900">
-              이 습관을 친구에게 공개할까요?
-            </h2>
-            <Toggle checked={isPublic} onChange={setIsPublic} />
-          </div>
-        </section>
-      </main>
+      {/* 습관 컨포넌트 */}
+      <div>
+        <HabitOptionsSection
+          frequency={frequency}
+          setFrequency={setFrequency}
+          selectedDays={selectedDays}
+          toggleDay={toggleDay}
+          dayRows={{
+            first: ['월', '화', '수', '목'],
+            second: ['금', '토', '일'],
+          }}
+          alarmEnabled={alarmEnabled}
+          setAlarmEnabled={setAlarmEnabled}
+          ampm={ampm}
+          setAmpm={setAmpm}
+          hour={hour}
+          setHour={setHour}
+          minute={minute}
+          setMinute={setMinute}
+          isPublic={isPublic}
+          setIsPublic={setIsPublic}
+          styles={{
+            freqActive: filledBtn,
+            freqInactive: outlineBtn,
+            dayActive: 'bg-blue-500 text-white rounded-xl p-2',
+            dayInactive: 'bg-gray-200 text-gray-600 rounded-xl p-2',
+            filledBtn,
+            outlineBtn,
+          }}
+        />
+      </div>
 
       {/* next 버튼 */}
       <div className="fixed bottom-12 w-full flex flex-col items-center gap-2">

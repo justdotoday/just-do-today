@@ -1,4 +1,3 @@
-import React from 'react';
 import Toggle from '../../components/Toggle';
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
@@ -22,15 +21,6 @@ type Props = {
   // 공개 여부
   isPublic: boolean;
   setIsPublic: (val: boolean) => void;
-  // 디자인 스타일 props
-  styles: {
-    freqActive: string;
-    freqInactive: string;
-    dayActive: string;
-    dayInactive: string;
-    filledBtn: string;
-    outlineBtn: string;
-  };
 };
 
 const HabitSettingSection = ({
@@ -49,75 +39,66 @@ const HabitSettingSection = ({
   setMinute,
   isPublic,
   setIsPublic,
-  styles,
 }: Props) => {
   return (
     <div className="space-y-10">
-      {/* 1. 빈도 선택 섹션 */}
+      {/* 1. 빈도 선택 */}
       <section className="space-y-4">
         <h2 className="text-[18px] font-semibold text-zinc-950">
           얼마나 자주 할 건가요?
         </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {(['DAILY', 'WEEKLY', 'MONTHLY', 'CUSTOM'] as const).map((type) => (
             <button
               key={type}
-              type="button"
               onClick={() => setFrequency(type)}
-              className={
-                frequency === type ? styles.freqActive : styles.freqInactive
-              }
+              className={`rounded-full px-4 py-2 text-sm font-semibold border transition
+                ${
+                  frequency === type
+                    ? 'bg-blue-100 text-blue-600 border-blue-400'
+                    : 'bg-white text-zinc-600 border-zinc-200'
+                }`}
             >
               {type === 'DAILY'
                 ? '매일'
                 : type === 'WEEKLY'
-                ? '일주일에 한 번'
-                : type === 'MONTHLY'
-                ? '한 달에 한 번'
-                : '요일로 선택'}
+                  ? '일주일에 한 번'
+                  : type === 'MONTHLY'
+                    ? '한 달에 한 번'
+                    : '요일로 선택'}
             </button>
           ))}
         </div>
 
         {frequency === 'CUSTOM' && (
-          <div className="mt-6 flex flex-col items-center gap-5">
-            <div className="grid grid-cols-4 gap-5">
-              {dayRows.first.map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => toggleDay(d)}
-                  className={
-                    selectedDays.includes(d)
-                      ? styles.dayActive
-                      : styles.dayInactive
-                  }
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-            <div className="grid grid-cols-3 gap-5">
-              {dayRows.second.map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => toggleDay(d)}
-                  className={
-                    selectedDays.includes(d)
-                      ? styles.dayActive
-                      : styles.dayInactive
-                  }
-                >
-                  {d}
-                </button>
-              ))}
+          <div className="mt-4 rounded-2xl bg-zinc-100 p-4">
+            <p className="text-[13px] font-medium text-zinc-500">
+              요일을 선택하세요!
+            </p>
+            <div className="mt-4 grid grid-cols-7 gap-2 place-items-center">
+              {['월', '화', '수', '목', '금', '토', '일'].map((d) => {
+                const active = selectedDays.includes(d);
+                return (
+                  <button
+                    key={d}
+                    onClick={() => toggleDay(d)}
+                    className={`h-10 w-10 rounded-full flex items-center justify-center font-semibold text-[14px] transition-colors
+                      ${
+                        active
+                          ? 'border border-blue-500 text-blue-600 bg-white'
+                          : 'border border-zinc-300 text-zinc-900 bg-white'
+                      }`}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
       </section>
 
-      {/* 2. 알림 설정 섹션 */}
+      {/* 2. 알림 설정 */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-[18px] font-semibold text-zinc-950">
@@ -125,44 +106,69 @@ const HabitSettingSection = ({
           </h2>
           <Toggle checked={alarmEnabled} onChange={setAlarmEnabled} />
         </div>
-        <div className="grid grid-cols-[1fr_1fr_auto_1fr_1fr] items-center gap-3">
+
+        <div className="grid grid-cols-[1fr_1fr_auto_1fr] items-center gap-3">
+          {/* 오전/오후 토글 */}
           <button
+            onClick={() => setAmpm(ampm === 'AM' ? 'PM' : 'AM')}
             disabled={!alarmEnabled}
-            onClick={() => setAmpm('AM')}
-            className={`${
-              ampm === 'AM' ? styles.filledBtn : styles.outlineBtn
-            } h-12 disabled:opacity-30`}
+            className="h-12 w-full rounded-xl border border-blue-500 bg-white text-blue-600 text-sm font-semibold disabled:opacity-40"
           >
-            오전
+            {ampm === 'AM' ? '오전' : '오후'}
           </button>
-          <button
-            disabled={!alarmEnabled}
-            onClick={() => setAmpm('PM')}
-            className={`${
-              ampm === 'PM' ? styles.filledBtn : styles.outlineBtn
-            } h-12 disabled:opacity-30`}
-          >
-            오후
-          </button>
-          <span className="text-zinc-300 font-bold px-1">:</span>
-          <input
+
+          {/* 시 선택 */}
+          <select
             disabled={!alarmEnabled}
             value={hour}
             onChange={(e) => setHour(e.target.value)}
-            className="h-12 w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 text-center text-[16px] font-bold outline-none focus:border-[#2563EB] focus:bg-white disabled:opacity-30"
-          />
-          <input
+            className="h-12 w-full rounded-xl border border-blue-500 bg-white text-blue-600 text-center font-semibold appearance-none disabled:opacity-40"
+          >
+            {Array.from({ length: 12 }, (_, i) => {
+              const val = String(i + 1).padStart(2, '0');
+              return (
+                <option key={val} value={val}>
+                  {val}
+                </option>
+              );
+            })}
+          </select>
+
+          {/* 콜론 */}
+          <span className="text-zinc-400 font-bold">:</span>
+
+          {/* 분 선택 */}
+          <select
             disabled={!alarmEnabled}
             value={minute}
             onChange={(e) => setMinute(e.target.value)}
-            className="h-12 w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 text-center text-[16px] font-bold outline-none focus:border-[#2563EB] focus:bg-white disabled:opacity-30"
-          />
+            className="h-12 w-full rounded-xl border border-blue-500 bg-white text-blue-600 text-center font-semibold appearance-none disabled:opacity-40"
+          >
+            {[
+              '00',
+              '05',
+              '10',
+              '15',
+              '20',
+              '25',
+              '30',
+              '35',
+              '40',
+              '45',
+              '50',
+              '55',
+            ].map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
         </div>
       </section>
 
-      {/* 3. 공개 여부 섹션 */}
-      <section className="mb-10 flex items-center justify-between">
-        <h2 className="text-[18px] font-semibold text-zinc-900">
+      {/* 3. 공개 여부 */}
+      <section className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-zinc-900">
           이 습관을 친구에게 공개할까요?
         </h2>
         <Toggle checked={isPublic} onChange={setIsPublic} />
