@@ -41,8 +41,8 @@ export default function SocialSignUp() {
               initial={{ opacity: 0, scale: 0.8, clipPath: 'inset(0 84% 0 0)' }}
               animate={{ opacity: 1, scale: 1, clipPath: 'inset(0 0% 0 0)' }}
               transition={{
-                clipPath: { delay: 0.5, duration: 0.3, ease: 'easeInOut' },
-                opacity: { delay: 0.1, duration: 0.3, ease: 'backIn' },
+                clipPath: { delay: 0.5, duration: 0.3, ease: 'easeInOut' }, //z가 뜬 후 확장
+                opacity: { delay: 0.1, duration: 0.3, ease: 'backIn' }, //z가 먼저 뜸
                 scale: { delay: 0.1, duration: 0.3, ease: 'backIn' },
               }}
             />

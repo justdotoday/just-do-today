@@ -1,13 +1,11 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import Signup from './auth/SocialSignUp';
-// import KakaoCallback from './auth/KaKaoCallback';
 import MainPage from './pages/MainPage';
-import Home from './pages/habit/Home';
 import CreateHabit from './pages/habit/CreateHabit';
 import Layout from './layout/Layout';
 import { Toaster } from 'react-hot-toast';
-
+import HomePage from './pages/home/HomePage';
 function App() {
   return (
     <>
@@ -40,11 +38,9 @@ function App() {
           />
           <Route path="/signup" element={<Signup />} />
           <Route path="/main" element={<MainPage />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/createHabit" element={<CreateHabit />} />
         </Route>
-        {/* Layout 없이 따로 빼고 싶은 라우트 */}
-        {/* <Route path="/auth/kakao/callback" element={<KakaoCallback />} /> */}
       </Routes>
     </>
   );

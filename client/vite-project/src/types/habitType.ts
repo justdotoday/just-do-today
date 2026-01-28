@@ -9,4 +9,5 @@ export type CreateHabitPayload = {
   frequency: Frequency;
   days?: Day[];
   isPublic: boolean;
+  startDate: string;
 };

@@ -84,6 +84,7 @@ const CreateHabit = () => {
       frequency,
       ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,
+      startDate: new Date().toISOString().split('T')[0], // 오늘 날짜를 YYYY-MM-DD 형식으로
     };
     try {
       setIsLoading(true);
