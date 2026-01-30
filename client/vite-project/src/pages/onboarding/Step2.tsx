@@ -56,7 +56,9 @@ const Step2 = ({ onNext, onBack }: Step2Props) => {
         >
           <IoChevronBack className="block text-2xl text-zinc-900" />
         </button>
-        <p className="text-[15px] font-semibold text-zinc-900">2/3</p>
+        <p className="text-[15px] font-semibold text-zinc-900">
+          <span className="text-blue-600">2</span>/3
+        </p>
       </div>
 
       {/* 메인 섹션 */}
@@ -90,7 +92,7 @@ const Step2 = ({ onNext, onBack }: Step2Props) => {
         <CategorySelector
           categories={categories}
           selected={selectedCategory}
-          onSelect={(name) => setSelectedCategory(name)}
+          onSelect={(name: string) => setSelectedCategory(name)}
           onOpenAdd={() => setIsModalOpen(true)}
         />
 

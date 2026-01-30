@@ -23,14 +23,20 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
         </div>
 
         {/* 진행도 텍스트 */}
-        <p className="text-[15px] font-semibold text-zinc-900">1/3</p>
+        <p className="text-[15px] font-semibold text-zinc-900">
+          <span className="text-blue-600">1</span>
+          /3
+        </p>
       </div>
 
       {/* 메인섹션 */}
-      <div>
-        <p className="flex items-center font-bold text-2xl p-1 m-1 mb-10">
-          안녕하세요! ♥ <br /> 어떻게 불러드릴까요?
-        </p>
+      <div className="p-4">
+        <div className="flex flex-col font-bold text-2xl space-y-2 mb-10">
+          <p className="flex items-center">
+            안녕하세요! <span className="text-blue-600 ml-2">♥</span>
+          </p>
+          <p>어떻게 불러드릴까요?</p>
+        </div>
       </div>
 
       {/* 이름(닉네임) 설정 */}

@@ -19,20 +19,19 @@ const Step4 = ({ onFinish, onBack }: Step4Props) => {
         >
           <IoChevronBack className="block text-2xl text-zinc-900" />
         </button>
-        <p className="text-[15px] font-semibold text-zinc-900">4/4</p>
       </div>
 
       {/* 메인섹션 */}
-      <p className="font-bold text-4xl p-1 m-1 mb-10">
+      <p className="font-bold text-4xl p-4 m-1 mb-10">
         작심삼일과 함께 이루고 싶은 목표는 무엇인가요?
       </p>
-      <p className="text-gray-400 p-1 m-1">
+      <p className="text-gray-400 p-4 m-1">
         더 좋은 서비스를 만들어가기 위해 참고할게요!
       </p>
 
       {/* 입력창 */}
       <input
-        className="border-2 rounded-2xl min-h-30 border-gray-300 p-2 m-2"
+        className="border-2 rounded-2xl min-h-50 border-gray-300 p-4 m-2"
         placeholder="목표를 입력해주세요"
       />
 

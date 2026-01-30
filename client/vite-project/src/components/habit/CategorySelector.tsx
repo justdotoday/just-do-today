@@ -1,3 +1,19 @@
+import React from 'react';
+
+export type CategoryItem = {
+  name: string;
+  icon?: React.ReactNode;
+};
+
+type Props = {
+  title?: string;
+  categories: CategoryItem[];
+  selected: string | null;
+  onSelect: (name: string) => void;
+  onOpenAdd?: () => void;
+  addButtonClassName?: string;
+};
+
 export default function CategorySelector({
   title = '습관 카테고리를 선택해 주세요',
   categories,
