@@ -1,7 +1,13 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import MainFooter from './MainFooter';
 
-const HIDE_FOOTER_PATHS = ['/createHabit', '/auth', '/login', '/signup'];
+const HIDE_FOOTER_PATHS = [
+  '/createHabit',
+  '/auth',
+  '/login',
+  '/signup',
+  '/main',
+];
 
 const Layout = () => {
   const { pathname } = useLocation();
