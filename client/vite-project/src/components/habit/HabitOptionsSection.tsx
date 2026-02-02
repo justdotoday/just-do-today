@@ -1,5 +1,14 @@
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
+type Styles = {
+  freqActive: string;
+  freqInactive: string;
+  dayActive: string;
+  dayInactive: string;
+  filledBtn: string;
+  outlineBtn: string;
+};
+
 type Props = {
   frequency: Frequency;
   setFrequency: (val: Frequency) => void;
@@ -16,15 +25,22 @@ type Props = {
   setMinute: (val: string) => void;
   isPublic: boolean;
   setIsPublic: (val: boolean) => void;
+  styles?: Partial<Styles>;
+};
 
-  styles?: {
-    freqActive: string;
-    freqInactive: string;
-    dayActive: string;
-    dayInactive: string;
-    filledBtn: string;
-    outlineBtn: string;
-  };
+const defaultStyles: Styles = {
+  freqInactive:
+    'h-12 rounded-full border border-zinc-200 bg-white text-zinc-500 font-medium transition',
+  freqActive:
+    'h-12 rounded-full border border-blue-200 bg-blue-50 text-blue-600 font-semibold transition',
+  dayInactive:
+    'h-12 w-12 rounded-full border border-zinc-200 bg-white text-zinc-500 font-medium transition',
+  dayActive:
+    'h-12 w-12 rounded-full border border-blue-200 bg-blue-50 text-blue-600 font-semibold transition',
+  outlineBtn:
+    'h-11 px-6 rounded-full border border-zinc-200 bg-white text-zinc-500 font-medium transition',
+  filledBtn:
+    'h-11 px-6 rounded-full border border-blue-200 bg-blue-50 text-blue-600 font-semibold transition',
 };
 
 const HabitOptionsSection = ({
@@ -45,6 +61,15 @@ const HabitOptionsSection = ({
   setIsPublic,
   styles,
 }: Props) => {
+  const s: Styles = { ...defaultStyles, ...(styles ?? {}) };
+
+  const timeBase =
+    'h-14 px-6 rounded-full border text-base font-semibold transition appearance-none';
+  const timeEnabled = 'border-zinc-200 bg-white text-zinc-900';
+  const timeDisabled = 'border-zinc-200 bg-zinc-100 text-zinc-400';
+  const timeClass = (minWidth: string) =>
+    [minWidth, timeBase, alarmEnabled ? timeEnabled : timeDisabled].join(' ');
+
   return (
     <div className="space-y-10">
       {/* 빈도 선택 */}
@@ -56,10 +81,9 @@ const HabitOptionsSection = ({
           {(['DAILY', 'WEEKLY', 'MONTHLY', 'CUSTOM'] as const).map((type) => (
             <button
               key={type}
+              type="button"
               onClick={() => setFrequency(type)}
-              className={
-                frequency === type ? styles?.freqActive : styles?.freqInactive
-              }
+              className={frequency === type ? s.freqActive : s.freqInactive}
             >
               {type === 'DAILY'
                 ? '매일'
@@ -73,37 +97,32 @@ const HabitOptionsSection = ({
         </div>
 
         {frequency === 'CUSTOM' && (
-          <div className="mt-4 rounded-2xl bg-zinc-100 p-4">
-            <p className="text-[13px] font-medium text-zinc-500">
-              요일을 선택하세요!
-            </p>
+          <div className="mt-4 p-1">
             <div className="mt-4 space-y-2">
-              <div className="grid grid-cols-4 gap-2 place-items-center">
+              <div className="grid grid-cols-4 gap-3 place-items-center">
                 {dayRows.first.map((d) => {
                   const active = selectedDays.includes(d);
                   return (
                     <button
                       key={d}
+                      type="button"
                       onClick={() => toggleDay(d)}
-                      className={
-                        active ? styles?.dayActive : styles?.dayInactive
-                      }
+                      className={active ? s.dayActive : s.dayInactive}
                     >
                       {d}
                     </button>
                   );
                 })}
               </div>
-              <div className="grid grid-cols-3 gap-2 place-items-center">
+              <div className="grid grid-cols-3 gap-3 place-items-center">
                 {dayRows.second.map((d) => {
                   const active = selectedDays.includes(d);
                   return (
                     <button
                       key={d}
+                      type="button"
                       onClick={() => toggleDay(d)}
-                      className={
-                        active ? styles?.dayActive : styles?.dayInactive
-                      }
+                      className={active ? s.dayActive : s.dayInactive}
                     >
                       {d}
                     </button>
@@ -121,19 +140,24 @@ const HabitOptionsSection = ({
           <h2 className="text-[18px] font-semibold text-zinc-950">
             알림을 받으시겠어요?
           </h2>
-          <button
-            onClick={() => setAlarmEnabled(!alarmEnabled)}
-            className={styles?.outlineBtn}
-          >
-            {alarmEnabled ? 'ON' : 'OFF'}
-          </button>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={alarmEnabled}
+              onChange={() => setAlarmEnabled(!alarmEnabled)}
+              className="sr-only peer"
+            />
+            <div className="w-12 h-7 bg-zinc-200 rounded-full peer peer-checked:bg-blue-500 transition" />
+            <div className="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition peer-checked:translate-x-5" />
+          </label>
         </div>
 
-        <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-3">
+        <div className="flex justify-center gap-3 items-center">
           <button
+            type="button"
             onClick={() => setAmpm(ampm === 'AM' ? 'PM' : 'AM')}
             disabled={!alarmEnabled}
-            className={styles?.outlineBtn}
+            className={timeClass('min-w-[96px]')}
           >
             {ampm === 'AM' ? '오전' : '오후'}
           </button>
@@ -142,7 +166,7 @@ const HabitOptionsSection = ({
             disabled={!alarmEnabled}
             value={hour}
             onChange={(e) => setHour(e.target.value)}
-            className={styles?.outlineBtn}
+            className={timeClass('min-w-[96px]')}
           >
             {Array.from({ length: 12 }, (_, i) => {
               const val = String(i + 1).padStart(2, '0');
@@ -154,13 +178,13 @@ const HabitOptionsSection = ({
             })}
           </select>
 
-          <span className="text-zinc-400 font-bold">:</span>
+          <span className="text-[22px] font-semibold text-zinc-300">:</span>
 
           <select
             disabled={!alarmEnabled}
             value={minute}
             onChange={(e) => setMinute(e.target.value)}
-            className={styles?.outlineBtn}
+            className={timeClass('min-w-[96px]')}
           >
             {[
               '00',
@@ -185,16 +209,22 @@ const HabitOptionsSection = ({
       </section>
 
       {/* 공개 여부 */}
-      <section className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-zinc-900">
-          이 습관을 친구에게 공개할까요?
-        </h2>
-        <button
-          onClick={() => setIsPublic(!isPublic)}
-          className={styles?.outlineBtn}
-        >
-          {isPublic ? '공개' : '비공개'}
-        </button>
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-[16px] font-semibold text-zinc-950">
+            이 습관을 친구에게 공개할까요?
+          </h2>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isPublic}
+              onChange={() => setIsPublic(!isPublic)}
+              className="sr-only peer"
+            />
+            <div className="w-12 h-7 bg-zinc-200 rounded-full peer peer-checked:bg-blue-500 transition" />
+            <div className="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition peer-checked:translate-x-5" />
+          </label>
+        </div>
       </section>
     </div>
   );
