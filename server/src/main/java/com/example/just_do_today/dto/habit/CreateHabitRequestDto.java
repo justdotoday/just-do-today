@@ -1,0 +1,19 @@
+package com.example.just_do_today.dto.habit;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Data
+public class CreateHabitRequestDto {
+    private String name;
+    private String category;
+    private String frequency;
+    private List<Integer> days;
+    private Boolean isPublic;
+
+    @JsonFormat (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
+}
