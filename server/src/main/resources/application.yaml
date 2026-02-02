@@ -28,6 +28,12 @@ logging:
   level:
     org.flywaydb: DEBUG
 
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+
+  configuration:
+    map-underscore-to-camel-case: true
+
 #소셜로그인 - 카카오
 kakao:
   client-id: ${KAKAO_CLIENT_ID}
