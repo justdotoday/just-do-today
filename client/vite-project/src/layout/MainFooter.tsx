@@ -1,33 +1,33 @@
 import { NavLink } from 'react-router-dom';
-import { GoHome, GoHomeFill } from 'react-icons/go';
-import {
-  HiOutlineDocumentText,
-  HiDocumentText,
-  HiOutlineUserGroup,
-  HiUserGroup,
-} from 'react-icons/hi2';
-import { RiSettings4Line, RiSettings4Fill } from 'react-icons/ri';
+import homeIcon from '../assets/mainFooter/basicIcon/homeIcon.png';
+import habitIcon from '../assets/mainFooter/basicIcon/habitIcon.png';
+import socialIcon from '../assets/mainFooter/basicIcon/socialIcon.png';
+import settingIcon from '../assets/mainFooter/basicIcon/settingIcon.png';
+import homeBlue from '../assets/mainFooter/BlueIcon/HomeBlue.png';
+import habitBlue from '../assets/mainFooter/BlueIcon/habitBlue.png';
+import socialBlue from '../assets/mainFooter/BlueIcon/socialBlue.png';
+import settingBlue from '../assets/mainFooter/BlueIcon/settingBlue.png';
 
 const MainFooter = () => {
   const navItems = [
-    { to: '/', label: '홈', icon: GoHome, activeIcon: GoHomeFill },
+    { to: '/', label: '홈', iconSrc: homeIcon, activeIconSrc: homeBlue },
     {
       to: '/habit',
       label: '습관',
-      icon: HiOutlineDocumentText,
-      activeIcon: HiDocumentText,
+      iconSrc: habitIcon,
+      activeIconSrc: habitBlue,
     },
     {
       to: '/social',
       label: '소셜',
-      icon: HiOutlineUserGroup,
-      activeIcon: HiUserGroup,
+      iconSrc: socialIcon,
+      activeIconSrc: socialBlue,
     },
     {
       to: '/my',
       label: '설정',
-      icon: RiSettings4Line,
-      activeIcon: RiSettings4Fill,
+      iconSrc: settingIcon,
+      activeIconSrc: settingBlue,
     },
   ];
 
@@ -46,11 +46,11 @@ const MainFooter = () => {
                 ${isActive ? 'bg-blue-50 text-blue-600' : 'text-zinc-500'}
               `}
               >
-                {isActive ? (
-                  <item.activeIcon className="h-6 w-6" />
-                ) : (
-                  <item.icon className="h-6 w-6" />
-                )}
+                <img
+                  src={isActive ? item.activeIconSrc : item.iconSrc}
+                  alt={item.label}
+                  className="h-6 w-6"
+                />
                 <span className="text-[12px] font-medium">{item.label}</span>
               </div>
             )}

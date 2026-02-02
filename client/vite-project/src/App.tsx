@@ -3,11 +3,14 @@ import './App.css';
 import Signup from './auth/SocialSignUp';
 import MainPage from './pages/MainPage';
 import CreateHabit from './pages/habit/CreateHabit';
+import HabitPage from './pages/habit/HabitPage';
 import Layout from './layout/Layout';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/home/HomePage';
 import HomeEmpty from './pages/home/components/HomeEmpty';
 import HomeList from './pages/home/components/HomeList';
+import SocialPage from './pages/social/SocialPage';
+import SettingsPage from './pages/settings/SettingsPage';
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/main" element={<MainPage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/habit" element={<HabitPage />} />
+          <Route path="/social" element={<SocialPage />} />
+          <Route path="/my" element={<SettingsPage />} />
 
           {/* ✅ 작업용 라우트 */}
           <Route path="/home/empty" element={<HomeEmpty />} />

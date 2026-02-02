@@ -25,7 +25,7 @@ const HomeEmpty = () => {
         <p className="text-base font-semibold text-zinc-800">
           시작이 반이에요!
         </p>
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="text-base font-semibold text-zinc-800">
           먼저 습관 하나 등록해볼까요?
         </p>
 
