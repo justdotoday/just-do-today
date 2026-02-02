@@ -136,7 +136,7 @@ const CreateHabit = () => {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[420px] md:max-w-[720px] px-4 md:px-8 pt-8 pb-32">
+      <main className="mx-auto w-full max-w-[480px] px-4 pt-8 pb-32">
         {/* 습관명 */}
         <HabitNameField value={name} onChange={setName} />
 
@@ -180,19 +180,19 @@ const CreateHabit = () => {
         </section>
       </main>
 
-      {/* 완료 버튼: 하단 고정 */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-zinc-100 p-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
-        <div className="mx-auto w-full max-w-[420px] md:max-w-[720px]">
+      {/* 습관 등록하기 버튼: 하단 고정, 콘텐츠 영역(480px) 안에 위치 */}
+      <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-480px)/2))] right-[max(0px,calc((100vw-480px)/2))]">
+        <div className="mx-auto w-full max-w-[480px]">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit || isLoading}
-            className={`h-14 w-full rounded-[20px] text-[16px] font-bold transition-all ${
+            className={`h-14 w-full rounded-full text-[16px] font-bold transition-all ${
               !canSubmit || isLoading
                 ? 'bg-zinc-200 text-zinc-500'
                 : 'bg-[#2563EB] text-white active:scale-[0.98]'
             }`}
           >
-            {isLoading ? '생성 중...' : '완료'}
+            {isLoading ? '등록 중...' : '습관 등록하기'}
           </button>
         </div>
       </div>

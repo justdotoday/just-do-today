@@ -6,7 +6,7 @@ import plusButton from '../../../assets/buttons/plus-button.png';
 type HabitItem = {
   id: string;
   title: string;
-  status?: 'done' | 'rest' | 'snoozed' | 'pending';
+  status?: 'done' | 'heart' | 'freeze' | 'notDone';
   isSelected?: boolean;
 };
 
@@ -22,16 +22,16 @@ const SECTIONS: Section[] = [
     title: '건강',
     items: [
       { id: '1', title: '하루 1리터 물 마시기', status: 'done' },
-      { id: '2', title: '30분 러닝하기', status: 'snoozed', isSelected: true },
+      { id: '2', title: '30분 러닝하기', status: 'freeze', isSelected: true },
     ],
   },
   {
     icon: '📚',
     title: '마음의 양식',
     items: [
-      { id: '3', title: '일주일 한 번 독서감상문', status: 'rest' },
-      { id: '4', title: '출근길 책 읽기', status: 'pending' },
-      { id: '5', title: '인사이트 팟캐스트 듣기', status: 'pending' },
+      { id: '3', title: '일주일 한 번 독서감상문', status: 'heart' },
+      { id: '4', title: '출근길 책 읽기', status: 'notDone' },
+      { id: '5', title: '인사이트 팟캐스트 듣기', status: 'notDone' },
     ],
   },
   {
@@ -39,7 +39,7 @@ const SECTIONS: Section[] = [
     title: '공부',
     items: [
       { id: '6', title: '아이엘츠 단어 외우기', status: 'done' },
-      { id: '7', title: '영어단어 10개 암기', status: 'pending' },
+      { id: '7', title: '영어단어 10개 암기', status: 'notDone' },
     ],
   },
 ];
@@ -53,7 +53,7 @@ const HomeList = () => {
         ...section,
         items: section.items.map((item) =>
           item.id === id
-            ? { ...item, status: item.status === 'done' ? 'pending' : 'done' }
+            ? { ...item, status: item.status === 'done' ? 'notDone' : 'done' }
             : item
         ),
       }))
@@ -68,7 +68,7 @@ const HomeList = () => {
   const { inProgressCount, doneCount, progressPercent } = useMemo(() => {
     const flat = sections.flatMap((s) => s.items);
     const done = flat.filter(
-      (i) => i.status === 'done' || i.status === 'rest'
+      (i) => i.status === 'done' || i.status === 'heart'
     ).length;
     const total = flat.length;
     const inProgress = total - done;
@@ -103,8 +103,11 @@ const HomeList = () => {
         ))}
       </div>
 
-      <button type="button" className="fixed bottom-24 right-6">
-        <img src={plusButton} alt="습관 추가" className="h-14 w-14" />
+      <button
+        type="button"
+        className="fixed bottom-24 right-[max(1.5rem,calc((100vw-480px)/2+1.5rem))]"
+      >
+        <img src={plusButton} alt="더보기" className="h-14 w-14" />
       </button>
     </div>
   );

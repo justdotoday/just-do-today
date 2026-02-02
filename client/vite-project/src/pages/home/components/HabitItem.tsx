@@ -6,7 +6,7 @@ import dotIcon from '../../../assets/buttons/dot.png';
 
 type Props = {
   title: string; //습관 이름
-  status?: 'done' | 'rest' | 'snoozed' | 'pending'; // 완료/쉬어가기/미루기/미완료
+  status?: 'done' | 'heart' | 'freeze' | 'notDone'; // 완료/쉬어가기/미루기/미완료
   isSelected?: boolean; // 현재 유저가 선택중인 습관인지 여부
   onOpenModal?: () => void;
   onToggleDone?: () => void;
@@ -14,7 +14,7 @@ type Props = {
 
 const HabitItem = ({
   title,
-  status = 'pending',
+  status = 'notDone',
   isSelected = false,
   onOpenModal,
   onToggleDone,
@@ -30,10 +30,10 @@ const HabitItem = ({
       : 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-zinc-800';
 
   const statusIconMap = {
-    pending: checkGrey,
+    notDone: checkGrey,
     done: checkPink,
-    rest: heart,
-    snoozed: ice,
+    heart,
+    freeze: ice,
   } as const;
 
   return (
@@ -47,9 +47,9 @@ const HabitItem = ({
               alt={
                 status === 'done'
                   ? '완료'
-                  : status === 'rest'
+                  : status === 'heart'
                   ? '오늘은 쉬어가기'
-                  : status === 'snoozed'
+                  : status === 'freeze'
                   ? '잠시 미루기'
                   : '아직 안함'
               }
