@@ -26,7 +26,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[999]">
+    <div className="fixed inset-y-0 left-1/2 z-999 w-full max-w-[414px] -translate-x-1/2">
       <button
         type="button"
         aria-label="close overlay"

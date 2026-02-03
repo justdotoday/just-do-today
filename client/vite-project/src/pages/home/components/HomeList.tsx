@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import HeaderDate from './HeaderDate';
 import HabitSection from './HabitSection';
+import StatusBottomSheet from './StatusBottomSheet';
 import plusButton from '../../../assets/buttons/plus-button.png';
 
 type HabitItem = {
@@ -9,6 +10,7 @@ type HabitItem = {
   status?: 'done' | 'heart' | 'freeze' | 'notDone';
   isSelected?: boolean;
 };
+type HabitStatus = 'done' | 'heart' | 'freeze' | 'notDone';
 
 type Section = {
   icon: string;
@@ -46,24 +48,53 @@ const SECTIONS: Section[] = [
 
 const HomeList = () => {
   const [sections, setSections] = useState(SECTIONS);
+  const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  const [isStatusSheetOpen, setIsStatusSheetOpen] = useState(false);
 
-  const handleToggleDone = (id: string) => {
+  const updateItem = (id: string, updater: (item: HabitItem) => HabitItem) => {
     setSections((prev) =>
       prev.map((section) => ({
         ...section,
         items: section.items.map((item) =>
-          item.id === id
-            ? { ...item, status: item.status === 'done' ? 'notDone' : 'done' }
-            : item
+          item.id === id ? updater(item) : item
         ),
       }))
     );
   };
 
+  const handleToggleDone = (id: string) => {
+    updateItem(id, (item) => ({
+      ...item,
+      status: item.status === 'done' ? 'notDone' : 'done',
+    }));
+  };
+
+  const handleToggleSelect = (id: string) => {
+    updateItem(id, (item) => ({ ...item, isSelected: !item.isSelected }));
+  };
+
   // 진행중 / 완료 습관 상태 설정 모달 열기
   const openStatusSheet = (id: string) => {
-    console.log('open status modal for', id);
+    setActiveItemId(id);
+    setIsStatusSheetOpen(true);
   };
+
+  const closeStatusSheet = () => {
+    setIsStatusSheetOpen(false);
+  };
+
+  const handleSelectStatus = (status: HabitStatus) => {
+    if (!activeItemId) return;
+    updateItem(activeItemId, (item) => ({ ...item, status }));
+    setIsStatusSheetOpen(false);
+  };
+
+  const activeItem = useMemo(() => {
+    if (!activeItemId) return null;
+    return sections
+      .flatMap((section) => section.items)
+      .find((item) => item.id === activeItemId);
+  }, [activeItemId, sections]);
 
   const { inProgressCount, doneCount, progressPercent } = useMemo(() => {
     const flat = sections.flatMap((s) => s.items);
@@ -99,16 +130,24 @@ const HomeList = () => {
             items={s.items}
             onToggleDone={handleToggleDone}
             onOpenModal={openStatusSheet}
+            onToggleSelect={handleToggleSelect}
           />
         ))}
       </div>
 
       <button
         type="button"
-        className="fixed bottom-24 right-[max(1.5rem,calc((100vw-480px)/2+1.5rem))]"
+        className="fixed bottom-24 right-[max(1.5rem,calc((100vw-414px)/2+1.5rem))]"
       >
         <img src={plusButton} alt="더보기" className="h-14 w-14" />
       </button>
+
+      <StatusBottomSheet
+        open={isStatusSheetOpen}
+        title={activeItem?.title}
+        onClose={closeStatusSheet}
+        onSelectStatus={handleSelectStatus}
+      />
     </div>
   );
 };
