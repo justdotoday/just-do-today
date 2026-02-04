@@ -1,6 +1,7 @@
 package com.example.just_do_today.service.habit;
 
 import com.example.just_do_today.domain.Habit.Habit;
+import com.example.just_do_today.domain.Habit.HabitHistory;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
 import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -45,10 +47,44 @@ public class HabitService {
             }
         }
 
+        if (dto.getCategory() != null && !dto.getCategory().isEmpty()) {
+            try {
+                Long categoryId = Long.parseLong(dto.getCategory());
+                habitMapper.saveHabitCategory(habit.getId(), categoryId);
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid category ID format: " + dto.getCategory());
+            }
+        }
+
     }
     // 습관 조회 (읽어오기만 하므로)
     @Transactional(readOnly = true)
     public List<HabitResponseDto> getHabitList(Long memberId) {
         return habitMapper.findAllByMemberId(memberId);
     }
+
+    // 습관 완료 처리
+    @Transactional
+    public String checkHabit(Long userHabitId, LocalDate date) {
+        // 오늘 날짜에 체크 되어있는지 확인
+        boolean isDone = habitMapper.existsByDate(userHabitId, date);
+
+        // 버튼 눌렀을 때 완료 -> 취소, 취소 -> 완료
+        if (isDone) {
+            // 완료되어있으면 -> 취소
+            habitMapper.deleteHistory(userHabitId,date);
+            return "Canceled";
+        } else {
+            // 완료 처리
+            HabitHistory history = new HabitHistory();
+            history.setUserHabitId(userHabitId);
+            history.setCheckDate(date);
+
+            habitMapper.insertHistory(history);
+            return "Checked";
+        }
+
+    }
+
+
 }
