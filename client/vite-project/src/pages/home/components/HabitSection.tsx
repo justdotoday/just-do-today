@@ -13,6 +13,7 @@ type Props = {
   items: Item[]; // 이 카테고리에 속한 습관 목록
   onOpenModal?: (id: string) => void;
   onToggleDone?: (id: string) => void;
+  onToggleSelect?: (id: string) => void;
 };
 
 const HabitSection = ({
@@ -21,6 +22,7 @@ const HabitSection = ({
   items,
   onOpenModal,
   onToggleDone,
+  onToggleSelect,
 }: Props) => {
   return (
     <section>
@@ -39,6 +41,9 @@ const HabitSection = ({
             onOpenModal={onOpenModal ? () => onOpenModal(item.id) : undefined}
             onToggleDone={
               onToggleDone ? () => onToggleDone(item.id) : undefined
+            }
+            onToggleSelect={
+              onToggleSelect ? () => onToggleSelect(item.id) : undefined
             }
           />
         ))}

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import bgAuth from '../assets/bg-auth.png';
 import KaKaoLogin from '../assets/KaKaoLogin.png';
 
-export default function SocialSignUp() {
+const SocialSignUp = () => {
   const handleKakao = () => {
     // 템플릿 리터럴을 사용해 URL 완성
     const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${
@@ -121,4 +121,6 @@ export default function SocialSignUp() {
       </div>
     </div>
   );
-}
+};
+
+export default SocialSignUp;

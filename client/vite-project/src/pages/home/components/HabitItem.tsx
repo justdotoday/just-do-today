@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import checkGrey from '../../../assets/buttons/check-grey.png';
 import checkPink from '../../../assets/buttons/check-pink.png';
 import heart from '../../../assets/buttons/heart.png';
@@ -10,6 +11,7 @@ type Props = {
   isSelected?: boolean; // 현재 유저가 선택중인 습관인지 여부
   onOpenModal?: () => void;
   onToggleDone?: () => void;
+  onToggleSelect?: () => void;
 };
 
 const HabitItem = ({
@@ -18,6 +20,7 @@ const HabitItem = ({
   isSelected = false,
   onOpenModal,
   onToggleDone,
+  onToggleSelect,
 }: Props) => {
   const wrapperClass = isSelected
     ? 'rounded-xl bg-blue-50 px-2 py-3'
@@ -36,12 +39,22 @@ const HabitItem = ({
     freeze: ice,
   } as const;
 
+  const handleToggleDone = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onToggleDone?.();
+  };
+
+  const handleOpenModal = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onOpenModal?.();
+  };
+
   return (
-    <div className={wrapperClass}>
+    <div className={wrapperClass} onClick={onToggleSelect}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* 체크 아이콘 클릭 → 완료/미완료 토글 */}
-          <button type="button" onClick={onToggleDone} className="p-0">
+          <button type="button" onClick={handleToggleDone} className="p-0">
             <img
               src={statusIconMap[status]}
               alt={
@@ -59,7 +72,7 @@ const HabitItem = ({
           <div className={titleClass}>{title}</div>
         </div>
         {/* dot 버튼: 상태 설정 모달 열기 */}
-        <button type="button" onClick={onOpenModal} className="px-2">
+        <button type="button" onClick={handleOpenModal} className="px-2">
           <img src={dotIcon} alt="상태 설정" className="h-10 w-10" />
         </button>
       </div>

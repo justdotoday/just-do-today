@@ -3,7 +3,7 @@ type Props = {
   onChange: (v: string) => void;
 };
 
-export default function HabitNameField({ value, onChange }: Props) {
+const HabitNameField = ({ value, onChange }: Props) => {
   return (
     <section className="space-y-4">
       <h2 className="text-[18px] font-semibold text-zinc-950">
@@ -18,4 +18,6 @@ export default function HabitNameField({ value, onChange }: Props) {
       />
     </section>
   );
-}
+};
+
+export default HabitNameField;

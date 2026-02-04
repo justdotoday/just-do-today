@@ -12,7 +12,7 @@ import HomeList from './pages/home/components/HomeList';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
 
-function App() {
+export default function App() {
   return (
     <>
       <Toaster position="top-center" />
@@ -54,5 +54,3 @@ function App() {
     </>
   );
 }
-
-export default App;

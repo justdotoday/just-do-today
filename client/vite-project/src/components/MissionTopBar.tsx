@@ -6,7 +6,7 @@ type TopBarProps = {
   title: string;
 };
 
-export default function TopBar({ title }: TopBarProps) {
+const TopBar = ({ title }: TopBarProps) => {
   const navigate = useNavigate();
 
   return (
@@ -27,4 +27,6 @@ export default function TopBar({ title }: TopBarProps) {
       </div>
     </header>
   );
-}
+};
+
+export default TopBar;
