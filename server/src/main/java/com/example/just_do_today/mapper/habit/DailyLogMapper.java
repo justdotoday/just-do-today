@@ -11,6 +11,6 @@ public interface DailyLogMapper {
     // 습관 수행 기록 생성
     void saveDailyLog(DailyLog dailyLog);
 
-    DailyLog findLogByHabitAndDate(Long memberId, Long userHabitId, LocalDate date);
+    DailyLog findLogByHabitAndDate(Long memberId, Long userHabitId, LocalDate logDate);
 
 }
