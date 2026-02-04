@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class DailyLogRequestDto {
     private Long userHabitId;
-    private LocalDate date;
+    private LocalDate logDate;
     private String mood;
     private String note;
 }

@@ -25,9 +25,9 @@ public class DailyLogController {
     }
     // 2. 특정 습관에 오늘 기록이 있는지 조회
     @GetMapping("/today")
-    public ResponseEntity<DailyLog> getLog(@RequestParam Long userHabitId, @RequestParam String date) {
+    public ResponseEntity<DailyLog> getLog(@RequestParam Long userHabitId, @RequestParam String logDate) {
         Long memberId=1L;
-        return ResponseEntity.ok(dailyLogService.getLog(memberId, userHabitId, LocalDate.parse(date)));
+        return ResponseEntity.ok(dailyLogService.getLog(memberId, userHabitId, LocalDate.parse(logDate)));
     }
 
 }

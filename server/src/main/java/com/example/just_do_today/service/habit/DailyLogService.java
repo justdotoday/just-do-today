@@ -23,7 +23,7 @@ public class DailyLogService {
 
         // DTO의 데이터를 Domain으로 옮기기
         dailyLog.setUserHabitId(dto.getUserHabitId());
-        dailyLog.setLogDate(dto.getDate());
+        dailyLog.setLogDate(dto.getLogDate());
         dailyLog.setMood(dto.getMood());
         dailyLog.setNote(dto.getNote());
 
@@ -31,7 +31,7 @@ public class DailyLogService {
     }
 
     @Transactional(readOnly = true)
-    public DailyLog getLog(Long memberId, Long userHabitId, LocalDate date) {
-        return dailyLogMapper.findLogByHabitAndDate(memberId, userHabitId, date);
+    public DailyLog getLog(Long memberId, Long userHabitId, LocalDate logDate) {
+        return dailyLogMapper.findLogByHabitAndDate(memberId, userHabitId, logDate);
     }
 }
