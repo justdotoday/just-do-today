@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,5 +40,19 @@ public class HabitController {
 
         return ResponseEntity.ok(habits);
 
+    }
+
+    // 습관 완료 처리
+    @PostMapping("/{habitId}/check")
+    public ResponseEntity<String> checkHabit(
+            @PathVariable Long habitId,
+            @RequestParam(required = false) String date
+    ) {
+        // 날짜가 안오면 오늘로 처리
+        LocalDate checkDate = (date != null)
+                ? LocalDate.parse(date) : LocalDate.now();
+
+        String result = habitService.checkHabit(habitId, checkDate);
+        return ResponseEntity.ok(result);
     }
 }
