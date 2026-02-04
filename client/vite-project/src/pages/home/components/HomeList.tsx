@@ -69,8 +69,18 @@ const HomeList = () => {
     }));
   };
 
+  // 한 개만 선택 가능: 클릭한 아이템만 선택, 나머지는 해제
   const handleToggleSelect = (id: string) => {
-    updateItem(id, (item) => ({ ...item, isSelected: !item.isSelected }));
+    setSections((prev) =>
+      prev.map((section) => ({
+        ...section,
+        items: section.items.map((item) =>
+          item.id === id
+            ? { ...item, isSelected: !item.isSelected }
+            : { ...item, isSelected: false }
+        ),
+      }))
+    );
   };
 
   // 진행중 / 완료 습관 상태 설정 모달 열기

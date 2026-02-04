@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import DragHandle from '../DragHandle';
 
 type Props = {
   open: boolean;
@@ -34,7 +36,16 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
         className="absolute inset-0 bg-black/40"
       />
 
-      <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[520px] rounded-t-3xl bg-white px-4 pb-6 pt-5">
+      <motion.div
+        className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[414px] rounded-t-3xl bg-white px-4 pb-6 pt-3"
+        drag="y"
+        dragConstraints={{ top: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 80 || info.velocity.y > 300) onClose();
+        }}
+      >
+        <DragHandle />
         <h2 className="mb-4 text-center text-[18px] font-semibold">
           카테고리 직접 입력
         </h2>
@@ -59,7 +70,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
         >
           완료
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };
