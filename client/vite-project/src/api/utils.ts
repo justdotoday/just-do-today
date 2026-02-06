@@ -12,4 +12,4 @@ const DAY_MAP: Record<string, Day> = {
 };
 
 export const mapDaysToServer = (days: string[]): Day[] =>
-  days.map((d) => DAY_MAP[d]);
+  days.map((d) => DAY_MAP[d]).filter(Boolean);

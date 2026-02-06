@@ -1,7 +1,7 @@
 // 온보딩 2 : 습관설정 입력단계
 import { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
-import ColorPalette from '../../components/ColorPalette';
+import ColorPalette from '../../../components/ColorPalette';
 
 type Step2Props = {
   onNext: () => void;

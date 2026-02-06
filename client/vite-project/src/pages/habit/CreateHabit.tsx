@@ -91,8 +91,24 @@ const CreateHabit = () => {
       await createHabit(payload);
       toast.success('습관이 생성되었습니다!');
       navigate('/');
-    } catch {
-      toast.error('습관 생성 중 오류가 발생했습니다.');
+    } catch (err: unknown) {
+      // 디버깅: 원인 확인용 (외부=백엔드/네트워크 vs 내부=프론트 로직)
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number; data?: unknown } }).response
+          : null;
+      const status = msg?.status;
+      const body = msg?.data;
+      console.error('[습관 생성 실패]', { status, body, err });
+      const fallback =
+        status != null
+          ? `요청 실패 (${status})`
+          : '네트워크 또는 서버 연결 실패';
+      toast.error(
+        typeof body === 'object' && body != null && 'message' in body
+          ? String((body as { message: unknown }).message)
+          : fallback
+      );
     } finally {
       setIsLoading(false);
     }

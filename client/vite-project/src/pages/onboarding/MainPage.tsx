@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Onboarding from './onboarding/Onboarding';
+import Onboarding from './components/Onboarding';
 
 const MainPage = () => {
   const needsOnboarding = true; // 지금은 임시
