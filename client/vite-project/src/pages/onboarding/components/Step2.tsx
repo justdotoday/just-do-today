@@ -1,108 +1,189 @@
-// 온보딩 2 : 습관설정 입력단계
+// 온보딩 Step2 — 첫 습관 등록 화면: 습관명·색상·카테고리 입력 (2/3)
+
 import { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import ColorPalette from '../../../components/ColorPalette';
+import CategorySelector from '../../../components/habit/CategorySelector';
+import type { CategoryItem } from '../../../components/habit/CategorySelector';
+import CategoryAddModal from '../../../components/habit/CategoryAddModal';
+
+const ONBOARDING_CONTENT_MAX_WIDTH_PX = 414;
+const ONBOARDING_BOTTOM_PADDING_PX = 16;
+const ONBOARDING_STEP_INDEX = 2;
+const ONBOARDING_STEP_TOTAL = 3;
+const PRIMARY_BLUE_HEX = '#2563EB';
+
+const DEFAULT_NICKNAME_DISPLAY = '회원';
+
+const DEFAULT_CATEGORIES: CategoryItem[] = [
+  { name: '건강관리', icon: '💊' },
+  { name: '마음챙김', icon: '☕️' },
+  { name: '운동', icon: '🏋️' },
+  { name: '생활습관', icon: '✅' },
+  { name: '자기계발', icon: '📝' },
+  { name: '독서', icon: '📖' },
+  { name: '공부', icon: '📘' },
+  { name: '커리어', icon: '💼' },
+  { name: '모닝루틴', icon: '🌞' },
+  { name: '나이트루틴', icon: '🌙' },
+];
 
 type Step2Props = {
   onNext: () => void;
-  onBack: () => void; // 부모에서 내려주는 뒤로가기 핸들러
+  onBack: () => void;
+  nickname?: string;
 };
 
-const Step2 = ({ onNext, onBack }: Step2Props) => {
-  // 컬러 팔레트 모달 이벤트
-  const [showPalette, setShowPalette] = useState(false);
+const Step2 = ({
+  onNext,
+  onBack,
+  nickname = DEFAULT_NICKNAME_DISPLAY,
+}: Step2Props) => {
+  const [habitName, setHabitName] = useState('');
+  const [habitColor, setHabitColor] = useState(PRIMARY_BLUE_HEX);
+  const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
+  const [categories, setCategories] =
+    useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
-  // 선택된 색상 상태 (입력창/버튼에만 반영)
-  const [selectedColor, setSelectedColor] = useState<string>('#ccc');
+  const handleAddCategory = (name: string) => {
+    const trimmed = name.trim();
+    if (trimmed.length === 0) return;
+
+    const isExistingCategory = categories.some((c) => c.name === trimmed);
+    if (isExistingCategory) {
+      setSelectedCategory(trimmed);
+    } else {
+      setCategories((prev) => [...prev, { name: trimmed }]);
+      setSelectedCategory(trimmed);
+    }
+    setIsCategoryModalOpen(false);
+  };
+
+  const handleCloseCategoryModal = () => {
+    setIsCategoryModalOpen(false);
+  };
+
+  const handleOpenColorPalette = () => {
+    setIsColorPaletteOpen(true);
+  };
+
+  const handleColorSelect = (color: string) => {
+    setHabitColor(color);
+    setIsColorPaletteOpen(false);
+  };
+
+  const contentMaxWidthStyle = {
+    maxWidth: ONBOARDING_CONTENT_MAX_WIDTH_PX,
+  };
+
+  const bottomAreaPadding = `calc(${ONBOARDING_BOTTOM_PADDING_PX}px + env(safe-area-inset-bottom))`;
 
   return (
-    <div className="flex flex-col">
-      {/* 모달 조건부 렌더링 */}
-      {showPalette && (
+    <div className="flex min-h-screen flex-col bg-zinc-100">
+      {isColorPaletteOpen && (
         <ColorPalette
-          onClose={() => setShowPalette(false)}
-          onSelect={(color) => {
-            setSelectedColor(color); // 선택된 색상 저장
-            setShowPalette(false);
-          }}
+          onClose={() => setIsColorPaletteOpen(false)}
+          onSelect={handleColorSelect}
         />
       )}
 
-      {/* 뒤로가기 버튼 및 진행도 */}
-      <div className="flex flex-row items-center justify-between px-4 mt-10 mb-6">
-        <button
-          type="button"
-          onClick={onBack} // navigate(-1) 대신 부모에서 내려준 onBack 호출
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
-          aria-label="뒤로가기"
-        >
-          <IoChevronBack className="block text-2xl text-zinc-900" />
-        </button>
-        <p className="text-[15px] font-semibold text-zinc-900">2/3</p>
-      </div>
-
-      {/* 메인 섹션 */}
-      <h2>
-        <p className="font-bold text-2xl p-1 m-2">
-          <span className="text-blue-600">종달새</span>님! 반가워요!
-        </p>
-        <p className="font-bold text-2xl p-1 m-2">
-          지금 바로 습관 하나 등록해볼까요?
-        </p>
-      </h2>
-
-      {/* 입력창 */}
-      <div className="relative m-2">
-        <input
-          className="w-full border-2 rounded-2xl pl-12 p-2 pr-16"
-          style={{ borderColor: selectedColor }} // 선택된 색상 테두리 반영
-          placeholder="예) 하루 30분 운동하기, 물 2L 마시기, 단어 30개 외우기..."
+      {isCategoryModalOpen && (
+        <CategoryAddModal
+          open={isCategoryModalOpen}
+          onClose={handleCloseCategoryModal}
+          onSubmit={handleAddCategory}
         />
+      )}
+
+      <div
+        className="mx-auto flex w-full flex-1 flex-col bg-white"
+        style={contentMaxWidthStyle}
+      >
+        <div className="pt-[env(safe-area-inset-top)]" />
+        <header className="flex items-center justify-between px-4 py-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
+            aria-label="뒤로가기"
+          >
+            <IoChevronBack className="text-2xl text-zinc-900" />
+          </button>
+          <span className="text-[15px] font-semibold text-zinc-900">
+            {ONBOARDING_STEP_INDEX}/{ONBOARDING_STEP_TOTAL}
+          </span>
+        </header>
+
+        <main className="flex flex-1 flex-col px-4 pb-24">
+          <section className="mb-6">
+            <h2 className="mb-1 font-bold text-2xl text-zinc-900">
+              <span style={{ color: PRIMARY_BLUE_HEX }}>{nickname}</span>
+              <span className="text-zinc-900">님, 반가워요!</span>
+            </h2>
+            <p className="font-bold text-2xl text-zinc-900">
+              지금 바로 습관 하나 등록해 볼까요?
+            </p>
+          </section>
+
+          <section className="mb-6">
+            <p className="mb-2 text-[15px] font-semibold text-zinc-900">
+              어떤 습관인가요?
+            </p>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={handleOpenColorPalette}
+                className="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full shrink-0 "
+                style={{ backgroundColor: habitColor }}
+                aria-label="습관 색상 선택"
+                title="색상 변경"
+              />
+              <input
+                type="text"
+                value={habitName}
+                onChange={(e) => setHabitName(e.target.value)}
+                placeholder="일어나자마자 물 마시기"
+                className="w-full rounded-2xl border-2 border-zinc-200 py-3 pl-12 pr-4 text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+                style={{
+                  borderColor: habitName.length > 0 ? habitColor : undefined,
+                }}
+              />
+            </div>
+          </section>
+
+          <section className="flex-1">
+            <CategorySelector
+              title="습관 카테고리를 선택해 주세요."
+              categories={categories}
+              selected={selectedCategory}
+              onSelect={setSelectedCategory}
+              onOpenAdd={() => setIsCategoryModalOpen(true)}
+            />
+          </section>
+        </main>
+      </div>
+
+      <div
+        className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 space-y-2 bg-white px-4 pt-2"
+        style={{
+          ...contentMaxWidthStyle,
+          paddingBottom: bottomAreaPadding,
+        }}
+      >
         <button
           type="button"
-          onClick={() => setShowPalette(true)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full h-6 w-6 cursor-pointer"
-          style={{ backgroundColor: selectedColor }} // 버튼 색상 반영
-        ></button>
-      </div>
-
-      {/* 카테고리 선택 */}
-      <div className="p-1 m-1">
-        <p className="mb-2">습관 카테고리를 선택해주세요.</p>
-        <ul>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">외국어</li>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">자격증</li>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">
-            포트폴리오
-          </li>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">독서</li>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">운동</li>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">
-            생활루틴
-          </li>
-          <li className="rounded-2xl bg-gray-200 text-2xl p-4 mb-2">
-            건강관리
-          </li>
-        </ul>
-        <div className="flex justify-center items-center">
-          <button className="cursor-pointer underline underline-offset-1">
-            생성하고 싶은 카테고리가 없나요? <br /> 그렇다면 직접 추가할 수
-            있어요!
-          </button>
-        </div>
-      </div>
-
-      {/* next 버튼 */}
-      <div className="fixed bottom-12 w-full flex flex-col items-center gap-2">
-        <button
-          className="text-gray-500 rounded-2xl cursor-pointer m-2 p-4"
           onClick={onNext}
+          className="block w-full py-3 text-center text-[15px] font-medium text-zinc-500 active:opacity-80"
         >
           나중에 할래요
         </button>
         <button
-          className="fixed bottom-0 w-150 bg-blue-500 text-white rounded-2xl cursor-pointer m-2 p-4"
+          type="button"
           onClick={onNext}
+          className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98]"
+          style={{ backgroundColor: PRIMARY_BLUE_HEX }}
         >
           다음으로
         </button>

@@ -1,9 +1,10 @@
-// 온보딩 1 : 사용자 이름 입력 + 약관 동의
+// 온보딩 Step1 — 닉네임 입력 + 필수/선택 약관 동의 화면 (1/3)
+
 import { useState } from 'react';
 import { IoChevronBack, IoChevronForward, IoHeart } from 'react-icons/io5';
 
 type Step1Props = {
-  onNext: () => void;
+  onNext: (nickname: string) => void;
   onBack: () => void;
 };
 
@@ -173,7 +174,7 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
       <div className="fixed bottom-0 left-1/2 w-full max-w-[414px] -translate-x-1/2 bg-white px-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
         <button
           type="button"
-          onClick={onNext}
+          onClick={() => onNext(nickname.trim())}
           disabled={!canNext}
           className="flex h-14 w-full items-center justify-center rounded-full bg-[#2563EB] font-semibold text-white transition active:scale-[0.98] disabled:bg-zinc-300 disabled:active:scale-100"
         >
