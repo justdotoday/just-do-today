@@ -1,8 +1,8 @@
 // 온보딩 Step2 — 첫 습관 등록 화면: 습관명·색상·카테고리 입력 (2/3)
 
 import { useState } from 'react';
-import { IoChevronBack } from 'react-icons/io5';
 import ColorPalette from '../../../components/ColorPalette';
+import OnboardingStepHeader from './OnboardingStepHeader';
 import CategorySelector from '../../../components/habit/CategorySelector';
 import type { CategoryItem } from '../../../components/habit/CategorySelector';
 import CategoryAddModal from '../../../components/habit/CategoryAddModal';
@@ -80,6 +80,9 @@ const Step2 = ({
 
   const bottomAreaPadding = `calc(${ONBOARDING_BOTTOM_PADDING_PX}px + env(safe-area-inset-bottom))`;
 
+  // 필수: 습관명 + 카테고리 선택 시에만 다음으로 진행
+  const canNext = habitName.trim().length > 0 && selectedCategory !== null;
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-100">
       {isColorPaletteOpen && (
@@ -101,20 +104,11 @@ const Step2 = ({
         className="mx-auto flex w-full flex-1 flex-col bg-white"
         style={contentMaxWidthStyle}
       >
-        <div className="pt-[env(safe-area-inset-top)]" />
-        <header className="flex items-center justify-between px-4 py-3">
-          <button
-            type="button"
-            onClick={onBack}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
-            aria-label="뒤로가기"
-          >
-            <IoChevronBack className="text-2xl text-zinc-900" />
-          </button>
-          <span className="text-[15px] font-semibold text-zinc-900">
-            {ONBOARDING_STEP_INDEX}/{ONBOARDING_STEP_TOTAL}
-          </span>
-        </header>
+        <OnboardingStepHeader
+          step={ONBOARDING_STEP_INDEX}
+          totalSteps={ONBOARDING_STEP_TOTAL}
+          onBack={onBack}
+        />
 
         <main className="flex flex-1 flex-col px-4 pb-24">
           <section className="mb-6">
@@ -182,8 +176,9 @@ const Step2 = ({
         <button
           type="button"
           onClick={onNext}
-          className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98]"
-          style={{ backgroundColor: PRIMARY_BLUE_HEX }}
+          disabled={!canNext}
+          className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98] disabled:bg-zinc-300 disabled:active:scale-100"
+          style={canNext ? { backgroundColor: PRIMARY_BLUE_HEX } : undefined}
         >
           다음으로
         </button>

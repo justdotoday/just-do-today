@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
-import HabitSettingSection from '../../components/habit/HabitOptionsSection';
+import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
 const CreateHabit = () => {
   const navigate = useNavigate();
 
@@ -168,7 +168,7 @@ const CreateHabit = () => {
 
         {/* 빈도 */}
         <section className="mt-6 space-y-4">
-          <HabitSettingSection
+          <HabitOptionsSection
             frequency={frequency}
             setFrequency={setFrequency}
             selectedDays={selectedDays}

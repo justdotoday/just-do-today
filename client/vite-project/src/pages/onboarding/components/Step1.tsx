@@ -1,7 +1,8 @@
 // 온보딩 Step1 — 닉네임 입력 + 필수/선택 약관 동의 화면 (1/3)
 
 import { useState } from 'react';
-import { IoChevronBack, IoChevronForward, IoHeart } from 'react-icons/io5';
+import { IoChevronForward, IoHeart } from 'react-icons/io5';
+import OnboardingStepHeader from './OnboardingStepHeader';
 
 type Step1Props = {
   onNext: (nickname: string) => void;
@@ -62,18 +63,7 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
     <div className="flex min-h-screen flex-col bg-zinc-100">
       {/* 상단 뒤로가기 및 온보딩 단계 */}
       <div className="mx-auto flex w-full max-w-[414px] flex-1 flex-col bg-white">
-        <div className="pt-[env(safe-area-inset-top)]" />
-        <header className="flex items-center justify-between px-4 py-3">
-          <button
-            type="button"
-            onClick={onBack}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full active:bg-zinc-100"
-            aria-label="뒤로가기"
-          >
-            <IoChevronBack className="text-2xl text-zinc-900" />
-          </button>
-          <span className="text-[15px] font-semibold text-zinc-900">1/3</span>
-        </header>
+        <OnboardingStepHeader step={1} totalSteps={3} onBack={onBack} />
 
         <main className="flex flex-1 flex-col px-4 pb-24">
           {/* 인사 + 닉네임 입력 */}

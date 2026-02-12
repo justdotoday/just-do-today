@@ -54,7 +54,13 @@ const Onboarding = ({ onFinish }: OnboardingProps) => {
       );
     }
     if (step === 'step3') {
-      return <Step3 onNext={() => setStep('step3_5')} onBack={handleBack} />;
+      return (
+        <Step3
+          nickname={nickname || undefined}
+          onNext={() => setStep('step3_5')}
+          onBack={handleBack}
+        />
+      );
     }
     if (step === 'step3_5') {
       return <Step3_5 onNext={() => setStep('step4')} />;
