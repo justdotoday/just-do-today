@@ -1,7 +1,6 @@
 package com.example.just_do_today.controller.auth;
 
 import com.example.just_do_today.domain.Member;
-import com.example.just_do_today.dto.member.MemberResponse;
 import com.example.just_do_today.service.auth.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

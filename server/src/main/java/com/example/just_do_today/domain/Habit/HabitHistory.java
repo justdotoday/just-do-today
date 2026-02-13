@@ -10,5 +10,6 @@ public class HabitHistory {
     private Long id;
     private Long userHabitId;
     private LocalDate checkDate;
+    private HabitHistoryStatus status;
     private LocalDateTime createdAt;
 }

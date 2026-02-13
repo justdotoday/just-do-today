@@ -34,4 +34,9 @@ public interface HabitMapper {
     // 완료처리 여부 확인
     boolean existsByDate(Long userHabitId, LocalDate checkDate);
 
+    // 유저-습관 ID로 조회
+    UserHabit findUserHabitById(Long id);
+
+    // 유저의 습관 완료 기록 조회
+    HabitHistory findHistoryByHabitIdAndDate(Long userHabitId, LocalDate checkDate);
 }
