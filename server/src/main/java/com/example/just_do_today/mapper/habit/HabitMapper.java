@@ -31,13 +31,18 @@ public interface HabitMapper {
     void insertHistory (HabitHistory history);
     // 취소
     void deleteHistory (Long userHabitId, LocalDate checkDate);
+    // 완료처리 여부 확인
+    boolean existsByDate(Long userHabitId, LocalDate checkDate);
 
     // 유저-습관 ID로 조회
     UserHabit findUserHabitById(Long id);
 
     // 유저의 습관 완료 기록 조회
     HabitHistory findHistoryByHabitIdAndDate(Long userHabitId, LocalDate checkDate);
+<<<<<<< HEAD
+=======
 
     // 유저-습관 상태 및 프리즈 해제 날짜 업데이트
     void updateUserHabitStatusAndFrozenUntil(UserHabit userHabit);
+>>>>>>> e9c71a0 (feat: freeze 구현)
 }

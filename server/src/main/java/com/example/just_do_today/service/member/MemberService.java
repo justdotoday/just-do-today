@@ -20,7 +20,7 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     public Member getMember(String provider, String providerId) {
-        return memberMapper.findByProviderId(provider,providerId);
+        return memberMapper.findByProviderId(provider, providerId);
     }
 
     public Member getMemberById(Long id) {
