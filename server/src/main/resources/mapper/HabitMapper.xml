@@ -95,10 +95,7 @@
             member_id,
             habit_id,
             status,
-<<<<<<< HEAD
-=======
             frozen_until,
->>>>>>> e9c71a0 (feat: freeze 구현)
             frequency,
             start_date,
             created_at,
@@ -107,9 +104,6 @@
         WHERE id = #{id}
     </select>
 
-<<<<<<< HEAD
-
-=======
     <update id="updateUserHabitStatusAndFrozenUntil">
         UPDATE user_habit
         SET
@@ -118,6 +112,5 @@
             updated_at = NOW()
         WHERE id = #{id}
     </update>
->>>>>>> e9c71a0 (feat: freeze 구현)
 
 </mapper>
