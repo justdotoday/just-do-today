@@ -4,7 +4,6 @@ import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.dto.auth.LoginRequest;
 import com.example.just_do_today.dto.member.constant.Role;
 import com.example.just_do_today.global.exception.MemberNotFoundException;
-import com.example.just_do_today.global.exception.NotEnoughFreezesException;
 import com.example.just_do_today.global.exception.NotEnoughHeartsException;
 import com.example.just_do_today.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +46,7 @@ public class MemberService {
                     .providerId(loginRequest.getProviderId())
                     .profileImageUrl(loginRequest.getProfileImageUrl())
                     .nickname("nickname")
-                    .userCode(UUID.randomUUID().toString().substring(0,6))
+                    .userCode(UUID.randomUUID().toString().substring(0, 6))
                     .userRole(Role.USER.getKey())
                     .build();
             memberMapper.saveMember(newMember);
@@ -61,7 +60,6 @@ public class MemberService {
         return member;
     }
 
-    // 하트 사용, 추가
     @Transactional
     public void deductHeart(Member member) {
         if (member.getHearts() <= 0) {
@@ -75,24 +73,5 @@ public class MemberService {
     public void addHeart(Member member) {
         member.setHearts(member.getHearts() + 1);
         memberMapper.updateMemberHearts(member);
-    }
-
-    // 프리즈 사용, 추가
-    @Transactional
-    public void deductFreeze(Member member) {
-        if (member.getFreezes() <= 0) {
-            throw new NotEnoughFreezesException("프리즈 개수가 부족합니다.");
-        }
-        member.setFreezes(member.getFreezes() - 1);
-        memberMapper.updateMemberFreezes(member);
-    }
-
-    @Transactional
-    public void addFreeze(Member member) {
-        if (member.getFreezes() >= 5) {
-            return;
-        }
-        member.setFreezes(member.getFreezes() + 1);
-        memberMapper.updateMemberFreezes(member);
     }
 }

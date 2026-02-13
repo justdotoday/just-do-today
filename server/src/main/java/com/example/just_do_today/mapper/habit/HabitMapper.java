@@ -39,7 +39,4 @@ public interface HabitMapper {
 
     // 유저의 습관 완료 기록 조회
     HabitHistory findHistoryByHabitIdAndDate(Long userHabitId, LocalDate checkDate);
-
-    // 유저-습관 상태 및 프리즈 해제 날짜 업데이트
-    void updateUserHabitStatusAndFrozenUntil(UserHabit userHabit);
 }

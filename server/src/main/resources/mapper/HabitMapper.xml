@@ -30,8 +30,7 @@
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="frequency" column="frequency"/>
-        <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.UserHabitStatus"/>
-        <result property="frozenUntil" column="frozen_until"/>
+        <result property="status" column="status"/>
 
         <collection property="days" ofType="java.lang.Integer">
             <result column="day_of_week"/>
@@ -44,7 +43,6 @@
             h.name,
             uh.frequency,
             uh.status,
-            uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
         JOIN habit h ON uh.habit_id = h.id
@@ -95,7 +93,6 @@
             member_id,
             habit_id,
             status,
-            frozen_until,
             frequency,
             start_date,
             created_at,
@@ -104,13 +101,6 @@
         WHERE id = #{id}
     </select>
 
-    <update id="updateUserHabitStatusAndFrozenUntil">
-        UPDATE user_habit
-        SET
-            status = #{status.value},
-            frozen_until = #{frozenUntil},
-            updated_at = NOW()
-        WHERE id = #{id}
-    </update>
+
 
 </mapper>
