@@ -1,4 +1,38 @@
+import { useEffect, useState } from 'react';
 import Toggle from '../../components/Toggle';
+
+/** 시 옵션 (12시간제 1~12) */
+const HOUR_OPTIONS = [
+  '00',
+  '01',
+  '02',
+  '03',
+  '04',
+  '05',
+  '06',
+  '07',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+] as const;
+
+/** 분 옵션 (00~59, 5분 단위) */
+const MINUTE_OPTIONS = [
+  '00',
+  '05',
+  '10',
+  '15',
+  '20',
+  '25',
+  '30',
+  '35',
+  '40',
+  '45',
+  '50',
+  '55',
+] as const;
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
@@ -32,7 +66,7 @@ type Props = {
   };
 };
 
-const HabitSettingSection = ({
+const HabitOptionsSection = ({
   frequency,
   setFrequency,
   selectedDays,
@@ -50,6 +84,33 @@ const HabitSettingSection = ({
   setIsPublic,
   styles,
 }: Props) => {
+  const [openPicker, setOpenPicker] = useState<'hour' | 'minute' | null>(null);
+
+  const safeHour = HOUR_OPTIONS.includes(hour as (typeof HOUR_OPTIONS)[number])
+    ? hour
+    : '01';
+  const safeMinute = MINUTE_OPTIONS.includes(
+    minute as (typeof MINUTE_OPTIONS)[number]
+  )
+    ? minute
+    : '00';
+
+  useEffect(() => {
+    if (!HOUR_OPTIONS.includes(hour as (typeof HOUR_OPTIONS)[number]))
+      setHour('01');
+    if (!MINUTE_OPTIONS.includes(minute as (typeof MINUTE_OPTIONS)[number]))
+      setMinute('00');
+  }, [hour, minute, setHour, setMinute]);
+
+  const handleHourSelect = (v: string) => {
+    setHour(v);
+    setOpenPicker(null);
+  };
+  const handleMinuteSelect = (v: string) => {
+    setMinute(v);
+    setOpenPicker(null);
+  };
+
   return (
     <div className="space-y-10">
       {/* 1. 빈도 선택 섹션 */}
@@ -70,10 +131,10 @@ const HabitSettingSection = ({
               {type === 'DAILY'
                 ? '매일'
                 : type === 'WEEKLY'
-                ? '일주일에 한 번'
-                : type === 'MONTHLY'
-                ? '한 달에 한 번'
-                : '요일로 선택'}
+                  ? '일주일에 한 번'
+                  : type === 'MONTHLY'
+                    ? '한 달에 한 번'
+                    : '요일로 선택'}
             </button>
           ))}
         </div>
@@ -124,38 +185,90 @@ const HabitSettingSection = ({
           </h2>
           <Toggle checked={alarmEnabled} onChange={setAlarmEnabled} />
         </div>
-        <div className="grid grid-cols-[1fr_1fr_auto_1fr_1fr] items-center gap-3">
-          <button
-            disabled={!alarmEnabled}
-            onClick={() => setAmpm('AM')}
-            className={`${
-              ampm === 'AM' ? styles.filledBtn : styles.outlineBtn
-            } h-12 disabled:opacity-30`}
-          >
-            오전
-          </button>
-          <button
-            disabled={!alarmEnabled}
-            onClick={() => setAmpm('PM')}
-            className={`${
-              ampm === 'PM' ? styles.filledBtn : styles.outlineBtn
-            } h-12 disabled:opacity-30`}
-          >
-            오후
-          </button>
-          <span className="text-zinc-300 font-bold px-1">:</span>
-          <input
-            disabled={!alarmEnabled}
-            value={hour}
-            onChange={(e) => setHour(e.target.value)}
-            className="h-12 w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 text-center text-[16px] font-bold outline-none focus:border-[#2563EB] focus:bg-white disabled:opacity-30"
-          />
-          <input
-            disabled={!alarmEnabled}
-            value={minute}
-            onChange={(e) => setMinute(e.target.value)}
-            className="h-12 w-full rounded-xl border-2 border-zinc-100 bg-zinc-50 text-center text-[16px] font-bold outline-none focus:border-[#2563EB] focus:bg-white disabled:opacity-30"
-          />
+        <div
+          className={`flex flex-col gap-2 ${
+            !alarmEnabled ? 'pointer-events-none opacity-30' : ''
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={!alarmEnabled}
+              onClick={() => setAmpm(ampm === 'AM' ? 'PM' : 'AM')}
+              className="h-12 min-w-28 shrink-0 rounded-2xl border border-zinc-200 bg-white px-4 text-[16px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
+            >
+              {ampm === 'AM' ? '오전' : '오후'}
+            </button>
+            <div className="relative">
+              <button
+                type="button"
+                disabled={!alarmEnabled}
+                onClick={() =>
+                  setOpenPicker(openPicker === 'hour' ? null : 'hour')
+                }
+                className="h-12 w-28 rounded-2xl border border-zinc-200 bg-white text-center text-[16px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
+              >
+                {safeHour}
+              </button>
+              {openPicker === 'hour' && (
+                <ul
+                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-28 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
+                  role="listbox"
+                >
+                  {HOUR_OPTIONS.map((h) => (
+                    <li key={h} role="option" aria-selected={h === safeHour}>
+                      <button
+                        type="button"
+                        onClick={() => handleHourSelect(h)}
+                        className={`w-full py-2 text-center text-[16px] font-medium ${
+                          h === safeHour
+                            ? 'bg-zinc-100 text-zinc-900'
+                            : 'text-zinc-700'
+                        }`}
+                      >
+                        {h}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <span className="text-zinc-900 font-medium shrink-0">:</span>
+            <div className="relative">
+              <button
+                type="button"
+                disabled={!alarmEnabled}
+                onClick={() =>
+                  setOpenPicker(openPicker === 'minute' ? null : 'minute')
+                }
+                className="h-12 w-28 rounded-2xl border border-zinc-200 bg-white text-center text-[16px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
+              >
+                {safeMinute}
+              </button>
+              {openPicker === 'minute' && (
+                <ul
+                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-28 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
+                  role="listbox"
+                >
+                  {MINUTE_OPTIONS.map((m) => (
+                    <li key={m} role="option" aria-selected={m === safeMinute}>
+                      <button
+                        type="button"
+                        onClick={() => handleMinuteSelect(m)}
+                        className={`w-full py-2 text-center text-[16px] font-medium ${
+                          m === safeMinute
+                            ? 'bg-zinc-100 text-zinc-900'
+                            : 'text-zinc-700'
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -170,4 +283,4 @@ const HabitSettingSection = ({
   );
 };
 
-export default HabitSettingSection;
+export default HabitOptionsSection;

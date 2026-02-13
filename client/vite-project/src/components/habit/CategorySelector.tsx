@@ -1,5 +1,4 @@
 //카테고리 선택 컴포넌트
-
 export type CategoryItem = { name: string; icon?: string };
 
 type Props = {

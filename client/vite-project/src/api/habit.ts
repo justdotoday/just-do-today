@@ -1,8 +1,28 @@
-//습관 관련 api
-import type { CreateHabitPayload } from '../types/habitType';
+//습관 관련 api (명세: POST /api/habits)
+import type { CreateHabitPayload, Day } from '../types/habitType';
 import api from './client';
 
+const DAY_TO_NUMBER: Record<Day, number> = {
+  MON: 0,
+  TUE: 1,
+  WED: 2,
+  THU: 3,
+  FRI: 4,
+  SAT: 5,
+  SUN: 6,
+};
+
 export const createHabit = async (payload: CreateHabitPayload) => {
-  const res = await api.post('/habits', payload);
+  const body = {
+    name: payload.name,
+    category: payload.category,
+    frequency: payload.frequency,
+    ...(payload.days?.length && {
+      days: payload.days.map((d) => DAY_TO_NUMBER[d]),
+    }),
+    isPublic: payload.isPublic,
+    startDate: payload.startDate,
+  };
+  const res = await api.post('/api/habits', body);
   return res.data;
 };

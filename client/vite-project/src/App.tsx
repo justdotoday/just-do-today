@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import Signup from './auth/SocialSignUp';
-import MainPage from './pages/MainPage';
+import MainPage from './pages/onboarding/MainPage';
 import CreateHabit from './pages/habit/CreateHabit';
 import HabitPage from './pages/habit/HabitPage';
 import Layout from './layout/Layout';
