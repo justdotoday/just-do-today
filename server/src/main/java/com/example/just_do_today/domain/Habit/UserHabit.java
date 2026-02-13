@@ -1,16 +1,18 @@
 package com.example.just_do_today.domain.Habit;
 
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.example.just_do_today.domain.Habit.UserHabitStatus;
+import lombok.Data;
 
 @Data
 public class UserHabit {
     private Long id;
     private Long memberId;
     private Long habitId;
-    private String status;
+    private UserHabitStatus status;
+    private LocalDate frozenUntil;
     private String frequency;
     private LocalDate startDate;
     private LocalDateTime createdAt;
