@@ -1,5 +1,6 @@
 package com.example.just_do_today.controller.auth;
 
+import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.dto.member.MemberResponse;
 import com.example.just_do_today.service.auth.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class KakaoAuthController {
     private final KakaoAuthService kakaoAuthService;
 
     @GetMapping("/callback")
-    public MemberResponse callback(@RequestParam String code) {
+    public Member callback(@RequestParam String code) {
         return kakaoAuthService.loginWithCode(code);
     }
 }
