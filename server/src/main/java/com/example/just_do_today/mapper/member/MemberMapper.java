@@ -1,25 +1,33 @@
 package com.example.just_do_today.mapper.member;
 
-import com.example.just_do_today.dto.member.MemberRequest;
-import com.example.just_do_today.dto.member.MemberResponse;
+import com.example.just_do_today.domain.Member;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface MemberMapper {
 
     @Select("SELECT * FROM member WHERE provider = #{provider} AND provider_id = #{providerId}")
-    MemberResponse findByProviderId(@Param("provider") String provider,@Param("providerId") String providerId);
+    Member findByProviderId(@Param("provider") String provider,@Param("providerId") String providerId);
+
+    @Select("SELECT * FROM member WHERE id = #{id}")
+    Member findById(Long id);
+
+    @Update("UPDATE member SET hearts = #{hearts}, updated_at = NOW() WHERE id = #{id}")
+    void updateMemberHearts(Member member);
+
+    @Update("UPDATE member SET freezes = #{freezes}, updated_at = NOW() WHERE id = #{id}")
+    void updateMemberFreezes(Member member);
 
     @Insert("""
         INSERT INTO member (
-            nickname, profile_image_url, user_code, 
-            provider, provider_id, user_role, 
+            nickname, profile_image_url, user_code,
+            provider, provider_id, user_role, hearts, freezes,
             created_at, updated_at
         ) VALUES (
-            #{nickname}, #{profileImageUrl}, #{userCode}, 
-            #{provider}, #{providerId}, #{userRole}, 
+            #{nickname}, #{profileImageUrl}, #{userCode},
+            #{provider}, #{providerId}, #{userRole}, #{hearts}, #{freezes},
             NOW(), NOW()
         )
     """)
-    void saveMember(MemberRequest memberRequest);
+    void saveMember(Member member);
 }
