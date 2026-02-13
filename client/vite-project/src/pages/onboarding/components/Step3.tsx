@@ -18,6 +18,8 @@ const DAYS_SECOND_ROW = ['금', '토', '일'] as const;
 type Step3Props = {
   onNext: () => void;
   onBack: () => void;
+  /** 나중에 할래요 클릭 시 (MainPage로 이동) */
+  onSkip: () => void;
   nickname?: string;
 };
 
@@ -26,6 +28,7 @@ type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 const Step3 = ({
   onNext,
   onBack,
+  onSkip,
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step3Props) => {
   const [frequency, setFrequency] = useState<Frequency>('DAILY');
@@ -128,7 +131,7 @@ const Step3 = ({
       >
         <button
           type="button"
-          onClick={onNext}
+          onClick={onSkip}
           className="block w-full py-3 text-center text-[15px] font-medium text-zinc-500 active:opacity-80"
         >
           나중에 할래요

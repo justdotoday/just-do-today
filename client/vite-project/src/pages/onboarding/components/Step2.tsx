@@ -31,12 +31,15 @@ const DEFAULT_CATEGORIES: CategoryItem[] = [
 type Step2Props = {
   onNext: () => void;
   onBack: () => void;
+  /** 나중에 할래요 클릭 시 (MainPage로 이동) */
+  onSkip: () => void;
   nickname?: string;
 };
 
 const Step2 = ({
   onNext,
   onBack,
+  onSkip,
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step2Props) => {
   const [habitName, setHabitName] = useState('');
@@ -168,7 +171,7 @@ const Step2 = ({
       >
         <button
           type="button"
-          onClick={onNext}
+          onClick={onSkip}
           className="block w-full py-3 text-center text-[15px] font-medium text-zinc-500 active:opacity-80"
         >
           나중에 할래요
