@@ -19,7 +19,7 @@ public class MemberService {
 
     private final MemberMapper memberMapper;
 
-    public MemberResponse getMember(String provider, String providerId) {
+    public Member getMember(String provider, String providerId) {
         return memberMapper.findByProviderId(provider,providerId);
     }
 
