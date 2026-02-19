@@ -1,6 +1,6 @@
 // 온보딩 Step2 — 첫 습관 등록 화면: 습관명·색상·카테고리 입력 (2/3)
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import ColorPalette from '../../../components/ColorPalette';
 import OnboardingStepHeader from './OnboardingStepHeader';
 import CategorySelector from '../../../components/habit/CategorySelector';
@@ -12,7 +12,7 @@ const ONBOARDING_CONTENT_MAX_WIDTH_PX = 414;
 const ONBOARDING_BOTTOM_PADDING_PX = 16;
 const ONBOARDING_STEP_INDEX = 2;
 const ONBOARDING_STEP_TOTAL = 3;
-const PRIMARY_BLUE_HEX = '#2563EB';
+const PRIMARY_BLUE = '#2563EB';
 
 const DEFAULT_NICKNAME_DISPLAY = '회원';
 
@@ -31,8 +31,12 @@ const Step2 = ({
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step2Props) => {
   const [habitName, setHabitName] = useState('');
-  const [habitColor, setHabitColor] = useState(PRIMARY_BLUE_HEX);
+  const [habitColor, setHabitColor] = useState(PRIMARY_BLUE);
   const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
+  const [paletteAnchorRect, setPaletteAnchorRect] = useState<DOMRect | null>(
+    null
+  );
+  const colorButtonRef = useRef<HTMLButtonElement | null>(null);
   const [categories, setCategories] =
     useState<CategoryItem[]>(DEFAULT_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -57,6 +61,9 @@ const Step2 = ({
   };
 
   const handleOpenColorPalette = () => {
+    setPaletteAnchorRect(
+      colorButtonRef.current?.getBoundingClientRect() ?? null
+    );
     setIsColorPaletteOpen(true);
   };
 
@@ -80,6 +87,8 @@ const Step2 = ({
         <ColorPalette
           onClose={() => setIsColorPaletteOpen(false)}
           onSelect={handleColorSelect}
+          selectedColor={habitColor}
+          anchorRect={paletteAnchorRect}
         />
       )}
 
@@ -104,7 +113,7 @@ const Step2 = ({
         <main className="flex flex-1 flex-col px-4 pb-24">
           <section className="mb-6">
             <h2 className="mb-1 font-bold text-2xl text-zinc-900">
-              <span style={{ color: PRIMARY_BLUE_HEX }}>{nickname}</span>
+              <span style={{ color: PRIMARY_BLUE }}>{nickname}</span>
               <span className="text-zinc-900">님, 반가워요!</span>
             </h2>
             <p className="font-bold text-2xl text-zinc-900">
@@ -113,13 +122,14 @@ const Step2 = ({
           </section>
 
           <section className="mb-6">
-            <p className="mb-2 text-[15px] font-semibold text-zinc-900">
+            <p className="mb-2 text-[18px] font-semibold text-zinc-900">
               어떤 습관인가요?
             </p>
             <div className="relative">
               <button
                 type="button"
                 onClick={handleOpenColorPalette}
+                ref={colorButtonRef}
                 className="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full shrink-0 "
                 style={{ backgroundColor: habitColor }}
                 aria-label="습관 색상 선택"
@@ -169,7 +179,7 @@ const Step2 = ({
           onClick={onNext}
           disabled={!canNext}
           className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98] disabled:bg-zinc-300 disabled:active:scale-100"
-          style={canNext ? { backgroundColor: PRIMARY_BLUE_HEX } : undefined}
+          style={canNext ? { backgroundColor: PRIMARY_BLUE } : undefined}
         >
           다음으로
         </button>

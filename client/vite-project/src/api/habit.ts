@@ -30,7 +30,7 @@ export const createHabit = async (payload: CreateHabitPayload) => {
 
 //습관 목록 조회 (명세: GET /api/habits)
 export const getHabits = async (): Promise<Habit[]> => {
-  const res = await api.get('api/habits');
+  const res = await api.get('/api/habits');
   return Array.isArray(res.data) ? res.data : [];
 };
 
