@@ -1,7 +1,6 @@
 package com.example.just_do_today.service.habit;
 
 import com.example.just_do_today.domain.Habit.Habit;
-import com.example.just_do_today.domain.Habit.HabitHistory;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
 import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.just_do_today.domain.Habit.UserHabitStatus.ACTIVE;
