@@ -33,7 +33,11 @@ const MainPage = () => {
         <Onboarding
           onFinish={() => {
             setIsOnboardingOpen(false);
-            navigate('/home');
+            navigate('/home', { state: { view: 'list' }, replace: true });
+          }}
+          onSkip={() => {
+            setIsOnboardingOpen(false);
+            navigate('/home/empty', { replace: true });
           }}
           onExit={() => {
             setIsOnboardingOpen(false);

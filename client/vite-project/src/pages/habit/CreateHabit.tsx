@@ -9,22 +9,14 @@ import CategoryAddModal from '../../components/habit/CategoryAddModal';
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
+import { DEFAULT_CATEGORIES } from '../../constants/categories';
+import type { CategoryItem } from '../../components/habit/CategorySelector';
+
 const CreateHabit = () => {
   const navigate = useNavigate();
 
-  // --- [상태 관리 및 로직: 기존 유지] ---
-  type CategoryItem = { name: string; icon?: string };
-  const [categories, setCategories] = useState<CategoryItem[]>([
-    { name: '건강관리', icon: '💊' },
-    { name: '마음챙김', icon: '☕️' },
-    { name: '운동', icon: '🏋️' },
-    { name: '생활습관', icon: '✅' },
-    { name: '자기계발', icon: '📝' },
-    { name: '독서', icon: '📖' },
-    { name: '공부', icon: '📘' },
-    { name: '커리어', icon: '💼' },
-    { name: '모닝루틴', icon: '🌞' },
-  ]);
+  const [categories, setCategories] =
+    useState<CategoryItem[]>(DEFAULT_CATEGORIES);
 
   // 상태 변수들
   const day = ['월', '화', '수', '목', '금', '토', '일'] as const;

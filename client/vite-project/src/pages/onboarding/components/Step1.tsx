@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { IoChevronForward, IoHeart } from 'react-icons/io5';
-import OnboardingStepHeader from './OnboardingStepHeader';
 
 type Step1Props = {
   onNext: (nickname: string) => void;
@@ -24,7 +23,7 @@ const AGREEMENTS = [
   { id: 'marketing' as const, label: '마케팅 정보 수신 동의', required: false },
 ] as const;
 
-const Step1 = ({ onNext, onBack }: Step1Props) => {
+const Step1 = ({ onNext }: Step1Props) => {
   const [nickname, setNickname] = useState('');
   const [agreeAll, setAgreeAll] = useState(false);
   const [agreements, setAgreements] = useState<Record<string, boolean>>({
@@ -63,7 +62,7 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
     <div className="flex min-h-screen flex-col bg-zinc-100">
       {/* 상단 뒤로가기 및 온보딩 단계 */}
       <div className="mx-auto flex w-full max-w-[414px] flex-1 flex-col bg-white">
-        <OnboardingStepHeader step={1} totalSteps={3} onBack={onBack} />
+        <br />
 
         <main className="flex flex-1 flex-col px-4 pb-24">
           {/* 인사 + 닉네임 입력 */}
