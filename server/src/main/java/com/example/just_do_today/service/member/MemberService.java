@@ -21,31 +21,28 @@ public class MemberService {
     }
 
     public MemberResponse loginOrRegister(LoginRequest loginRequest) {
+        String providerName = loginRequest.getProvider().toUpperCase();
 
-        // 회원 조회 (로그인)
         MemberResponse member = memberMapper.findByProviderId(
-                loginRequest.getProvider(),
+                providerName,
                 loginRequest.getProviderId()
         );
 
-        // 없으면 회원가입
-        if (member == null) {
-            MemberRequest saveDto = MemberRequest.builder()
-                    .provider(loginRequest.getProvider())
-                    .providerId(loginRequest.getProviderId())
-                    .profileImageUrl(loginRequest.getProfileImageUrl())
-                    .nickname("nickname")
-                    .userCode(UUID.randomUUID().toString().substring(0,6))
-                    .userRole(Role.USER.getKey())
-                    .build();
-            memberMapper.saveMember(saveDto);
-
-            return memberMapper.findByProviderId(
-                    loginRequest.getProvider(),
-                    loginRequest.getProviderId()
-            );
+        if (member != null) {
+            return member;
         }
 
-        return member;
+        MemberRequest saveDto = MemberRequest.builder()
+                .provider(providerName)
+                .providerId(loginRequest.getProviderId())
+                .profileImageUrl(loginRequest.getProfileImageUrl())
+                .nickname("nickname")
+                .userCode(UUID.randomUUID().toString().substring(0, 6))
+                .userRole(Role.USER.getKey())
+                .build();
+
+        memberMapper.saveMember(saveDto);
+
+        return memberMapper.findByProviderId(providerName, loginRequest.getProviderId());
     }
 }
