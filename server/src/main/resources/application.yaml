@@ -44,8 +44,9 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-# MyBatis 설정
+# MyBatis 설정 (dev 브랜치의 매퍼 위치 설정 통합)
 mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
@@ -63,7 +64,7 @@ springdoc:
 logging:
   level:
     org.flywaydb: DEBUG
-    org.springframework.security: DEBUG # 디버깅을 위해 추가
+    org.springframework.security: DEBUG # feat.googlelogin: 디버깅을 위해 유지
 
 app:
   oauth-success-redirect: ${OAUTH_SUCCESS_REDIRECT}

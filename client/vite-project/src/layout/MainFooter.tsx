@@ -1,42 +1,64 @@
 import { NavLink } from 'react-router-dom';
-import { GoHome, GoHomeFill } from 'react-icons/go';
-import { HiOutlineDocumentText, HiDocumentText, HiOutlineUserGroup, HiUserGroup } from 'react-icons/hi2';
-import { RiSettings4Line, RiSettings4Fill } from 'react-icons/ri'; 
+import homeIcon from '../assets/mainFooter/basicIcon/homeIcon.png';
+import habitIcon from '../assets/mainFooter/basicIcon/habitIcon.png';
+import socialIcon from '../assets/mainFooter/basicIcon/socialIcon.png';
+import settingIcon from '../assets/mainFooter/basicIcon/settingIcon.png';
+import homeBlue from '../assets/mainFooter/BlueIcon/HomeBlue.png';
+import habitBlue from '../assets/mainFooter/BlueIcon/habitBlue.png';
+import socialBlue from '../assets/mainFooter/BlueIcon/socialBlue.png';
+import settingBlue from '../assets/mainFooter/BlueIcon/settingBlue.png';
 
-export default function MainFooter() {
+const MainFooter = () => {
   const navItems = [
-    { to: '/', label: '홈', icon: GoHome, activeIcon: GoHomeFill },
-    { to: '/habit', label: '습관', icon: HiOutlineDocumentText, activeIcon: HiDocumentText },
-    { to: '/social', label: '소셜', icon: HiOutlineUserGroup, activeIcon: HiUserGroup },
-    { to: '/my', label: '설정', icon: RiSettings4Line, activeIcon: RiSettings4Fill },
+    { to: '/', label: '홈', iconSrc: homeIcon, activeIconSrc: homeBlue },
+    {
+      to: '/habit',
+      label: '습관',
+      iconSrc: habitIcon,
+      activeIconSrc: habitBlue,
+    },
+    {
+      to: '/social',
+      label: '소셜',
+      iconSrc: socialIcon,
+      activeIconSrc: socialBlue,
+    },
+    {
+      to: '/my',
+      label: '설정',
+      iconSrc: settingIcon,
+      activeIconSrc: settingBlue,
+    },
   ];
 
   return (
-    <footer className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-200 bg-white pb-[env(safe-area-inset-bottom)]">
-      <nav className="mx-auto grid h-[72px] max-w-[520px] grid-cols-4">
+    <footer className="fixed inset-x-0 bottom-0 z-50 pb-[calc(16px+env(safe-area-inset-bottom))] sm:pb-6">
+      <nav className="mx-auto grid h-[72px] max-w-[360px] grid-cols-4 rounded-full bg-white px-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 text-[12px] transition-colors ${
-                isActive ? 'text-[#2563EB] font-medium' : 'text-zinc-500'
-              }`
-            }
+            className="flex items-center justify-center"
           >
             {({ isActive }) => (
-              <>
-                {isActive ? (
-                  <item.activeIcon className="h-6 w-6" />
-                ) : (
-                  <item.icon className="h-6 w-6" />
-                )}
-                <span>{item.label}</span>
-              </>
+              <div
+                className={`flex h-[52px] w-full max-w-[80px] flex-col items-center justify-center gap-1 rounded-full transition-all
+                ${isActive ? 'bg-blue-50 text-blue-600' : 'text-zinc-500'}
+              `}
+              >
+                <img
+                  src={isActive ? item.activeIconSrc : item.iconSrc}
+                  alt={item.label}
+                  className="h-6 w-6"
+                />
+                <span className="text-[12px] font-medium">{item.label}</span>
+              </div>
             )}
           </NavLink>
         ))}
       </nav>
     </footer>
   );
-}
+};
+
+export default MainFooter;

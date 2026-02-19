@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.just_do_today.mapper.habit.DailyLogMapper">
+
+    <!--습관 수행 기록-->
+    <insert id="saveDailyLog">
+        INSERT INTO daily_log (member_id, user_habit_id, log_date, mood, note, created_at, updated_at)
+        VALUES (#{memberId}, #{userHabitId}, #{logDate}, #{mood}, #{note}, NOW(), NOW())
+        <!--이미 존재하면 아래 컬럼만 수정-->
+        ON DUPLICATE KEY UPDATE
+        mood = #{mood},
+        note = #{note},
+        updated_at = NOW()
+    </insert>
+
+    <select id="findLogByHabitAndDate" resultType="com.example.just_do_today.domain.Habit.DailyLog">
+        SELECT * FROM daily_log
+        WHERE member_id = #{memberId} AND user_habit_id = #{userHabitId} AND log_date = #{logDate}
+    </select>
+
+</mapper>

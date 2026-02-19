@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.just_do_today.mapper.habit.HabitMapper">
+
+    <!--습관 생성-->
+    <insert id="saveHabit" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO habit (name, is_public, created_at, updated_at)
+        VALUES (#{name}, #{isPublic}, NOW(), NOW())
+    </insert>
+
+    <insert id="saveUserHabit" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_habit (member_id, habit_id, status, frequency, start_date, created_at, updated_at)
+        VALUES (#{memberId}, #{habitId}, 'ACTIVE', #{frequency}, #{startDate}, NOW(), NOW())
+    </insert>
+
+    <insert id="saveSchedule">
+        INSERT INTO user_habit_schedule (user_habit_id, day_of_week, times_per_week, created_at, updated_at)
+        VALUES (#{userHabitId}, #{dayOfWeek}, #{timesPerWeek}, NOW(), NOW())
+    </insert>
+
+    <insert id="saveHabitCategory">
+        INSERT INTO habit_category (habit_id, category_id, created_at)
+        VALUES (#{habitId}, #{categoryId}, NOW())
+    </insert>
+
+    <!--습관 조회-->
+    <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="frequency" column="frequency"/>
+        <result property="status" column="status"/>
+
+        <collection property="days" ofType="java.lang.Integer">
+            <result column="day_of_week"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllByMemberId" resultMap="HabitResultMap">
+        SELECT
+            uh.id,
+            h.name,
+            uh.frequency,
+            uh.status,
+            uhs.day_of_week
+        FROM user_habit uh
+        JOIN habit h ON uh.habit_id = h.id
+        LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
+        WHERE uh.member_id = #{memberId}
+        ORDER BY uh.id DESC, uhs.day_of_week ASC
+    </select>
+
+    <!--습관 완료, 취소-->
+    <insert id="insertHistory">
+        INSERT INTO habit_history (user_habit_id, check_date, created_at)
+        VALUES (#{userHabitId}, #{checkDate}, NOW())
+    </insert>
+
+    <delete id="deleteHistory">
+        DELETE FROM habit_history
+        WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
+    </delete>
+
+    <select id="existsByDate" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM habit_history
+        WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
+    </select>
+
+</mapper>

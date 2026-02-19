@@ -1,5 +1,4 @@
 //카테고리 선택 컴포넌트
-
 export type CategoryItem = { name: string; icon?: string };
 
 type Props = {
@@ -11,14 +10,14 @@ type Props = {
   addButtonClassName?: string; // "직접 추가" 버튼의 추가 클래스 이름
 };
 
-export default function CategorySelector({
+const CategorySelector = ({
   title = '습관 카테고리를 선택해 주세요',
   categories,
   selected,
   onSelect,
   onOpenAdd,
   addButtonClassName,
-}: Props) {
+}: Props) => {
   const chipBase =
     'inline-flex items-center justify-center gap-2 rounded-full ' +
     'h-10 px-4 ' +
@@ -82,4 +81,6 @@ export default function CategorySelector({
       )}
     </div>
   );
-}
+};
+
+export default CategorySelector;
