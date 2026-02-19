@@ -56,8 +56,7 @@ public class UserHabitService {
 
         // 프리즈 사용, 복구
         if (userHabit.getStatus() == UserHabitStatus.FREEZE && userHabit.getFrozenUntil() != null) {
-            // 프리즈 활성 상태로 복구
-            memberService.addFreeze(member);
+            // 프리즈를 활성 상태로 복구
             userHabit.setFrozenUntil(null);
             userHabit.setStatus(UserHabitStatus.ACTIVE);
         } else {

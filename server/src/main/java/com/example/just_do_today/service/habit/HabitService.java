@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.example.just_do_today.domain.Habit.UserHabitStatus.ACTIVE;
+
 @Service
 @RequiredArgsConstructor
 public class HabitService {
@@ -32,7 +34,7 @@ public class HabitService {
         UserHabit userHabit = new UserHabit();
         userHabit.setMemberId(memberId);
         userHabit.setHabitId(habit.getId());
-        userHabit.setStatus("ACTIVE");
+        userHabit.setStatus(ACTIVE);
         userHabit.setFrequency(dto.getFrequency());
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.saveUserHabit(userHabit);
