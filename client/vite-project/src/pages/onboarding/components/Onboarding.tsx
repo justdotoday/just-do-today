@@ -19,13 +19,15 @@ const STEP_TO_PREVIOUS: Record<OnboardingStep, OnboardingStep | 'finish'> = {
 };
 
 type OnboardingProps = {
-  /** Step4 완료 또는 나중에 할래요 → HomePage(/) */
+  /** Step4 "시작하기" 완료 시 → HomeList */
   onFinish: () => void;
+  /** Step2/Step3 "나중에 할래요" 클릭 시 → HomeEmpty */
+  onSkip?: () => void;
   /** Step1에서 뒤로가기 → MainPage(/main) */
   onExit?: () => void;
 };
 
-const Onboarding = ({ onFinish, onExit }: OnboardingProps) => {
+const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
   const [step, setStep] = useState<OnboardingStep>('step1');
   const [nickname, setNickname] = useState('');
 
@@ -53,7 +55,7 @@ const Onboarding = ({ onFinish, onExit }: OnboardingProps) => {
           nickname={nickname || undefined}
           onNext={() => setStep('step3')}
           onBack={handleBack}
-          onSkip={onFinish}
+          onSkip={onSkip ?? onFinish}
         />
       );
     }
@@ -63,7 +65,7 @@ const Onboarding = ({ onFinish, onExit }: OnboardingProps) => {
           nickname={nickname || undefined}
           onNext={() => setStep('step3_5')}
           onBack={handleBack}
-          onSkip={onFinish}
+          onSkip={onSkip ?? onFinish}
         />
       );
     }

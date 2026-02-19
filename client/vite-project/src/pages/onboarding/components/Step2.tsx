@@ -6,6 +6,7 @@ import OnboardingStepHeader from './OnboardingStepHeader';
 import CategorySelector from '../../../components/habit/CategorySelector';
 import type { CategoryItem } from '../../../components/habit/CategorySelector';
 import CategoryAddModal from '../../../components/habit/CategoryAddModal';
+import { DEFAULT_CATEGORIES } from '../../../constants/categories';
 
 const ONBOARDING_CONTENT_MAX_WIDTH_PX = 414;
 const ONBOARDING_BOTTOM_PADDING_PX = 16;
@@ -14,19 +15,6 @@ const ONBOARDING_STEP_TOTAL = 3;
 const PRIMARY_BLUE_HEX = '#2563EB';
 
 const DEFAULT_NICKNAME_DISPLAY = '회원';
-
-const DEFAULT_CATEGORIES: CategoryItem[] = [
-  { name: '건강관리', icon: '💊' },
-  { name: '마음챙김', icon: '☕️' },
-  { name: '운동', icon: '🏋️' },
-  { name: '생활습관', icon: '✅' },
-  { name: '자기계발', icon: '📝' },
-  { name: '독서', icon: '📖' },
-  { name: '공부', icon: '📘' },
-  { name: '커리어', icon: '💼' },
-  { name: '모닝루틴', icon: '🌞' },
-  { name: '나이트루틴', icon: '🌙' },
-];
 
 type Step2Props = {
   onNext: () => void;

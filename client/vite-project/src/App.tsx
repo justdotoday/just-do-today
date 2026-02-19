@@ -8,7 +8,6 @@ import Layout from './layout/Layout';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/home/HomePage';
 import HomeEmpty from './pages/home/components/HomeEmpty';
-import HomeList from './pages/home/components/HomeList';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
 
@@ -46,7 +45,7 @@ export default function App() {
 
           {/* ✅ 작업용 라우트 */}
           <Route path="/home/empty" element={<HomeEmpty />} />
-          <Route path="/home/list" element={<HomeList />} />
+          <Route path="/home/list" element={<HomePage />} />
 
           <Route path="/createHabit" element={<CreateHabit />} />
         </Route>

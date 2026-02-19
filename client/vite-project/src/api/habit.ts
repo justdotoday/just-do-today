@@ -33,3 +33,8 @@ export const getHabits = async (): Promise<Habit[]> => {
   const res = await api.get('api/habits');
   return Array.isArray(res.data) ? res.data : [];
 };
+
+//습관 삭제 (명세: DELETE /api/habits/:id)
+export const deleteHabit = async (id: string): Promise<void> => {
+  await api.delete(`/api/habits/${id}`);
+};
