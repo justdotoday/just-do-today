@@ -13,6 +13,7 @@ public class UserHabit {
     private String status;
     private String frequency;
     private LocalDate startDate;
+    private String color;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

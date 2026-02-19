@@ -13,6 +13,7 @@ public class CreateHabitRequestDto {
     private String frequency;
     private List<Integer> days;
     private Boolean isPublic;
+    private String color;
 
     @JsonFormat (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;

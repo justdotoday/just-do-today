@@ -42,17 +42,5 @@ public class HabitController {
 
     }
 
-    // 습관 완료 처리
-    @PostMapping("/{habitId}/check")
-    public ResponseEntity<String> checkHabit(
-            @PathVariable Long habitId,
-            @RequestParam(required = false) String date
-    ) {
-        // 날짜가 안오면 오늘로 처리
-        LocalDate checkDate = (date != null)
-                ? LocalDate.parse(date) : LocalDate.now();
 
-        String result = habitService.checkHabit(habitId, checkDate);
-        return ResponseEntity.ok(result);
-    }
 }
