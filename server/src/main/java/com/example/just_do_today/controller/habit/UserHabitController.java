@@ -21,6 +21,16 @@ public class UserHabitController {
 
     private final UserHabitService userHabitService;
 
+    // 습관 완료/취소 토글
+    @PostMapping("/{userHabitId}/done")
+    public ResponseEntity<String> toggleCompletion(
+            @RequestHeader("X-MEMBER-ID") Long memberId,
+            @PathVariable Long userHabitId
+    ) {
+        String result = userHabitService.toggleCompletion(userHabitId);
+        return ResponseEntity.ok(result);
+    }
+
     // 하트 사용/취소 토글
     @PostMapping("/{userHabitId}/heart")
     public ResponseEntity<String> toggleHeart(@RequestHeader("X-MEMBER-ID") Long memberId, @PathVariable Long userHabitId) {
@@ -48,7 +58,7 @@ public class UserHabitController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) { // For postponeDays validation, if added
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

@@ -11,8 +11,8 @@
     </insert>
 
     <insert id="saveUserHabit" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_habit (member_id, habit_id, status, frequency, start_date, created_at, updated_at)
-        VALUES (#{memberId}, #{habitId}, #{status.value}, #{frequency}, #{startDate}, NOW(), NOW())
+        INSERT INTO user_habit (member_id, habit_id, status, color, frequency, start_date, created_at, updated_at)
+        VALUES (#{memberId}, #{habitId}, #{status.value}, #{color}, #{frequency}, #{startDate}, NOW(), NOW())
     </insert>
 
     <insert id="saveSchedule">
@@ -29,6 +29,7 @@
     <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
+        <result property="color" column="color"/>
         <result property="frequency" column="frequency"/>
         <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
@@ -42,6 +43,7 @@
         SELECT
             uh.id,
             h.name,
+            uh.color,
             uh.frequency,
             uh.status,
             uh.frozen_until,
@@ -64,11 +66,7 @@
         WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
     </delete>
 
-    <select id="existsByDate" resultType="boolean">
-        SELECT COUNT(*) > 0
-        FROM habit_history
-        WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
-    </select>
+
 
     <resultMap id="HabitHistoryResultMap" type="com.example.just_do_today.domain.Habit.HabitHistory">
         <id property="id" column="id"/>

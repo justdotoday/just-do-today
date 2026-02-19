@@ -10,6 +10,7 @@ import java.util.List;
 public class HabitResponseDto {
     private Long id;
     private String name;
+    private String color;
     private String category;
     private String frequency;
     private List<Integer> days;

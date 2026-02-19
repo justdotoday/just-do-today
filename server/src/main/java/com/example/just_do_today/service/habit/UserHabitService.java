@@ -20,6 +20,31 @@ public class UserHabitService {
     private final HabitMapper habitMapper;
     private final MemberService memberService;
 
+    // 습관 완료/취소 토글
+    @Transactional
+    public String toggleCompletion(Long userHabitId) {
+        LocalDate today = LocalDate.now();
+        HabitHistory existingHistory = habitMapper.findHistoryByHabitIdAndDate(userHabitId, today);
+
+        if (existingHistory == null) {
+            // 완료 처리
+            HabitHistory newHistory = new HabitHistory();
+            newHistory.setUserHabitId(userHabitId);
+            newHistory.setCheckDate(today);
+            newHistory.setStatus(HabitHistoryStatus.DONE);
+            habitMapper.insertHistory(newHistory);
+            return "COMPLETED";
+        } else if (existingHistory.getStatus() == HabitHistoryStatus.DONE) {
+            // 완료 취소 처리
+            habitMapper.deleteHistory(userHabitId, today);
+            return "CANCELLED";
+        } else {
+            // 하트로 완료된 경우 변경하지 않음
+            return "UNCHANGED";
+        }
+    }
+
+    // 하트 사용
     @Transactional
     public void toggleHeart(Long memberId, Long userHabitId) {
         Member member = memberService.getMemberById(memberId);
@@ -67,4 +92,5 @@ public class UserHabitService {
         }
         habitMapper.updateUserHabitStatusAndFrozenUntil(userHabit);
     }
+
 }
