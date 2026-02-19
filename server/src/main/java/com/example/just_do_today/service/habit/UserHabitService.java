@@ -23,6 +23,18 @@ public class UserHabitService {
     // 습관 완료/취소 토글
     @Transactional
     public String toggleCompletion(Long userHabitId) {
+        UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
+
+        // 1. 습관 존재 여부 확인
+        if (userHabit == null) {
+            throw new IllegalArgumentException("존재하지 않는 습관입니다.");
+        }
+
+        // 2. 습관 상태 확인 (ACTIVE 상태일 때만 가능)
+        if (userHabit.getStatus() != UserHabitStatus.ACTIVE) {
+            throw new IllegalArgumentException("활성 상태의 습관만 완료/취소할 수 있습니다.");
+        }
+
         LocalDate today = LocalDate.now();
         HabitHistory existingHistory = habitMapper.findHistoryByHabitIdAndDate(userHabitId, today);
 
@@ -49,6 +61,16 @@ public class UserHabitService {
     public void toggleHeart(Long memberId, Long userHabitId) {
         Member member = memberService.getMemberById(memberId);
         UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
+
+        // 1. 습관 존재 여부 확인
+        if (userHabit == null) {
+            throw new IllegalArgumentException("존재하지 않는 습관입니다.");
+        }
+
+        // 2. 습관 상태 확인 (ACTIVE 상태일 때만 가능)
+        if (userHabit.getStatus() != UserHabitStatus.ACTIVE) {
+            throw new IllegalArgumentException("습관이 활성상태가 아닙니다.");
+        }
 
         LocalDate today = LocalDate.now();
         HabitHistory existingHistory = habitMapper.findHistoryByHabitIdAndDate(userHabitId, today);
@@ -79,17 +101,25 @@ public class UserHabitService {
         Member member = memberService.getMemberById(memberId);
         UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
 
-        // 프리즈 사용, 복구
-        if (userHabit.getStatus() == UserHabitStatus.FREEZE && userHabit.getFrozenUntil() != null) {
+        // 1. 습관 존재 여부 확인
+        if (userHabit == null) {
+            throw new IllegalArgumentException("존재하지 않는 습관입니다.");
+        }
+
+        // 2. 상태에 따른 프리즈 로직 처리
+        if (userHabit.getStatus() == UserHabitStatus.FREEZE) {
             // 프리즈를 활성 상태로 복구
             userHabit.setFrozenUntil(null);
             userHabit.setStatus(UserHabitStatus.ACTIVE);
-        } else {
+        } else if (userHabit.getStatus() == UserHabitStatus.ACTIVE) {
             // 프리즈 사용
             memberService.deductFreeze(member);
             userHabit.setFrozenUntil(LocalDate.now().plusDays(postponeDays));
             userHabit.setStatus(UserHabitStatus.FREEZE);
+        } else {
+            throw new IllegalStateException("습관 상태를 확인해주세요.");
         }
+
         habitMapper.updateUserHabitStatusAndFrozenUntil(userHabit);
     }
 
