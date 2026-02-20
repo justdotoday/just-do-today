@@ -23,6 +23,7 @@ const CreateHabit = () => {
   const firstRow = day.slice(0, 4); // 월 화 수 목
   const secondRow = day.slice(4); // 금 토 일
   const [name, setName] = useState('');
+  const [habitColor, setHabitColor] = useState('#2563EB');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [frequency, setFrequency] = useState<Frequency>('DAILY');
   type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
@@ -145,8 +146,12 @@ const CreateHabit = () => {
       </header>
 
       <main className="mx-auto w-full max-w-[414px] px-4 pt-8 pb-32">
-        {/* 습관명 */}
-        <HabitNameField value={name} onChange={setName} />
+        <HabitNameField
+          value={name}
+          onChange={setName}
+          selectedColor={habitColor}
+          onColorChange={setHabitColor}
+        />
 
         {/* 카테고리 */}
         <section className="mt-10 space-y-4">

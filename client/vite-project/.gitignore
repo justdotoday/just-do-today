@@ -15,6 +15,7 @@ dist-ssr
 .DS_Store
 .idea/
 .env
+.cursor/
 
 # Editor directories and files
 .vscode/*

@@ -1,18 +1,17 @@
-import { useMemo } from 'react';
-
 // 컬러 팔레트 (Step2·CreateHabit 공통) — 5x4 그리드, 앵커(색상 버튼) 아래 팝오버
 type ColorPaletteProps = {
   onClose: () => void;
   onSelect: (color: string) => void;
   /** 선택된 색상(hex). 있으면 해당 칸에 흰색 체크 표시 */
   selectedColor?: string | null;
-  /** 팝오버 기준 버튼 위치 (getBoundingClientRect 결과) */
-  anchorRect?: DOMRect | null;
+  /** 팝오버 기준 버튼 위치 (getBoundingClientRect 결과). 항상 앵커 기반으로만 사용 */
+  anchorRect: DOMRect;
 };
 
+// 팔레트 기본 크기/위치 상수
 const PALETTE_WIDTH_PX = 320;
-const VIEWPORT_PADDING_PX = 12;
-const GAP_FROM_ANCHOR_PX = 8;
+const LEFT_OFFSET_PX = 12;
+const TOP_GAP_PX = 8;
 
 const ColorPalette = ({
   onClose,
@@ -20,7 +19,7 @@ const ColorPalette = ({
   selectedColor,
   anchorRect,
 }: ColorPaletteProps) => {
-  // 5열 x 4행 = 20색 (스크린샷 구성)
+  // 5열 x 4행 = 20색
   const colors = [
     '#FF6B6B',
     '#FF8FA3',
@@ -44,26 +43,11 @@ const ColorPalette = ({
     '#495057',
   ];
 
-  const anchoredLayout = useMemo(() => {
-    if (!anchorRect) return null;
-
-    const viewportWidth =
-      typeof window === 'undefined'
-        ? PALETTE_WIDTH_PX + VIEWPORT_PADDING_PX * 2
-        : window.innerWidth;
-
-    const left = Math.min(
-      Math.max(anchorRect.left - 12, VIEWPORT_PADDING_PX),
-      viewportWidth - PALETTE_WIDTH_PX - VIEWPORT_PADDING_PX
-    );
-    const top = anchorRect.bottom + GAP_FROM_ANCHOR_PX;
-    const pointerLeft = Math.min(
-      Math.max(anchorRect.left + anchorRect.width / 2 - left - 8, 14),
-      PALETTE_WIDTH_PX - 28
-    );
-
-    return { left, top, pointerLeft };
-  }, [anchorRect]);
+  const paletteStyle = {
+    width: PALETTE_WIDTH_PX,
+    left: Math.max(LEFT_OFFSET_PX, anchorRect.left - LEFT_OFFSET_PX),
+    top: anchorRect.bottom + TOP_GAP_PX,
+  };
 
   return (
     <div
@@ -73,30 +57,20 @@ const ColorPalette = ({
       aria-modal="true"
       aria-label="색상 선택"
     >
+      {/* 팔레트 영역: 외부 클릭은 닫기, 내부 클릭은 전파 차단 */}
       <div
         className="fixed rounded-2xl bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.12)]"
-        style={
-          anchoredLayout
-            ? {
-                width: PALETTE_WIDTH_PX,
-                left: anchoredLayout.left,
-                top: anchoredLayout.top,
-              }
-            : {
-                width: PALETTE_WIDTH_PX,
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-              }
-        }
+        style={paletteStyle}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* 상단 포인터(말풍선 꼬리) */}
         <div
           className="absolute -top-2 h-4 w-4 rotate-45 bg-white shadow-[0_-2px_4px_rgba(0,0,0,0.06)]"
-          style={{ left: anchoredLayout ? anchoredLayout.pointerLeft : 24 }}
+          style={{ left: 24 }}
           aria-hidden
         />
 
+        {/* 색상 스와치 그리드 */}
         <div className="grid grid-cols-5 gap-3">
           {colors.map((color) => {
             const isSelected =
@@ -115,6 +89,7 @@ const ColorPalette = ({
                 }}
                 aria-pressed={isSelected}
               >
+                {/* 현재 선택된 색상에만 체크 표시 */}
                 {isSelected && (
                   <span
                     className="text-base font-bold text-white"

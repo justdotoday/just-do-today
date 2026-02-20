@@ -83,7 +83,7 @@ const Step2 = ({
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-100">
-      {isColorPaletteOpen && (
+      {isColorPaletteOpen && paletteAnchorRect && (
         <ColorPalette
           onClose={() => setIsColorPaletteOpen(false)}
           onSelect={handleColorSelect}
