@@ -1,7 +1,7 @@
 package com.example.just_do_today.global.security;
 
+import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.dto.auth.LoginRequest;
-import com.example.just_do_today.dto.member.MemberResponse;
 import com.example.just_do_today.service.member.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -53,7 +53,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .profileImageUrl(profilePicture)
                     .build();
 
-            MemberResponse member = memberService.loginOrRegister(loginRequest);
+            Member member = memberService.loginOrRegister(loginRequest);
 
             String token = jwtProvider.createToken(member.getProviderId(), member.getUserRole());
 
