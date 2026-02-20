@@ -3,6 +3,7 @@ import HabitItem from './HabitItem';
 type Item = {
   id: string; //  React에서 map 돌릴 때 key로 사용, 나중에는 서버에서 내려주는 habitId가 될 예정
   title: string; //habitItem에 그대로 내려줄 습관 이름
+  color?: string | null; // 유저가 지정한 습관 색상
   status?: 'done' | 'heart' | 'freeze' | 'notDone'; // 완료/쉬어가기/미루기/미완료
   isSelected?: boolean; // 이 습관이 선택된 상태인지
 };
@@ -36,6 +37,7 @@ const HabitSection = ({
           <HabitItem
             key={item.id}
             title={item.title}
+            color={item.color}
             status={item.status}
             isSelected={item.isSelected}
             onOpenModal={onOpenModal ? () => onOpenModal(item.id) : undefined}

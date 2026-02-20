@@ -7,7 +7,7 @@ type Step3_5Props = {
 
 const Step3_5 = ({ onNext }: Step3_5Props) => {
   useEffect(() => {
-    // 1.5초 후 다음 단계로 이동
+    // 2초 후 다음 단계로 이동
     const timer = setTimeout(() => {
       onNext();
     }, 2000);

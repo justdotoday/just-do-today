@@ -28,6 +28,7 @@ const DONE_STATUSES: ReadonlySet<HabitItem['status']> = new Set([
 type HabitItem = {
   id: string;
   title: string;
+  color?: string | null;
   status?: 'done' | 'heart' | 'freeze' | 'notDone';
   isSelected?: boolean;
 };
@@ -49,11 +50,15 @@ type HomeListProps = {
 // ---------------------------------------------------------------------------
 // 순수 함수: 습관 → 카테고리별 섹션
 // ---------------------------------------------------------------------------
-/** API가 category를 null/비어있게 내려줄 때 쓰는 라벨 */
+/**
+ * 카테고리 표시 키. 직접 추가한 카테고리 등 API에서 내려준 이름은 그대로 사용하고,
+ * null/빈 값/문자열 "null"일 때만 '미분류'로 표시한다.
+ */
 function getCategoryKey(category: string | null | undefined): string {
-  const value = category?.trim();
-  if (value && value !== 'null') return value;
-  return UNCATEGORIZED_LABEL;
+  const value =
+    category == null ? '' : typeof category === 'string' ? category.trim() : '';
+  if (value === '' || value === 'null') return UNCATEGORIZED_LABEL;
+  return value;
 }
 
 /** 습관을 카테고리별 섹션으로 묶음. DEFAULT_CATEGORIES 순서 유지. */
@@ -86,6 +91,7 @@ function habitsToSections(habits: Habit[]): Section[] {
     items: (byCategory[categoryName] ?? []).map((h) => ({
       id: String(h.id),
       title: h.name,
+      color: h.color ?? null,
       status: 'notDone' as const,
     })),
   }));
