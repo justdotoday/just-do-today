@@ -28,6 +28,7 @@ const DONE_STATUSES: ReadonlySet<HabitItem['status']> = new Set([
 type HabitItem = {
   id: string;
   title: string;
+  color?: string | null;
   status?: 'done' | 'heart' | 'freeze' | 'notDone';
   isSelected?: boolean;
 };
@@ -90,6 +91,7 @@ function habitsToSections(habits: Habit[]): Section[] {
     items: (byCategory[categoryName] ?? []).map((h) => ({
       id: String(h.id),
       title: h.name,
+      color: h.color ?? null,
       status: 'notDone' as const,
     })),
   }));

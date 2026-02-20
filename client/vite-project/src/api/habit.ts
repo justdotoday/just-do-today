@@ -23,6 +23,7 @@ export const createHabit = async (payload: CreateHabitPayload) => {
     }),
     isPublic: payload.isPublic,
     startDate: payload.startDate,
+    color: payload.color,
   };
   const res = await api.post('/api/habits', body);
   return res.data;

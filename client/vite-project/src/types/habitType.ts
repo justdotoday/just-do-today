@@ -11,6 +11,7 @@ export type CreateHabitPayload = {
   days?: Day[];
   isPublic: boolean;
   startDate: string;
+  color: string;
 };
 
 //습관 조회 응답 타입
@@ -22,6 +23,8 @@ export type Habit = {
   name: string;
   /** API에서 null일 수 있음. 있으면 그대로 표시(직접 추가한 카테고리 포함), 없으면 '미분류' */
   category: string | null;
+  /** 유저가 선택한 습관 색상 (완료 체크 UI 등에 사용) */
+  color?: string | null;
   frequency: Frequency;
   days?: number[];
   status: string;
