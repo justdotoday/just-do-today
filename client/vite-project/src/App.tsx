@@ -14,7 +14,8 @@ import SettingsPage from './pages/settings/SettingsPage';
 export default function App() {
   return (
     <>
-      <Toaster position="top-center" />
+      {/* 습관생성 페이지에서 습관생성시 임시 토스트 노출 */}
+      <Toaster position="bottom-center" containerStyle={{ bottom: 112 }} />
 
       <Routes>
         {/* Layout 적용 구간 */}

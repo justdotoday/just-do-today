@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
+import { showToast } from '../../../components/ui/showToast';
+import CompletionSnackbar from '../../../components/ui/CompletionSnackbar';
 import HeaderDate from './HeaderDate';
 import HabitSection from './HabitSection';
 import StatusBottomSheet from './StatusBottomSheet';
@@ -152,12 +153,17 @@ const HomeList = ({ habits, onHabitsRefetch }: HomeListProps) => {
   const { sections, updateItem, selectOnly } = useHabitSections(habits);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [isStatusSheetOpen, setIsStatusSheetOpen] = useState(false);
+  const [completionSnackbarVisible, setCompletionSnackbarVisible] = useState(false);
 
   const handleToggleDone = (id: string) => {
-    updateItem(id, (item) => ({
-      ...item,
-      status: item.status === 'done' ? 'notDone' : 'done',
-    }));
+    updateItem(id, (item) => {
+      const nextDone = item.status !== 'done';
+      if (nextDone) setCompletionSnackbarVisible(true);
+      return {
+        ...item,
+        status: item.status === 'done' ? 'notDone' : 'done',
+      };
+    });
   };
 
   const openStatusSheet = (id: string) => {
@@ -178,15 +184,15 @@ const HomeList = ({ habits, onHabitsRefetch }: HomeListProps) => {
   const handleEdit = () => {
     closeStatusSheet();
     // TODO: 습관 수정 화면 연결 (예: /habit/edit/:id)
-    toast('수정 기능 준비 중이에요');
+    showToast.default('수정 기능 준비 중이에요');
   };
 
   const handleDelete = async (habitId: string) => {
     try {
       await deleteHabit(habitId);
-      toast.success('습관이 삭제되었어요');
+      showToast.success('습관이 삭제되었어요');
     } catch {
-      toast.error('삭제에 실패했어요');
+      showToast.error('삭제에 실패했어요');
       throw new Error('delete failed');
     }
   };
@@ -253,6 +259,15 @@ const HomeList = ({ habits, onHabitsRefetch }: HomeListProps) => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onHabitsRefetch={onHabitsRefetch}
+      />
+
+      <CompletionSnackbar
+        visible={completionSnackbarVisible}
+        onDismiss={() => setCompletionSnackbarVisible(false)}
+        onRecordClick={() => {
+          // TODO: 상세 기록 화면/모달 연결
+        }}
+        autoCloseMs={4000}
       />
     </div>
   );

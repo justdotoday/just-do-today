@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
 import type { CreateHabitPayload } from '../../types/habitType';
-import toast from 'react-hot-toast';
+import { showToast } from '../../components/ui/showToast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
@@ -83,7 +83,7 @@ const CreateHabit = () => {
     try {
       setIsLoading(true);
       await createHabit(payload);
-      toast.success('습관이 생성되었습니다!');
+      showToast.success('습관이 생성되었습니다!');
       navigate('/');
     } catch (err: unknown) {
       // 디버깅: 원인 확인용 (외부=백엔드/네트워크 vs 내부=프론트 로직)
@@ -98,7 +98,7 @@ const CreateHabit = () => {
         status != null
           ? `요청 실패 (${status})`
           : '네트워크 또는 서버 연결 실패';
-      toast.error(
+      showToast.error(
         typeof body === 'object' && body != null && 'message' in body
           ? String((body as { message: unknown }).message)
           : fallback
@@ -117,7 +117,7 @@ const CreateHabit = () => {
 
     if (hasSameCategory) {
       // 중복 입력 시: 새로 추가하지 않고 기존 카테고리를 선택
-      toast('이미 있는 카테고리예요', { icon: '⚠️' });
+      showToast.default('이미 있는 카테고리예요');
       setSelectedCategory(trimmed);
       setIsCategoryModalOpen(false);
       return;
@@ -128,7 +128,7 @@ const CreateHabit = () => {
     setSelectedCategory(trimmed); //  추가한 것만 선택(싱글)
     setIsCategoryModalOpen(false);
 
-    toast.success('카테고리가 추가되었어요');
+    showToast.success('카테고리가 추가되었어요');
   };
 
   return (
@@ -147,6 +147,7 @@ const CreateHabit = () => {
       </header>
 
       <main className="mx-auto w-full max-w-[414px] px-4 pt-8 pb-32">
+        {/* 습관명 입력 필드 */}
         <HabitNameField
           value={name}
           onChange={setName}
