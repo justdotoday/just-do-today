@@ -84,7 +84,7 @@ const CreateHabit = () => {
       setIsLoading(true);
       await createHabit(payload);
       showToast.success('습관이 생성되었습니다!');
-      navigate('/');
+      navigate('/home');
     } catch (err: unknown) {
       // 디버깅: 원인 확인용 (외부=백엔드/네트워크 vs 내부=프론트 로직)
       const msg =

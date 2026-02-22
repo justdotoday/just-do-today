@@ -153,7 +153,8 @@ const HomeList = ({ habits, onHabitsRefetch }: HomeListProps) => {
   const { sections, updateItem, selectOnly } = useHabitSections(habits);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [isStatusSheetOpen, setIsStatusSheetOpen] = useState(false);
-  const [completionSnackbarVisible, setCompletionSnackbarVisible] = useState(false);
+  const [completionSnackbarVisible, setCompletionSnackbarVisible] =
+    useState(false);
 
   const handleToggleDone = (id: string) => {
     updateItem(id, (item) => {
@@ -265,9 +266,8 @@ const HomeList = ({ habits, onHabitsRefetch }: HomeListProps) => {
         visible={completionSnackbarVisible}
         onDismiss={() => setCompletionSnackbarVisible(false)}
         onRecordClick={() => {
-          // TODO: 상세 기록 화면/모달 연결
+          // TODO: 기록하기 → 상세 기록 모달
         }}
-        autoCloseMs={4000}
       />
     </div>
   );

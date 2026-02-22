@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import Toast from './Toast';
 
-const DEFAULT_DURATION_MS = 3000;
+const DEFAULT_DURATION_MS = 1000;
 
 /**
  * Figma 스타일 토스트 컴포넌트를 사용하는 헬퍼.
