@@ -25,11 +25,19 @@
         VALUES (#{habitId}, #{categoryId}, NOW())
     </insert>
 
+    <update id="updateHabitCategory">
+        UPDATE habit_category
+        SET category_id = #{categoryId}
+        WHERE habit_id = #{habitId}
+    </update>
+
     <!--습관 조회-->
     <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="color" column="color"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="category" column="category_name"/>
         <result property="frequency" column="frequency"/>
         <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
@@ -44,12 +52,16 @@
             uh.id,
             h.name,
             uh.color,
+            c.id as category_id,
+            c.name as category_name,
             uh.frequency,
             uh.status,
             uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
         JOIN habit h ON uh.habit_id = h.id
+        LEFT JOIN habit_category hc ON h.id = hc.habit_id
+        LEFT JOIN category c ON hc.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
         WHERE uh.member_id = #{memberId}
         ORDER BY uh.id DESC, uhs.day_of_week ASC
@@ -114,5 +126,46 @@
             updated_at = NOW()
         WHERE id = #{id}
     </update>
+
+    <!--습관 삭제-->
+    <delete id="deleteUserHabit">
+        DELETE FROM user_habit WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteSchedulesByUserHabitId">
+        DELETE FROM user_habit_schedule WHERE user_habit_id = #{userHabitId}
+    </delete>
+
+    <delete id="deleteHistoriesByUserHabitId">
+        DELETE FROM habit_history WHERE user_habit_id = #{userHabitId}
+    </delete>
+
+    <delete id="deleteDailyLogsByUserHabitId">
+        DELETE FROM daily_log WHERE user_habit_id = #{userHabitId}
+    </delete>
+
+    <!--습관 수정-->
+    <update id="updateHabit">
+        UPDATE habit
+        SET
+            name = #{name},
+            is_public = #{isPublic},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateUserHabit">
+        UPDATE user_habit
+        SET
+            color = #{color},
+            frequency = #{frequency},
+            start_date = #{startDate},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="findHabitIdByUserHabitId" resultType="long">
+        SELECT habit_id FROM user_habit WHERE id = #{userHabitId}
+    </select>
 
 </mapper>

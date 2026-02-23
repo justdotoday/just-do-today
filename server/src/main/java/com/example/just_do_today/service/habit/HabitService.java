@@ -48,13 +48,8 @@ public class HabitService {
             }
         }
 
-        if (dto.getCategory() != null && !dto.getCategory().isEmpty()) {
-            try {
-                Long categoryId = Long.parseLong(dto.getCategory());
-                habitMapper.saveHabitCategory(habit.getId(), categoryId);
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid category ID format: " + dto.getCategory());
-            }
+        if (dto.getCategoryId() != null) {
+            habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
         }
 
     }
@@ -65,7 +60,49 @@ public class HabitService {
     }
 
     // 습관 삭제
+    @Transactional
+    public void deleteHabit(Long userHabitId) {
+        habitMapper.deleteSchedulesByUserHabitId(userHabitId);
+        habitMapper.deleteHistoriesByUserHabitId(userHabitId);
+        habitMapper.deleteDailyLogsByUserHabitId(userHabitId);
+        habitMapper.deleteUserHabit(userHabitId);
+    }
 
     // 습관 수정
+    @Transactional
+    public void updateHabit(Long userHabitId, com.example.just_do_today.dto.habit.UpdateHabitRequestDto dto) {
+        // 1. Habit 기본 정보 수정
+        Long habitId = habitMapper.findHabitIdByUserHabitId(userHabitId);
+        Habit habit = new Habit();
+        habit.setId(habitId);
+        habit.setName(dto.getName());
+        habit.setIsPublic(dto.getIsPublic());
+        habitMapper.updateHabit(habit);
+
+        // 2. UserHabit 수정 (유저별 습관 세부 정보)
+        UserHabit userHabit = new UserHabit();
+        userHabit.setId(userHabitId);
+        userHabit.setColor(dto.getColor());
+        userHabit.setFrequency(dto.getFrequency());
+        userHabit.setStartDate(dto.getStartDate());
+        habitMapper.updateUserHabit(userHabit);
+
+        // 3. 스케줄 수정 (삭제 후 재생성)
+        habitMapper.deleteSchedulesByUserHabitId(userHabitId);
+        if (dto.getDays() != null) {
+            for (Integer day : dto.getDays()) {
+                UserHabitSchedule schedule = new UserHabitSchedule();
+                schedule.setUserHabitId(userHabitId);
+                schedule.setDayOfWeek(day);
+                schedule.setTimesPerWeek(dto.getDays().size());
+                habitMapper.saveSchedule(schedule);
+            }
+        }
+
+        // 4. 카테고리 수정
+        if (dto.getCategoryId() != null) {
+            habitMapper.updateHabitCategory(habitId, dto.getCategoryId());
+        }
+    }
 
 }

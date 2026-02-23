@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class CreateHabitRequestDto {
+public class UpdateHabitRequestDto {
     private String name;
     private Long categoryId;
     private String frequency;
@@ -15,6 +15,6 @@ public class CreateHabitRequestDto {
     private Boolean isPublic;
     private String color;
 
-    @JsonFormat (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 }

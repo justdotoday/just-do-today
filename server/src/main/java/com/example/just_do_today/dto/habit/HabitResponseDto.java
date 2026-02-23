@@ -11,6 +11,7 @@ public class HabitResponseDto {
     private Long id;
     private String name;
     private String color;
+    private Long categoryId;
     private String category;
     private String frequency;
     private List<Integer> days;

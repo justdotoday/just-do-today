@@ -22,6 +22,7 @@ public interface HabitMapper {
     void saveSchedule(UserHabitSchedule userHabitSchedule);
     // 카테고리 연결 저장
     void saveHabitCategory(Long habitId, Long categoryId);
+    void updateHabitCategory(Long habitId, Long categoryId);
 
     // 2. 습관 목록 조회
     List<HabitResponseDto> findAllByMemberId(Long memberId);
@@ -42,4 +43,15 @@ public interface HabitMapper {
 
     // 유저-습관 상태 및 프리즈 해제 날짜 업데이트
     void updateUserHabitStatusAndFrozenUntil(UserHabit userHabit);
+
+    // 4. 습관 삭제
+    void deleteUserHabit(Long id);
+    void deleteSchedulesByUserHabitId(Long userHabitId);
+    void deleteHistoriesByUserHabitId(Long userHabitId);
+    void deleteDailyLogsByUserHabitId(Long userHabitId);
+
+    // 5. 습관 수정
+    void updateHabit(Habit habit);
+    void updateUserHabit(UserHabit userHabit);
+    Long findHabitIdByUserHabitId(Long userHabitId);
 }
