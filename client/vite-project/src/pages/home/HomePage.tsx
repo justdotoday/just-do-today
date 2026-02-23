@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getHabits } from '../../api/habit';
 import HomeEmpty from './components/HomeEmpty';
-import HomeList from './components/HomeList';
+import HomeList from './components/homeList';
 import type { Habit } from '../../types/habitType';
 
 type HomeViewState = { view?: 'list' | 'empty' };
@@ -15,7 +15,8 @@ const HomePage = () => {
 
   const fetchHabits = useCallback(async () => {
     try {
-      const data = await getHabits();
+      const today = new Date().toISOString().split('T')[0];
+      const data = await getHabits({ date: today });
       setHabits(data);
     } catch (err) {
       console.error(err);

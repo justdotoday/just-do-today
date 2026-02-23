@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
 import type { CreateHabitPayload } from '../../types/habitType';
-import { showToast } from '../../components/ui/showToast';
+import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';

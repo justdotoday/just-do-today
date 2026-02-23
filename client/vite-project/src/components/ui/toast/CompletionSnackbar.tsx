@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import checkLogo from '../../assets/snackbar/check-logo.png';
+import checkLogo from '../../../assets/snackbar/check-logo.png';
 
 /**
  * 완료 체크 시 하단에 뜨는 스낵바. "더 자세히 남겨볼까요?" + 기록하기 CTA.

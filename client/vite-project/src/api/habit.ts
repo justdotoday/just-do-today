@@ -29,9 +29,9 @@ export const createHabit = async (payload: CreateHabitPayload) => {
   return res.data;
 };
 
-//습관 목록 조회 (명세: GET /api/habits)
-export const getHabits = async (): Promise<Habit[]> => {
-  const res = await api.get('/api/habits');
+// 습관 목록 조회. date 있으면 해당 날짜 기준(서버에서 해당일 완료 상태 등 활용 가능)
+export const getHabits = async (params?: { date?: string }): Promise<Habit[]> => {
+  const res = await api.get('/api/habits', { params });
   return Array.isArray(res.data) ? res.data : [];
 };
 

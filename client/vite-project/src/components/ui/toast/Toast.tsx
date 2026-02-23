@@ -1,4 +1,9 @@
-import checkLogo from '../../assets/snackbar/check-logo.png';
+import toast from 'react-hot-toast';
+import checkLogo from '../../../assets/snackbar/check-logo.png';
+
+/* eslint-disable react-refresh/only-export-components -- Toast + showToast 한 파일에서 관리 */
+
+const DEFAULT_DURATION_MS = 1000;
 
 type ToastProps = {
   message: string;
@@ -51,6 +56,27 @@ const Toast = ({
       </p>
     </div>
   );
+};
+
+export const showToast = {
+  success: (message: string, duration = DEFAULT_DURATION_MS) => {
+    toast.custom(
+      (t) => <Toast message={message} variant="success" visible={t.visible} />,
+      { duration }
+    );
+  },
+  error: (message: string, duration = DEFAULT_DURATION_MS) => {
+    toast.custom(
+      (t) => <Toast message={message} variant="error" visible={t.visible} />,
+      { duration }
+    );
+  },
+  default: (message: string, duration = DEFAULT_DURATION_MS) => {
+    toast.custom(
+      (t) => <Toast message={message} variant="default" visible={t.visible} />,
+      { duration }
+    );
+  },
 };
 
 export default Toast;
