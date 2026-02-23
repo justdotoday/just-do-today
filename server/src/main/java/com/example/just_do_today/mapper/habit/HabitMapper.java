@@ -26,6 +26,7 @@ public interface HabitMapper {
 
     // 2. 습관 목록 조회
     List<HabitResponseDto> findAllByMemberId(Long memberId);
+    HabitResponseDto findByUserHabitId(Long userHabitId);
 
     //3. 습관 완료 처리
     // 완료

@@ -67,6 +67,25 @@
         ORDER BY uh.id DESC, uhs.day_of_week ASC
     </select>
 
+    <select id="findByUserHabitId" resultMap="HabitResultMap">
+        SELECT
+            uh.id,
+            h.name,
+            uh.color,
+            c.id as category_id,
+            c.name as category_name,
+            uh.frequency,
+            uh.status,
+            uh.frozen_until,
+            uhs.day_of_week
+        FROM user_habit uh
+        JOIN habit h ON uh.habit_id = h.id
+        LEFT JOIN habit_category hc ON h.id = hc.habit_id
+        LEFT JOIN category c ON hc.category_id = c.id
+        LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
+        WHERE uh.id = #{userHabitId}
+    </select>
+
     <!--습관 완료, 취소-->
     <insert id="insertHistory">
         INSERT INTO habit_history (user_habit_id, check_date, status, created_at)

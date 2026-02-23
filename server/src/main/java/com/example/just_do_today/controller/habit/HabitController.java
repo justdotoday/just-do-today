@@ -29,7 +29,7 @@ public class HabitController {
         return ResponseEntity.ok("습관 생성이 완료되었습니다!");
     }
 
-    // 습관 조회
+    // 습관 유저별 조회
     @GetMapping
     public ResponseEntity<List<HabitResponseDto>> getHabitList() {
 
@@ -40,6 +40,13 @@ public class HabitController {
 
         return ResponseEntity.ok(habits);
 
+    }
+
+    // 습관별 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<HabitResponseDto> getHabit(@PathVariable Long id) {
+        HabitResponseDto habit = habitService.getHabit(id);
+        return ResponseEntity.ok(habit);
     }
 
     // 습관 수정

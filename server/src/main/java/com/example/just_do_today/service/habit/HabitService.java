@@ -59,6 +59,11 @@ public class HabitService {
         return habitMapper.findAllByMemberId(memberId);
     }
 
+    @Transactional(readOnly = true)
+    public HabitResponseDto getHabit(Long userHabitId) {
+        return habitMapper.findByUserHabitId(userHabitId);
+    }
+
     // 습관 삭제
     @Transactional
     public void deleteHabit(Long userHabitId) {
