@@ -1,7 +1,6 @@
 package com.example.just_do_today.service.habit;
 
 import com.example.just_do_today.domain.Habit.Habit;
-import com.example.just_do_today.domain.Habit.HabitHistory;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
 import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
@@ -11,8 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
+
+import static com.example.just_do_today.domain.Habit.UserHabitStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,8 @@ public class HabitService {
         UserHabit userHabit = new UserHabit();
         userHabit.setMemberId(memberId);
         userHabit.setHabitId(habit.getId());
-        userHabit.setStatus("ACTIVE");
+        userHabit.setStatus(ACTIVE);
+        userHabit.setColor(dto.getColor());
         userHabit.setFrequency(dto.getFrequency());
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.saveUserHabit(userHabit);
@@ -63,28 +64,8 @@ public class HabitService {
         return habitMapper.findAllByMemberId(memberId);
     }
 
-    // 습관 완료 처리
-    @Transactional
-    public String checkHabit(Long userHabitId, LocalDate date) {
-        // 오늘 날짜에 체크 되어있는지 확인
-        boolean isDone = habitMapper.existsByDate(userHabitId, date);
+    // 습관 삭제
 
-        // 버튼 눌렀을 때 완료 -> 취소, 취소 -> 완료
-        if (isDone) {
-            // 완료되어있으면 -> 취소
-            habitMapper.deleteHistory(userHabitId,date);
-            return "Canceled";
-        } else {
-            // 완료 처리
-            HabitHistory history = new HabitHistory();
-            history.setUserHabitId(userHabitId);
-            history.setCheckDate(date);
-
-            habitMapper.insertHistory(history);
-            return "Checked";
-        }
-
-    }
-
+    // 습관 수정
 
 }

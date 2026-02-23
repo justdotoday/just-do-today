@@ -11,8 +11,8 @@
     </insert>
 
     <insert id="saveUserHabit" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_habit (member_id, habit_id, status, frequency, start_date, created_at, updated_at)
-        VALUES (#{memberId}, #{habitId}, 'ACTIVE', #{frequency}, #{startDate}, NOW(), NOW())
+        INSERT INTO user_habit (member_id, habit_id, status, color, frequency, start_date, created_at, updated_at)
+        VALUES (#{memberId}, #{habitId}, #{status.value}, #{color}, #{frequency}, #{startDate}, NOW(), NOW())
     </insert>
 
     <insert id="saveSchedule">
@@ -29,8 +29,10 @@
     <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
+        <result property="color" column="color"/>
         <result property="frequency" column="frequency"/>
-        <result property="status" column="status"/>
+        <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.UserHabitStatus"/>
+        <result property="frozenUntil" column="frozen_until"/>
 
         <collection property="days" ofType="java.lang.Integer">
             <result column="day_of_week"/>
@@ -41,8 +43,10 @@
         SELECT
             uh.id,
             h.name,
+            uh.color,
             uh.frequency,
             uh.status,
+            uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
         JOIN habit h ON uh.habit_id = h.id
@@ -53,8 +57,8 @@
 
     <!--습관 완료, 취소-->
     <insert id="insertHistory">
-        INSERT INTO habit_history (user_habit_id, check_date, created_at)
-        VALUES (#{userHabitId}, #{checkDate}, NOW())
+        INSERT INTO habit_history (user_habit_id, check_date, status, created_at)
+        VALUES (#{userHabitId}, #{checkDate}, #{status}, NOW())
     </insert>
 
     <delete id="deleteHistory">
@@ -67,5 +71,48 @@
         FROM habit_history
         WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
     </select>
+
+    <resultMap id="HabitHistoryResultMap" type="com.example.just_do_today.domain.Habit.HabitHistory">
+        <id property="id" column="id"/>
+        <result property="userHabitId" column="user_habit_id"/>
+        <result property="checkDate" column="check_date"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findHistoryByHabitIdAndDate" resultMap="HabitHistoryResultMap">
+        SELECT
+            id,
+            user_habit_id,
+            check_date,
+            status,
+            created_at
+        FROM habit_history
+        WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
+    </select>
+
+    <select id="findUserHabitById" resultType="com.example.just_do_today.domain.Habit.UserHabit">
+        SELECT
+            id,
+            member_id,
+            habit_id,
+            status,
+            frozen_until,
+            frequency,
+            start_date,
+            created_at,
+            updated_at
+        FROM user_habit
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateUserHabitStatusAndFrozenUntil">
+        UPDATE user_habit
+        SET
+            status = #{status.value},
+            frozen_until = #{frozenUntil},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
 
 </mapper>

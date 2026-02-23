@@ -1,12 +1,15 @@
 package com.example.just_do_today.service.member;
 
+import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.dto.auth.LoginRequest;
-import com.example.just_do_today.dto.member.MemberRequest;
-import com.example.just_do_today.dto.member.MemberResponse;
 import com.example.just_do_today.dto.member.constant.Role;
+import com.example.just_do_today.global.exception.MemberNotFoundException;
+import com.example.just_do_today.global.exception.NotEnoughFreezesException;
+import com.example.just_do_today.global.exception.NotEnoughHeartsException;
 import com.example.just_do_today.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -16,21 +19,30 @@ public class MemberService {
 
     private final MemberMapper memberMapper;
 
-    public MemberResponse getMember(String provider, String providerId) {
-        return memberMapper.findByProviderId(provider,providerId);
+    public Member getMember(String provider, String providerId) {
+        return memberMapper.findByProviderId(provider, providerId);
     }
 
-    public MemberResponse loginOrRegister(LoginRequest loginRequest) {
+    public Member getMemberById(Long id) {
+        Member member = memberMapper.findById(id);
+        if (member == null) {
+            throw new MemberNotFoundException("Member with id " + id + " not found.");
+        }
+        return member;
+    }
+
+    @Transactional
+    public Member loginOrRegister(LoginRequest loginRequest) {
 
         // 회원 조회 (로그인)
-        MemberResponse member = memberMapper.findByProviderId(
+        Member member = memberMapper.findByProviderId(
                 loginRequest.getProvider(),
                 loginRequest.getProviderId()
         );
 
         // 없으면 회원가입
         if (member == null) {
-            MemberRequest saveDto = MemberRequest.builder()
+            Member newMember = Member.builder()
                     .provider(loginRequest.getProvider())
                     .providerId(loginRequest.getProviderId())
                     .profileImageUrl(loginRequest.getProfileImageUrl())
@@ -38,7 +50,7 @@ public class MemberService {
                     .userCode(UUID.randomUUID().toString().substring(0,6))
                     .userRole(Role.USER.getKey())
                     .build();
-            memberMapper.saveMember(saveDto);
+            memberMapper.saveMember(newMember);
 
             return memberMapper.findByProviderId(
                     loginRequest.getProvider(),
@@ -47,5 +59,40 @@ public class MemberService {
         }
 
         return member;
+    }
+
+    // 하트 사용, 추가
+    @Transactional
+    public void deductHeart(Member member) {
+        if (member.getHearts() <= 0) {
+            throw new NotEnoughHeartsException("하트 개수가 부족합니다.");
+        }
+        member.setHearts(member.getHearts() - 1);
+        memberMapper.updateMemberHearts(member);
+    }
+
+    @Transactional
+    public void addHeart(Member member) {
+        member.setHearts(member.getHearts() + 1);
+        memberMapper.updateMemberHearts(member);
+    }
+
+    // 프리즈 사용, 추가
+    @Transactional
+    public void deductFreeze(Member member) {
+        if (member.getFreezes() <= 0) {
+            throw new NotEnoughFreezesException("프리즈 개수가 부족합니다.");
+        }
+        member.setFreezes(member.getFreezes() - 1);
+        memberMapper.updateMemberFreezes(member);
+    }
+
+    @Transactional
+    public void addFreeze(Member member) {
+        if (member.getFreezes() >= 5) {
+            return;
+        }
+        member.setFreezes(member.getFreezes() + 1);
+        memberMapper.updateMemberFreezes(member);
     }
 }

@@ -1,15 +1,15 @@
 package com.example.just_do_today.service.auth;
 
+import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.dto.auth.LoginRequest;
 import com.example.just_do_today.dto.auth.kakao.KakaoMe;
 import com.example.just_do_today.dto.auth.kakao.KakaoToken;
-import com.example.just_do_today.dto.member.MemberResponse;
 import com.example.just_do_today.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 @RequiredArgsConstructor
 public class KakaoAuthService {
 
@@ -20,7 +20,7 @@ public class KakaoAuthService {
     @Value("${kakao.client-secret:}") private String clientSecret;
     @Value("${kakao.redirect-uri}") private String redirectUri;
 
-    public MemberResponse loginWithCode (String code) {
+    public Member loginWithCode (String code) {
         KakaoToken token = kakaoClient.exchangeToken(code,clientId,clientSecret,redirectUri);
         KakaoMe me = kakaoClient.getMe(token.accessToken());
 

@@ -9,7 +9,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
-@Component
+//@Component
 public class KakaoClient {
 
     private final RestClient restClient = RestClient.create();
