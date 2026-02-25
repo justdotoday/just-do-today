@@ -1,5 +1,6 @@
 package com.example.just_do_today.dto.habit;
 
+import com.example.just_do_today.domain.Habit.Frequency;
 import com.example.just_do_today.domain.Habit.UserHabitStatus;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ public class HabitResponseDto {
     private String color;
     private Long categoryId;
     private String category;
-    private String frequency;
+    private Frequency frequency;
     private List<Integer> days;
     private UserHabitStatus status;
     private LocalDate frozenUntil;

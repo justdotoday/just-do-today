@@ -22,7 +22,7 @@ public interface HabitMapper {
     void saveSchedule(UserHabitSchedule userHabitSchedule);
     // 카테고리 연결 저장
     void saveHabitCategory(Long habitId, Long categoryId);
-    void updateHabitCategory(Long habitId, Long categoryId);
+    void deleteHabitCategoryByHabitId(Long habitId);
 
     // 2. 습관 목록 조회
     List<HabitResponseDto> findAllByMemberId(Long memberId);

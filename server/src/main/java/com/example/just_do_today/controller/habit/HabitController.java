@@ -18,13 +18,13 @@ public class HabitController {
     private final HabitService habitService;
 
     // 습관 생성
-    @PostMapping
-    public ResponseEntity<String> createHabit(@RequestBody CreateHabitRequestDto dto) {
+    @PostMapping("/{id}")
+    public ResponseEntity<String> createHabit(@PathVariable Long id, @RequestBody CreateHabitRequestDto dto) {
 
         // 임시
-        Long memberId = 1L;
+//        Long memberId = 1L;
 
-        habitService.createHabit(memberId, dto);
+        habitService.createHabit(id, dto);
 
         return ResponseEntity.ok("습관 생성이 완료되었습니다!");
     }

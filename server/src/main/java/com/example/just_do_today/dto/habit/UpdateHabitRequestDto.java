@@ -1,5 +1,6 @@
 package com.example.just_do_today.dto.habit;
 
+import com.example.just_do_today.domain.Habit.Frequency;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class UpdateHabitRequestDto {
     private String name;
     private Long categoryId;
-    private String frequency;
+    private Frequency frequency;
     private List<Integer> days;
     private Boolean isPublic;
     private String color;

@@ -1,5 +1,6 @@
 package com.example.just_do_today.service.habit;
 
+import com.example.just_do_today.domain.Habit.Frequency;
 import com.example.just_do_today.domain.Habit.Habit;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
@@ -38,7 +39,7 @@ public class HabitService {
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.saveUserHabit(userHabit);
 
-        if (dto.getDays() != null) {
+        if ("CUSTOM".equals(dto.getFrequency()) && dto.getDays() != null) {
             for (Integer day : dto.getDays()) {
                 UserHabitSchedule schedule = new UserHabitSchedule();
                 schedule.setUserHabitId(userHabit.getId());
@@ -48,9 +49,10 @@ public class HabitService {
             }
         }
 
-        if (dto.getCategoryId() != null) {
-            habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
+        if (dto.getCategoryId() == null) {
+            throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
         }
+        habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
 
     }
     // 습관 조회 (읽어오기만 하므로)
@@ -94,7 +96,7 @@ public class HabitService {
 
         // 3. 스케줄 수정 (삭제 후 재생성)
         habitMapper.deleteSchedulesByUserHabitId(userHabitId);
-        if (dto.getDays() != null) {
+        if ("CUSTOM".equals(dto.getFrequency()) && dto.getDays() != null) {
             for (Integer day : dto.getDays()) {
                 UserHabitSchedule schedule = new UserHabitSchedule();
                 schedule.setUserHabitId(userHabitId);
@@ -104,10 +106,12 @@ public class HabitService {
             }
         }
 
-        // 4. 카테고리 수정
-        if (dto.getCategoryId() != null) {
-            habitMapper.updateHabitCategory(habitId, dto.getCategoryId());
+        // 4. 카테고리 수정 (삭제 후 재생성)
+        if (dto.getCategoryId() == null) {
+            throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
         }
+        habitMapper.deleteHabitCategoryByHabitId(habitId);
+        habitMapper.saveHabitCategory(habitId, dto.getCategoryId());
     }
 
 }

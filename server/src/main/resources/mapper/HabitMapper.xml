@@ -25,11 +25,9 @@
         VALUES (#{habitId}, #{categoryId}, NOW())
     </insert>
 
-    <update id="updateHabitCategory">
-        UPDATE habit_category
-        SET category_id = #{categoryId}
-        WHERE habit_id = #{habitId}
-    </update>
+    <delete id="deleteHabitCategoryByHabitId">
+        DELETE FROM habit_category WHERE habit_id = #{habitId}
+    </delete>
 
     <!--습관 조회-->
     <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
@@ -47,6 +45,7 @@
         </collection>
     </resultMap>
 
+    <!--습관 전체 조회-->
     <select id="findAllByMemberId" resultMap="HabitResultMap">
         SELECT
             uh.id,
@@ -66,7 +65,7 @@
         WHERE uh.member_id = #{memberId}
         ORDER BY uh.id DESC, uhs.day_of_week ASC
     </select>
-
+    <!--습관 개별 조회-->
     <select id="findByUserHabitId" resultMap="HabitResultMap">
         SELECT
             uh.id,
