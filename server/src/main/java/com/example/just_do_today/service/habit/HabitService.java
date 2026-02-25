@@ -1,5 +1,6 @@
 package com.example.just_do_today.service.habit;
 
+import com.example.just_do_today.domain.Habit.Frequency;
 import com.example.just_do_today.domain.Habit.Habit;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
@@ -38,7 +39,7 @@ public class HabitService {
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.saveUserHabit(userHabit);
 
-        if (dto.getDays() != null) {
+        if ("CUSTOM".equals(dto.getFrequency()) && dto.getDays() != null) {
             for (Integer day : dto.getDays()) {
                 UserHabitSchedule schedule = new UserHabitSchedule();
                 schedule.setUserHabitId(userHabit.getId());
@@ -48,14 +49,10 @@ public class HabitService {
             }
         }
 
-        if (dto.getCategory() != null && !dto.getCategory().isEmpty()) {
-            try {
-                Long categoryId = Long.parseLong(dto.getCategory());
-                habitMapper.saveHabitCategory(habit.getId(), categoryId);
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid category ID format: " + dto.getCategory());
-            }
+        if (dto.getCategoryId() == null) {
+            throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
         }
+        habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
 
     }
     // 습관 조회 (읽어오기만 하므로)
@@ -64,8 +61,57 @@ public class HabitService {
         return habitMapper.findAllByMemberId(memberId);
     }
 
+    @Transactional(readOnly = true)
+    public HabitResponseDto getHabit(Long userHabitId) {
+        return habitMapper.findByUserHabitId(userHabitId);
+    }
+
     // 습관 삭제
+    @Transactional
+    public void deleteHabit(Long userHabitId) {
+        habitMapper.deleteSchedulesByUserHabitId(userHabitId);
+        habitMapper.deleteHistoriesByUserHabitId(userHabitId);
+        habitMapper.deleteDailyLogsByUserHabitId(userHabitId);
+        habitMapper.deleteUserHabit(userHabitId);
+    }
 
     // 습관 수정
+    @Transactional
+    public void updateHabit(Long userHabitId, com.example.just_do_today.dto.habit.UpdateHabitRequestDto dto) {
+        // 1. Habit 기본 정보 수정
+        Long habitId = habitMapper.findHabitIdByUserHabitId(userHabitId);
+        Habit habit = new Habit();
+        habit.setId(habitId);
+        habit.setName(dto.getName());
+        habit.setIsPublic(dto.getIsPublic());
+        habitMapper.updateHabit(habit);
+
+        // 2. UserHabit 수정 (유저별 습관 세부 정보)
+        UserHabit userHabit = new UserHabit();
+        userHabit.setId(userHabitId);
+        userHabit.setColor(dto.getColor());
+        userHabit.setFrequency(dto.getFrequency());
+        userHabit.setStartDate(dto.getStartDate());
+        habitMapper.updateUserHabit(userHabit);
+
+        // 3. 스케줄 수정 (삭제 후 재생성)
+        habitMapper.deleteSchedulesByUserHabitId(userHabitId);
+        if ("CUSTOM".equals(dto.getFrequency()) && dto.getDays() != null) {
+            for (Integer day : dto.getDays()) {
+                UserHabitSchedule schedule = new UserHabitSchedule();
+                schedule.setUserHabitId(userHabitId);
+                schedule.setDayOfWeek(day);
+                schedule.setTimesPerWeek(dto.getDays().size());
+                habitMapper.saveSchedule(schedule);
+            }
+        }
+
+        // 4. 카테고리 수정 (삭제 후 재생성)
+        if (dto.getCategoryId() == null) {
+            throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
+        }
+        habitMapper.deleteHabitCategoryByHabitId(habitId);
+        habitMapper.saveHabitCategory(habitId, dto.getCategoryId());
+    }
 
 }
