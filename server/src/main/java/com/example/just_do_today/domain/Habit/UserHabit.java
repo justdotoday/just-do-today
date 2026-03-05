@@ -12,7 +12,7 @@ public class UserHabit {
     private Long habitId;
     private UserHabitStatus status;
     private LocalDate frozenUntil;
-    private String frequency;
+    private Frequency frequency;
     private LocalDate startDate;
     private String color;
     private LocalDateTime createdAt;
