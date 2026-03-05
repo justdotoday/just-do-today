@@ -7,6 +7,8 @@ const api = axios.create({
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
+    // JWT 인증 전까지 임시로 고정 memberId 사용
+    'X-MEMBER-ID': '1',
   },
 });
 

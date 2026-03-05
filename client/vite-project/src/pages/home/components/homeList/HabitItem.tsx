@@ -13,6 +13,7 @@ type Props = {
   onOpenModal?: () => void;
   onToggleDone?: () => void;
   onToggleSelect?: () => void;
+  onIceThaw?: () => void;
 };
 
 const HabitItem = ({
@@ -23,6 +24,7 @@ const HabitItem = ({
   onOpenModal,
   onToggleDone,
   onToggleSelect,
+  onIceThaw,
 }: Props) => {
   const wrapperClass = isSelected
     ? 'rounded-xl bg-blue-50 px-2 py-3'
@@ -42,7 +44,11 @@ const HabitItem = ({
 
   const handleToggleDone = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    onToggleDone?.();
+    if (status === 'freeze') {
+      onIceThaw?.();
+    } else {
+      onToggleDone?.();
+    }
   };
 
   const handleOpenModal = (event: MouseEvent<HTMLButtonElement>) => {

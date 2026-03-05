@@ -15,6 +15,7 @@ export type HomeListProps = {
   onToggleDone: (id: string) => void;
   onOpenModal: (id: string) => void;
   onToggleSelect: (id: string) => void;
+  onIceThaw: (id: string) => void;
 };
 
 const HomeList = ({
@@ -26,6 +27,7 @@ const HomeList = ({
   onToggleDone,
   onOpenModal,
   onToggleSelect,
+  onIceThaw,
 }: HomeListProps) => {
   return (
     <div className="px-4 pt-6 pb-28">
@@ -46,6 +48,7 @@ const HomeList = ({
             onToggleDone={onToggleDone}
             onOpenModal={onOpenModal}
             onToggleSelect={onToggleSelect}
+            onIceThaw={onIceThaw}
           />
         ))}
       </div>

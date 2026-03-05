@@ -8,10 +8,13 @@ const DONE_STATUSES: ReadonlySet<string> = new Set(['done', 'heart']);
 
 export type HabitItem = {
   id: string;
+  userHabitId?: number;
   title: string;
   color?: string | null;
   status?: 'done' | 'heart' | 'freeze' | 'notDone';
   isSelected?: boolean;
+  /** 얼음 상태일 때 미룬 날짜 */
+  freezeUntil?: Date;
 };
 
 export type Section = {
@@ -24,36 +27,57 @@ export function formatDateLabel(date: Date): string {
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
+function apiStatusToUiStatus(status: string): HabitItem['status'] {
+  switch (status) {
+    case 'freeze':
+      return 'freeze';
+    case 'done':
+      return 'done';
+    case 'heart':
+      return 'heart';
+    default:
+      return 'notDone';
+  }
+}
+
 function getCategoryKey(category: string | null | undefined): string {
-  const value =
-    category == null ? '' : typeof category === 'string' ? category.trim() : '';
-  return value === '' || value === 'null' ? UNCATEGORIZED_LABEL : value;
+  if (category == null) return UNCATEGORIZED_LABEL;
+  const trimmed = category.trim();
+  if (trimmed === '' || trimmed === 'null') return UNCATEGORIZED_LABEL;
+  return trimmed;
 }
 
 export function habitsToSections(habits: Habit[]): Section[] {
   if (habits.length === 0) return [];
 
-  const byCategory = habits.reduce<Record<string, Habit[]>>((acc, h) => {
+  // 카테고리별로 그룹핑
+  const byCategory: Record<string, Habit[]> = {};
+  habits.forEach((h) => {
     const key = getCategoryKey(h.category);
-    (acc[key] ??= []).push(h);
-    return acc;
-  }, {});
+    if (!byCategory[key]) byCategory[key] = [];
+    byCategory[key].push(h);
+  });
 
+  // 알려진 카테고리 순서 우선, 나머지는 뒤에 배치
   const knownOrder = DEFAULT_CATEGORIES.map((c) => c.name).filter(
-    (name) => (byCategory[name]?.length ?? 0) > 0
+    (name) => byCategory[name] != null
   );
-  const rest = Object.keys(byCategory).filter((name) => !knownOrder.includes(name));
+  const rest = Object.keys(byCategory).filter(
+    (name) => !knownOrder.includes(name)
+  );
   const order = [...knownOrder, ...rest];
 
   return order.map((categoryName) => ({
     icon:
-      DEFAULT_CATEGORIES.find((c) => c.name === categoryName)?.icon ?? FALLBACK_CATEGORY_ICON,
+      DEFAULT_CATEGORIES.find((c) => c.name === categoryName)?.icon ??
+      FALLBACK_CATEGORY_ICON,
     title: categoryName,
     items: (byCategory[categoryName] ?? []).map((h) => ({
       id: String(h.id),
+      userHabitId: Number(h.id),
       title: h.name,
       color: h.color ?? null,
-      status: 'notDone' as const,
+      status: apiStatusToUiStatus(h.status),
     })),
   }));
 }

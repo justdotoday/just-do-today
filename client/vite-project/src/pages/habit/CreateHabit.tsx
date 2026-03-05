@@ -71,9 +71,17 @@ const CreateHabit = () => {
 
   const handleSubmit = async () => {
     if (!canSubmit || isLoading) return;
+
+    // 선택한 카테고리 이름으로 DB ID 조회 (직접 추가한 카테고리는 id가 없어 차단)
+    const categoryId = categories.find((c) => c.name === selectedCategory)?.id;
+    if (!categoryId) {
+      showToast.error('기본 카테고리 중 하나를 선택해 주세요');
+      return;
+    }
+
     const payload: CreateHabitPayload = {
       name: name.trim(),
-      category: selectedCategory!,
+      categoryId,
       frequency,
       ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,

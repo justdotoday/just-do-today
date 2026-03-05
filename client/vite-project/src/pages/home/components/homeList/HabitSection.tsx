@@ -16,6 +16,7 @@ type Props = {
   onOpenModal?: (id: string) => void;
   onToggleDone?: (id: string) => void;
   onToggleSelect?: (id: string) => void;
+  onIceThaw?: (id: string) => void;
 };
 
 const HabitSection = ({
@@ -25,6 +26,7 @@ const HabitSection = ({
   onOpenModal,
   onToggleDone,
   onToggleSelect,
+  onIceThaw,
 }: Props) => {
   return (
     <section>
@@ -48,6 +50,7 @@ const HabitSection = ({
             onToggleSelect={
               onToggleSelect ? () => onToggleSelect(item.id) : undefined
             }
+            onIceThaw={onIceThaw ? () => onIceThaw(item.id) : undefined}
           />
         ))}
       </div>

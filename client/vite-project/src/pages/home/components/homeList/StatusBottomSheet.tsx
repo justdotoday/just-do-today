@@ -15,6 +15,7 @@ type Props = {
   heartCount?: number;
   onClose: () => void;
   onSelectStatus: (status: 'freeze' | 'heart') => void;
+  onIceClick?: () => void;
   onEdit?: () => void;
   onDelete?: (habitId: string) => void | Promise<void>;
   onHabitsRefetch?: () => void | Promise<void>;
@@ -26,6 +27,7 @@ const StatusBottomSheet = ({
   habitId,
   onClose,
   onSelectStatus,
+  onIceClick,
   onEdit,
   onDelete,
   onHabitsRefetch,
@@ -123,6 +125,7 @@ const StatusBottomSheet = ({
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             type="button"
+            onClick={onIceClick}
             className="relative aspect-4/3 overflow-hidden rounded-2xl text-left"
           >
             <img
