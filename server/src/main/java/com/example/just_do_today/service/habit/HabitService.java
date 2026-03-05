@@ -1,6 +1,6 @@
 package com.example.just_do_today.service.habit;
 
-import com.example.just_do_today.domain.Habit.Frequency;
+import com.example.just_do_today.domain.Habit.Enum.Color;
 import com.example.just_do_today.domain.Habit.Habit;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.just_do_today.domain.Habit.UserHabitStatus.ACTIVE;
+import static com.example.just_do_today.domain.Habit.Enum.UserHabitStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class HabitService {
         userHabit.setMemberId(memberId);
         userHabit.setHabitId(habit.getId());
         userHabit.setStatus(ACTIVE);
-        userHabit.setColor(dto.getColor());
+        userHabit.setColor(Color.fromHex(dto.getColor()));
         userHabit.setFrequency(dto.getFrequency());
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.saveUserHabit(userHabit);
@@ -55,12 +55,12 @@ public class HabitService {
         habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
 
     }
-    // 습관 조회 (읽어오기만 하므로)
+    // 유저별 습관 조회 (읽어오기만 하므로)
     @Transactional(readOnly = true)
     public List<HabitResponseDto> getHabitList(Long memberId) {
         return habitMapper.findAllByMemberId(memberId);
     }
-
+    // 습관별 조회
     @Transactional(readOnly = true)
     public HabitResponseDto getHabit(Long userHabitId) {
         return habitMapper.findByUserHabitId(userHabitId);
@@ -89,7 +89,7 @@ public class HabitService {
         // 2. UserHabit 수정 (유저별 습관 세부 정보)
         UserHabit userHabit = new UserHabit();
         userHabit.setId(userHabitId);
-        userHabit.setColor(dto.getColor());
+        userHabit.setColor(Color.fromHex(dto.getColor()));
         userHabit.setFrequency(dto.getFrequency());
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.updateUserHabit(userHabit);

@@ -1,4 +1,4 @@
-package com.example.just_do_today.domain.Habit;
+package com.example.just_do_today.domain.Habit.Enum;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserHabitStatus {
-    ACTIVE("active"),
-    FREEZE("freeze");
-
-    private final String value;
+    ACTIVE,
+    FREEZE;
 }

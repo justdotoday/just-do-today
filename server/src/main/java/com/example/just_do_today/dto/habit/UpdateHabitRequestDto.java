@@ -1,6 +1,6 @@
 package com.example.just_do_today.dto.habit;
 
-import com.example.just_do_today.domain.Habit.Frequency;
+import com.example.just_do_today.domain.Habit.Enum.Frequency;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package com.example.just_do_today.dto.habit;
 
-import com.example.just_do_today.domain.Habit.Frequency;
-import com.example.just_do_today.domain.Habit.UserHabitStatus;
+import com.example.just_do_today.domain.Habit.Enum.Frequency;
+import com.example.just_do_today.domain.Habit.Enum.UserHabitStatus;
 import lombok.Data;
 
 import java.time.LocalDate;

@@ -17,47 +17,36 @@ public class HabitController {
 
     private final HabitService habitService;
 
-    // 습관 생성
-    @PostMapping("/{id}")
-    public ResponseEntity<String> createHabit(@PathVariable Long id, @RequestBody CreateHabitRequestDto dto) {
-
-        // 임시
-//        Long memberId = 1L;
-
-        habitService.createHabit(id, dto);
-
+    // 습관 생성 memberId
+    @PostMapping("/{memberId}")
+    public ResponseEntity<String> createHabit(@PathVariable Long memberId, @RequestBody CreateHabitRequestDto dto) {
+        habitService.createHabit(memberId, dto);
         return ResponseEntity.ok("습관 생성이 완료되었습니다!");
     }
 
-    // 습관 유저별 조회
-    @GetMapping
-    public ResponseEntity<List<HabitResponseDto>> getHabitList() {
-
-        // 임시
-        Long memberId = 1L;
-
+    // 유저별 습관 조회 memberId
+    @GetMapping("/user/{memberId}")
+    public ResponseEntity<List<HabitResponseDto>> getHabitList(@PathVariable Long memberId) {
         List<HabitResponseDto> habits = habitService.getHabitList(memberId);
-
         return ResponseEntity.ok(habits);
 
     }
 
-    // 습관별 조회
-    @GetMapping("/{id}")
+    // 습관별 조회 userHabitId
+    @GetMapping("/{d}")
     public ResponseEntity<HabitResponseDto> getHabit(@PathVariable Long id) {
         HabitResponseDto habit = habitService.getHabit(id);
         return ResponseEntity.ok(habit);
     }
 
-    // 습관 수정
-    // userHabitId 기준
+    // 습관 수정 userHabitId
     @PutMapping("/{id}")
     public ResponseEntity<String> updateHabit(@PathVariable Long id, @RequestBody UpdateHabitRequestDto dto) {
         habitService.updateHabit(id, dto);
         return ResponseEntity.ok("습관 수정이 완료되었습니다!");
     }
 
-    // 습관 삭제
+    // 습관 삭제 userHabitId
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteHabit(@PathVariable Long id) {
         habitService.deleteHabit(id);
