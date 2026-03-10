@@ -71,7 +71,7 @@ public class HabitService {
 
     // 습관 삭제
     @Transactional
-    public void deleteHabit(Long userHabitId) {
+    public void deleteHabit(Long memberId,Long userHabitId) {
         habitMapper.deleteSchedulesByUserHabitId(userHabitId);
         habitMapper.deleteHistoriesByUserHabitId(userHabitId);
         habitMapper.deleteDailyLogsByUserHabitId(userHabitId);

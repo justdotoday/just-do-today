@@ -48,8 +48,8 @@ public class HabitController {
 
     // 습관 삭제 userHabitId
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteHabit(@PathVariable Long id) {
-        habitService.deleteHabit(id);
+    public ResponseEntity<String> deleteHabit(@RequestParam Long memberId, @PathVariable("id") Long userHabitId) {
+        habitService.deleteHabit(memberId, userHabitId);
         return ResponseEntity.ok("습관 삭제가 완료되었습니다!");
     }
 
