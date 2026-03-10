@@ -1,5 +1,6 @@
 package com.example.just_do_today.domain.Habit;
 
+import com.example.just_do_today.domain.Habit.Enum.HabitHistoryStatus;
 import lombok.Data;
 
 import java.time.LocalDate;

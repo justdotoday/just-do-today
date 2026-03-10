@@ -1,4 +1,4 @@
-package com.example.just_do_today.domain.Habit;
+package com.example.just_do_today.domain.Habit.Enum;
 
 public enum HabitHistoryStatus {
     DONE,
