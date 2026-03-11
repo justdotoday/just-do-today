@@ -7,6 +7,7 @@ import com.example.just_do_today.service.habit.HabitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class OnboardingService {
             throw new IllegalStateException("이미 온보딩이 완료된 사용자입니다.");
         }
         // 온보딩 목표 필수 기입
-        if(requestDto.getGoal() == null && requestDto.getGoal().trim().isEmpty()) {
+        if (!StringUtils.hasText(requestDto.getGoal())) {
             throw new IllegalArgumentException("온보딩 목표는 필수입니다.");
         }
         onboardingMapper.insertGoal(memberId,requestDto.getGoal().trim());
