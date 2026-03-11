@@ -1,0 +1,10 @@
+package com.example.just_do_today.dto.member;
+
+import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
+import lombok.Getter;
+
+@Getter
+public class OnboardingRequestDto {
+    private String goal;
+    private CreateHabitRequestDto habit; // "다음에 할래요"면 null
+}
