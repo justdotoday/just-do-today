@@ -42,9 +42,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 providerId = oAuth2User.getAttribute("sub");
                 profilePicture = oAuth2User.getAttribute("picture");
             } else if ("kakao".equalsIgnoreCase(registrationId)) {
-                providerId = String.valueOf(oAuth2User.getAttribute("id"));
-                Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttribute("properties");
-                profilePicture = properties != null ? (String) properties.get("profile_image") : "";
+                Object id = oAuth2User.getAttribute("id");
+                providerId = (id != null) ? String.valueOf(id) : "";
+                Map<String, Object> properties = oAuth2User.getAttribute("properties");
+                if (properties != null) {
+                Object profileImage = properties.get("profile_image");
+                profilePicture = (profileImage != null) ? String.valueOf(profileImage) : "";
+                }
             }
 
             LoginRequest loginRequest = LoginRequest.builder()

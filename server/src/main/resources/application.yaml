@@ -30,12 +30,15 @@ spring:
               - profile
 
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-id: "${KAKAO_CLIENT_ID}"
+            client-secret: "${KAKAO_CLIENT_SECRET}"
             redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             client-name: Kakao
+            scope:
+              - profile_nickname
+              - profile_image
 
         provider:
           kakao:

@@ -6,18 +6,15 @@ import KaKaoLogin from '../assets/KaKaoLogin.png';
 
 const SocialSignUp = () => {
   const handleKakao = () => {
-    // 템플릿 리터럴을 사용해 URL 완성
-    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${
-      import.meta.env.VITE_KAKAO_CLIENT_ID
-    }&redirect_uri=${
-      import.meta.env.VITE_KAKAO_REDIRECT_URI
-    }&response_type=code`;
+    const KAKAO_AUTH_URL = "http://localhost:8080/oauth/authorization/kakao";
 
     window.location.href = KAKAO_AUTH_URL;
   };
 
   const handleGoogle = () => {
-    // TODO: google oauth
+    const GOOGLE_AUTH_URL = "http://localhost:8080/oauth/authorization/google";
+
+    window.location.href = GOOGLE_AUTH_URL;
   };
 
   return (
