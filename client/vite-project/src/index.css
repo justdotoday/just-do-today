@@ -1,3 +1,112 @@
+@import 'react-calendar/dist/Calendar.css';
+
+/* 얼음 달력 커스텀 스타일 */
+.ice-calendar .react-calendar {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+  background: transparent;
+  padding: 0 4px;
+}
+
+.ice-calendar .react-calendar__navigation {
+  display: none;
+}
+
+.ice-calendar .react-calendar__month-view__weekdays {
+  margin-bottom: 12px;
+}
+
+.ice-calendar .react-calendar__month-view__weekdays__weekday {
+  padding: 4px 0 8px;
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none !important;
+}
+
+.ice-calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+  cursor: default;
+}
+
+.ice-calendar .react-calendar__month-view__days {
+  row-gap: 4px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+.ice-calendar .react-calendar__tile {
+  height: 48px;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  color: #18181b;
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none;
+  padding: 0 !important;
+}
+
+.ice-calendar .react-calendar__tile:disabled {
+  color: #d7dbe3;
+  background: transparent;
+}
+
+.ice-calendar .react-calendar__month-view__days__day--weekend {
+  color: #18181b;
+}
+
+.ice-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  visibility: hidden;
+}
+
+.ice-calendar .react-calendar__tile--active {
+  background: transparent !important;
+  color: #5570c8;
+  font-weight: 600;
+  position: relative;
+}
+
+/* 선택된 날짜: 타원 방지를 위해 고정 크기 원을 pseudo-element로 렌더링 */
+.ice-calendar .react-calendar__tile--active::before {
+  content: '';
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #d6dff7;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.ice-calendar .react-calendar__tile--active abbr,
+.ice-calendar .react-calendar__tile--active > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ice-calendar .react-calendar__tile--active:enabled:hover,
+.ice-calendar .react-calendar__tile--active:enabled:focus {
+  background: transparent !important;
+  color: #5570c8;
+}
+
+.ice-calendar .react-calendar__tile--now {
+  background: transparent;
+}
+
+.ice-calendar .react-calendar__tile:enabled:hover {
+  background: #eff6ff;
+  border-radius: 9999px;
+}
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
