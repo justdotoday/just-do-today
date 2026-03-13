@@ -10,7 +10,7 @@ import settingBlue from '../assets/mainFooter/BlueIcon/settingBlue.png';
 
 const MainFooter = () => {
   const navItems = [
-    { to: '/', label: '홈', iconSrc: homeIcon, activeIconSrc: homeBlue },
+    { to: '/home', label: '홈', iconSrc: homeIcon, activeIconSrc: homeBlue },
     {
       to: '/habit',
       label: '습관',

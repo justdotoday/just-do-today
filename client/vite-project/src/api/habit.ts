@@ -16,7 +16,7 @@ const DAY_TO_NUMBER: Record<Day, number> = {
 export const createHabit = async (payload: CreateHabitPayload) => {
   const body = {
     name: payload.name,
-    category: payload.category,
+    categoryId: payload.categoryId,
     frequency: payload.frequency,
     ...(payload.days?.length && {
       days: payload.days.map((d) => DAY_TO_NUMBER[d]),
@@ -29,13 +29,26 @@ export const createHabit = async (payload: CreateHabitPayload) => {
   return res.data;
 };
 
-//습관 목록 조회 (명세: GET /api/habits)
-export const getHabits = async (): Promise<Habit[]> => {
-  const res = await api.get('/api/habits');
+// 습관 목록 조회. date 있으면 해당 날짜 기준(서버에서 해당일 완료 상태 등 활용 가능)
+export const getHabits = async (params?: {
+  date?: string;
+}): Promise<Habit[]> => {
+  const res = await api.get('/api/habits', { params });
+  console.log('getHabits', res.data);
   return Array.isArray(res.data) ? res.data : [];
 };
 
 //습관 삭제 (명세: DELETE /api/habits/:id)
 export const deleteHabit = async (id: string): Promise<void> => {
   await api.delete(`/api/habits/${id}`);
+};
+
+// 얼음(프리즈) 사용 (명세: POST /api/user-habits/:userHabitId/freeze?postponeDays=N)
+export const freezeHabit = async (
+  userHabitId: number,
+  postponeDays: number
+): Promise<void> => {
+  await api.post(`/api/user-habits/${userHabitId}/freeze`, null, {
+    params: { postponeDays },
+  });
 };

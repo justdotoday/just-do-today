@@ -6,7 +6,7 @@ export type Day = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
 //습관 생성요청 payload 타입
 export type CreateHabitPayload = {
   name: string;
-  category: string;
+  categoryId: number;
   frequency: Frequency;
   days?: Day[];
   isPublic: boolean;

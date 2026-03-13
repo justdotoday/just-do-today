@@ -8,7 +8,7 @@ const MainPage = () => {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-zinc-100">
+    <div className="relative flex min-h-[100dvh] flex-col bg-zinc-100">
       <div
         className="mx-auto flex w-full flex-1 flex-col items-center justify-center px-4 text-center pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
         style={{ maxWidth: 414 }}
