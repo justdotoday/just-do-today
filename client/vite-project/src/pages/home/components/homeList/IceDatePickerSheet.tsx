@@ -70,7 +70,8 @@ const IceDatePickerSheet = ({
             value={selectedDate}
             locale="ko-KR"
             calendarType="gregory"
-            minDate={new Date(today.getTime() + 24 * 60 * 60 * 1000)}
+            minDate={new Date(today.getTime() + 24 * 60 * 60 * 1000)} // 오늘 이후 날짜
+            maxDate={new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)} // 7일 이후 날짜
             formatDay={(_, date) => String(date.getDate())}
             formatShortWeekday={(_, date) =>
               ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]

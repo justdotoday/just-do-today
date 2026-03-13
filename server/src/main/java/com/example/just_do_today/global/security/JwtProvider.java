@@ -34,7 +34,6 @@ public class JwtProvider {
 
     @PostConstruct
     protected void init() {
-        log.info("JWT salt length: {}", salt != null ? salt.length() : "null");
         secretKey = Keys.hmacShaKeyFor(Base64.getEncoder().encode(salt.getBytes()));
     }
 

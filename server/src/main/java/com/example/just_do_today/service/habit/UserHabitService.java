@@ -1,9 +1,9 @@
 package com.example.just_do_today.service.habit;
 
 import com.example.just_do_today.domain.Habit.HabitHistory;
-import com.example.just_do_today.domain.Habit.HabitHistoryStatus;
+import com.example.just_do_today.domain.Habit.Enum.HabitHistoryStatus;
 import com.example.just_do_today.domain.Habit.UserHabit;
-import com.example.just_do_today.domain.Habit.UserHabitStatus;
+import com.example.just_do_today.domain.Habit.Enum.UserHabitStatus;
 import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.mapper.habit.HabitMapper;
 import com.example.just_do_today.service.member.MemberService;

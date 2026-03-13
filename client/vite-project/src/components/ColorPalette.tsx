@@ -21,26 +21,29 @@ const ColorPalette = ({
 }: ColorPaletteProps) => {
   // 5열 x 4행 = 20색
   const colors = [
-    '#FF6B6B',
-    '#FF8FA3',
-    '#FFB5A7',
-    '#FFD93D',
-    '#FFF3B0',
-    '#E8A87C',
-    '#7DD3A8',
-    '#38B2AC',
-    '#2D6A4F',
-    '#8B9DC3',
-    '#3B47B3',
-    '#BFA2E6',
-    '#9D4EDD',
-    '#C9A0DC',
-    '#C4A484',
-    '#A67C52',
-    '#6B4423',
-    '#94A3B8',
-    '#D9D9D9',
-    '#495057',
+    '#FF6B6B', // RED
+    '#FF8FA3', // PINK
+    '#FFB5A7', // PEACH
+    '#FFD93D', // YELLOW
+    '#FFF3B0', // LIGHT_YELLOW
+
+    '#E8A87C', // BEIGE
+    '#7DD3A8', // MINT
+    '#38B2AC', // TEAL
+    '#2D6A4F', // DARK_GREEN
+    '#8B9DC3', // SKY_BLUE
+
+    '#3B47B3', // BLUE
+    '#BFA2E6', // LIGHT_PURPLE
+    '#9D4EDD', // PURPLE
+    '#C9A0DC', // LAVENDER
+    '#C4A484', // LIGHT_BROWN
+
+    '#A67C52', // BROWN
+    '#6B4423', // DARK_BROWN
+    '#94A3B8', // LIGHT_GRAY
+    '#D9D9D9', // GRAY
+    '#495057', // DARK_GRAY
   ];
 
   const paletteStyle = {

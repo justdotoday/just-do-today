@@ -1,6 +1,7 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Signup from './auth/SocialSignUp';
+import OAuthCallback from './auth/OAuthCallback';
 import MainPage from './pages/onboarding/MainPage';
 import CreateHabit from './pages/habit/CreateHabit';
 import HabitPage from './pages/habit/HabitPage';
@@ -11,6 +12,19 @@ import HomeEmpty from './pages/home/components/HomeEmpty';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
 
+// 토큰 유무에 따라 /home 또는 /signup으로 리다이렉트
+const RootRedirect = () => {
+  const token = localStorage.getItem('AccessToken');
+  return <Navigate to={token ? '/home' : '/signup'} replace />;
+};
+
+// 토큰 없으면 /signup으로 보내는 보호 라우트
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem('AccessToken');
+  if (!token) return <Navigate to="/signup" replace />;
+  return <>{children}</>;
+};
+
 export default function App() {
   return (
     <>
@@ -18,37 +32,25 @@ export default function App() {
       <Toaster position="bottom-center" containerStyle={{ bottom: 112 }} />
 
       <Routes>
+        {/* OAuth 콜백: Layout 없이 토큰 저장 후 즉시 리다이렉트 */}
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
+
         {/* Layout 적용 구간 */}
         <Route element={<Layout />}>
-          <Route
-            path="/"
-            element={
-              <>
-                <div className="font-black">추후 통합</div>
-                <div className="flex flex-col">
-                  <Link to="/signup">회원가입</Link>
-                  <Link to="/main">메인페이지</Link>
-                  <Link to="/home">홈(추후 조건부 랜더링 통합)</Link>
-                  <Link to="/home/empty">홈 - Empty</Link>
-                  <Link to="/home/list">홈 - List</Link>
-                  <Link to="/createHabit">습관 생성</Link>
-                </div>
-              </>
-            }
-          />
+          {/* 루트: 토큰 유무에 따라 /home 또는 /signup으로 리다이렉트 */}
+          <Route path="/" element={<RootRedirect />} />
 
           <Route path="/signup" element={<Signup />} />
-          <Route path="/main" element={<MainPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/habit" element={<HabitPage />} />
-          <Route path="/social" element={<SocialPage />} />
-          <Route path="/my" element={<SettingsPage />} />
 
-          {/* ✅ 작업용 라우트 */}
-          <Route path="/home/empty" element={<HomeEmpty />} />
-          <Route path="/home/list" element={<HomePage />} />
-
-          <Route path="/createHabit" element={<CreateHabit />} />
+          {/* 인증 필요 라우트 */}
+          <Route path="/main" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/habit" element={<ProtectedRoute><HabitPage /></ProtectedRoute>} />
+          <Route path="/social" element={<ProtectedRoute><SocialPage /></ProtectedRoute>} />
+          <Route path="/my" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/home/empty" element={<ProtectedRoute><HomeEmpty /></ProtectedRoute>} />
+          <Route path="/home/list" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/createHabit" element={<ProtectedRoute><CreateHabit /></ProtectedRoute>} />
         </Route>
       </Routes>
     </>

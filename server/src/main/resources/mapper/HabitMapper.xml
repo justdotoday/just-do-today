@@ -37,7 +37,7 @@
         <result property="categoryId" column="category_id"/>
         <result property="category" column="category_name"/>
         <result property="frequency" column="frequency"/>
-        <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.UserHabitStatus"/>
+        <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.Enum.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
 
         <collection property="days" ofType="java.lang.Integer">

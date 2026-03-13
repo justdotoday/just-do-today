@@ -136,8 +136,11 @@ const HomePage = () => {
       if (userHabitId != null) {
         try {
           await freezeHabit(userHabitId, postponeDays);
-        } catch {
-          showToast.error('얼음 사용에 실패했어요');
+        } catch (err) {
+          const message =
+            (err as { response?: { data?: string } })?.response?.data ||
+            '얼음 사용에 실패했어요';
+          showToast.error(message);
           return;
         }
       }
