@@ -4,16 +4,17 @@ import { motion } from 'framer-motion';
 import bgAuth from '../assets/bg-auth.png';
 import KaKaoLogin from '../assets/KaKaoLogin.png';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
-
 const SocialSignUp = () => {
-  // Spring Security OAuth2 Client 엔드포인트로 리다이렉트
   const handleKakao = () => {
-    window.location.href = `${API_BASE}/oauth/kakao`;
+    const KAKAO_AUTH_URL = "http://localhost:8080/oauth/authorization/kakao";
+
+    window.location.href = KAKAO_AUTH_URL;
   };
 
   const handleGoogle = () => {
-    window.location.href = `${API_BASE}/oauth/google`;
+    const GOOGLE_AUTH_URL = "http://localhost:8080/oauth/authorization/google";
+
+    window.location.href = GOOGLE_AUTH_URL;
   };
 
   return (

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.just_do_today.mapper.member.OnboardingMapper">
+    <!--목표 생성-->
+    <insert id="insertGoal">
+        INSERT INTO onboarding_goal (member_id, goal)
+        VALUES (#{memberId},#{goal})
+    </insert>
+
+    <!--온보딩 여부 확인-->
+    <select id="findOnboardingCompleteById" resultType="boolean">
+        SELECT onboarding_completed
+        FROM member
+        WHERE id = #{memberId}
+    </select>
+
+    <!--온보딩 완료처리-->
+    <update id="updateOnboardingCompleted">
+        UPDATE member
+        SET onboarding_completed = #{completed}
+        WHERE id = #{memberId}
+    </update>
+
+</mapper>
