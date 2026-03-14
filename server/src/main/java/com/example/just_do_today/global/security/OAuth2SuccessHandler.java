@@ -37,17 +37,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             String profilePicture = "";
             String providerId = "";
+            String nickname = "";
 
             if ("google".equalsIgnoreCase(registrationId)) {
                 providerId = oAuth2User.getAttribute("sub");
                 profilePicture = oAuth2User.getAttribute("picture");
+                nickname = oAuth2User.getAttribute("name");
             } else if ("kakao".equalsIgnoreCase(registrationId)) {
                 Object id = oAuth2User.getAttribute("id");
                 providerId = (id != null) ? String.valueOf(id) : "";
                 Map<String, Object> properties = oAuth2User.getAttribute("properties");
                 if (properties != null) {
-                Object profileImage = properties.get("profile_image");
-                profilePicture = (profileImage != null) ? String.valueOf(profileImage) : "";
+                    profilePicture = String.valueOf(properties.get("profile_image"));
+                    nickname = String.valueOf(properties.get("nickname"));
                 }
             }
 
@@ -55,6 +57,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .provider(registrationId.toUpperCase())
                     .providerId(providerId)
                     .profileImageUrl(profilePicture)
+                    .nickname(nickname)
                     .build();
 
             Member member = memberService.loginOrRegister(loginRequest);
@@ -68,7 +71,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("OAuth2 Login Success Handler Error: ", e);
             response.sendRedirect("/login?error=" + e.getMessage());
         }
     }
