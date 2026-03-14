@@ -27,7 +27,7 @@ public class KakaoAuthService {
         LoginRequest req = LoginRequest.builder()
                 .provider("KAKAO")
                 .providerId(String.valueOf(me.id()))
-//                .nickname("nickname")
+                .nickname(me.nickname())
                 .profileImageUrl(me.profileImageUrl())
                 .build();
 

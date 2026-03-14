@@ -12,4 +12,5 @@ public class LoginRequest {
     private String provider;
     private String providerId;
     private String profileImageUrl;
+    private String nickname;
 }
