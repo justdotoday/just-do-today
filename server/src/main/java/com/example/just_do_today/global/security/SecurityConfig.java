@@ -43,13 +43,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/error", "/login/**", "/oauth2/**",
-                                "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**", "/oauth/**", "/api/habits/**"
+                                "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**", "/oauth/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(auth -> auth
-                                .baseUri("/oauth")
+                                .baseUri("/oauth/authorization")
                                 .authorizationRequestRepository(new HttpSessionOAuth2AuthorizationRequestRepository())
                         )
                         .successHandler(oAuth2SuccessHandler)

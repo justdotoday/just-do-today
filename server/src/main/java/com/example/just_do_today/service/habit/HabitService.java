@@ -25,16 +25,16 @@ public class HabitService {
     @Transactional // 에러 시 모든 트랜잭션 취소
     public void createHabit(Long memberId, CreateHabitRequestDto dto) {
 
-        Habit habit = new Habit();
         // 카테고리 선택 검증
         if (dto.getCategoryId() == null) {
             throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
         }
-        habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
-        // Habit 저장
+        // Habit 저장 (saveHabit 후 habit.getId()에 생성된 id가 반환됨)
+        Habit habit = new Habit();
         habit.setName(dto.getName());
         habit.setIsPublic(dto.getIsPublic());
         habitMapper.saveHabit(habit);
+        habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
 
         // UserHabit 저장
         UserHabit userHabit = new UserHabit();
