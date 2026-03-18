@@ -16,7 +16,8 @@ const DAY_TO_NUMBER: Record<Day, number> = {
 export const createHabit = async (payload: CreateHabitPayload) => {
   const body = {
     name: payload.name,
-    categoryId: payload.categoryId,
+    ...(payload.categoryId != null && { categoryId: payload.categoryId }),
+    ...(payload.userCategoryId != null && { userCategoryId: payload.userCategoryId }),
     frequency: payload.frequency,
     ...(payload.days?.length && {
       days: payload.days.map((d) => DAY_TO_NUMBER[d]),

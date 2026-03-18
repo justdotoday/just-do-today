@@ -6,7 +6,7 @@ const ONBOARDING_CONTENT_MAX_WIDTH_PX = 414;
 const ONBOARDING_BOTTOM_PADDING_PX = 16;
 
 type Step4Props = {
-  onFinish: () => void;
+  onFinish: (goal: string) => void;
   onBack: () => void;
 };
 
@@ -17,7 +17,7 @@ const Step4 = ({ onFinish, onBack }: Step4Props) => {
   const bottomAreaPadding = `calc(${ONBOARDING_BOTTOM_PADDING_PX}px + env(safe-area-inset-bottom))`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-100">
+    <div className="flex min-h-screen flex-col">
       {/* 콘텐츠 영역 (414px) */}
       <div
         className="mx-auto flex w-full flex-1 flex-col bg-white"
@@ -58,7 +58,7 @@ const Step4 = ({ onFinish, onBack }: Step4Props) => {
       >
         <button
           type="button"
-          onClick={onFinish}
+          onClick={() => onFinish(goal)}
           className="flex h-14 w-full items-center justify-center rounded-full bg-[#2563EB] font-semibold text-white transition active:scale-[0.98]"
         >
           시작하기

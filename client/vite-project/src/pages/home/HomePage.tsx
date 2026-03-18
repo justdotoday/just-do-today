@@ -1,6 +1,6 @@
 /** 홈 페이지. 습관 조회·리스트/빈 화면 분기, 섹션·바텀시트·스낵바·삭제 담당. */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getHabits, deleteHabit, freezeHabit } from '../../api/habit';
 import { showToast } from '../../components/ui/toast/Toast';
 import CompletionSnackbar from '../../components/ui/toast/CompletionSnackbar';
@@ -23,6 +23,7 @@ type HabitStatus = 'done' | 'heart' | 'freeze' | 'notDone';
 
 const HomePage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = (location.state ?? {}) as HomeViewState;
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -233,6 +234,7 @@ const HomePage = () => {
           onOpenModal={handleOpenModal}
           onToggleSelect={selectOnly}
           onIceThaw={handleIceThawClick}
+          onCreateHabit={() => navigate('/createHabit')}
         />
       </div>
 

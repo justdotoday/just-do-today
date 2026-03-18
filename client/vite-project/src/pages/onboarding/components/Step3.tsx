@@ -71,7 +71,7 @@ const Step3 = ({
     frequency !== 'CUSTOM' || selectedDays.length > 0;
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-100">
+    <div className="flex min-h-screen flex-col">
       <div
         className="mx-auto flex w-full flex-1 flex-col bg-white"
         style={contentMaxWidthStyle}

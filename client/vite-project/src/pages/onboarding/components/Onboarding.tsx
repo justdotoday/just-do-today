@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import GlowEffect from '../../../components/ui/GlowEffect';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import Step4 from './Step4';
 import Step3_5 from './Step3_5';
+import { completeOnboarding } from '../../../api/onboarding';
 
 const ONBOARDING_BACKDROP_Z_INDEX = 40;
 const ONBOARDING_MODAL_Z_INDEX = 50;
@@ -73,7 +75,15 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
       return <Step3_5 onNext={() => setStep('step4')} />;
     }
     if (step === 'step4') {
-      return <Step4 onFinish={onFinish} onBack={handleBack} />;
+      return (
+        <Step4
+          onFinish={async (goal) => {
+            await completeOnboarding({ nickname, goal, habit: null });
+            onFinish();
+          }}
+          onBack={handleBack}
+        />
+      );
     }
     return null;
   })();
@@ -85,9 +95,10 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
         style={{ zIndex: ONBOARDING_BACKDROP_Z_INDEX }}
       />
       <div
-        className="fixed inset-0 bg-white transition-transform duration-300 translate-y-0"
-        style={{ zIndex: ONBOARDING_MODAL_Z_INDEX }}
+        className="fixed inset-0 overflow-hidden transition-transform duration-300 translate-y-0"
+        style={{ background: '#FFFFFF', zIndex: ONBOARDING_MODAL_Z_INDEX }}
       >
+        <GlowEffect position="top" />
         {stepContent}
       </div>
     </>

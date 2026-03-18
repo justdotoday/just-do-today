@@ -3,6 +3,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
+import { createUserCategory } from '../../api/category';
 import type { CreateHabitPayload } from '../../types/habitType';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
@@ -23,7 +24,7 @@ const CreateHabit = () => {
   const firstRow = day.slice(0, 4); // 월 화 수 목
   const secondRow = day.slice(4); // 금 토 일
   const [name, setName] = useState('');
-  const [habitColor, setHabitColor] = useState('#2563EB');
+  const [habitColor, setHabitColor] = useState('#3B47B3');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [frequency, setFrequency] = useState<Frequency>('DAILY');
   type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
@@ -72,16 +73,15 @@ const CreateHabit = () => {
   const handleSubmit = async () => {
     if (!canSubmit || isLoading) return;
 
-    // 선택한 카테고리 이름으로 DB ID 조회 (직접 추가한 카테고리는 id가 없어 차단)
-    const categoryId = categories.find((c) => c.name === selectedCategory)?.id;
-    if (!categoryId) {
-      showToast.error('기본 카테고리 중 하나를 선택해 주세요');
+    const selected = categories.find((c) => c.name === selectedCategory);
+    if (!selected?.id && !selected?.userCategoryId) {
+      showToast.error('카테고리를 선택해 주세요');
       return;
     }
 
     const payload: CreateHabitPayload = {
       name: name.trim(),
-      categoryId,
+      ...(selected.id ? { categoryId: selected.id } : { userCategoryId: selected.userCategoryId }),
       frequency,
       ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,
@@ -116,27 +116,29 @@ const CreateHabit = () => {
     }
   };
 
-  // 카테고리 직접 추가 처리
-  const handleAddCategory = (name: string) => {
+  // 카테고리 직접 추가 처리 (API 호출로 user_category에 저장 후 ID 반환)
+  const handleAddCategory = async (name: string, emoji: string | null) => {
     const trimmed = name.trim();
     if (!trimmed) return;
 
     const hasSameCategory = categories.some((c) => c.name === trimmed);
 
     if (hasSameCategory) {
-      // 중복 입력 시: 새로 추가하지 않고 기존 카테고리를 선택
       showToast.default('이미 있는 카테고리예요');
       setSelectedCategory(trimmed);
       setIsCategoryModalOpen(false);
       return;
     }
 
-    // 신규 카테고리 추가 + 해당 카테고리를 선택 상태로 설정
-    setCategories((prev) => [...prev, { name: trimmed }]);
-    setSelectedCategory(trimmed); //  추가한 것만 선택(싱글)
-    setIsCategoryModalOpen(false);
-
-    showToast.success('카테고리가 추가되었어요');
+    try {
+      const saved = await createUserCategory(trimmed, emoji);
+      setCategories((prev) => [...prev, { userCategoryId: saved.id, name: trimmed }]);
+      setSelectedCategory(trimmed);
+      setIsCategoryModalOpen(false);
+      showToast.success('카테고리가 추가되었어요');
+    } catch {
+      showToast.error('카테고리 추가에 실패했어요');
+    }
   };
 
   return (

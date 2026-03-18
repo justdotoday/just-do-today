@@ -10,10 +10,11 @@ const OAuthCallback = () => {
   useEffect(() => {
     const token = searchParams.get('token');
     const error = searchParams.get('error');
+    const isOnboarding = searchParams.get('isOnboarding') === 'true';
 
     if (token) {
       localStorage.setItem('AccessToken', token);
-      navigate('/home', { replace: true });
+      navigate(isOnboarding ? '/main' : '/home', { replace: true });
     } else {
       console.error('OAuth 로그인 실패:', error);
       navigate('/signup', { replace: true });

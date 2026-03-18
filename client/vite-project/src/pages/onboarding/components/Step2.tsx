@@ -42,7 +42,7 @@ const Step2 = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
-  const handleAddCategory = (name: string) => {
+  const handleAddCategory = (name: string, _emoji: string | null) => {
     const trimmed = name.trim();
     if (trimmed.length === 0) return;
 
@@ -161,11 +161,8 @@ const Step2 = ({
       </div>
 
       <div
-        className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 space-y-2 bg-white px-4 pt-2"
-        style={{
-          ...contentMaxWidthStyle,
-          paddingBottom: bottomAreaPadding,
-        }}
+        className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 space-y-2 px-4 pt-8"
+        style={{ background: 'linear-gradient(180deg, transparent 0%, #ffffff 30%)', ...contentMaxWidthStyle, paddingBottom: bottomAreaPadding }}
       >
         <button
           type="button"
