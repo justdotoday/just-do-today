@@ -33,7 +33,7 @@ public class HabitController {
     }
 
     // 습관별 조회 userHabitId
-    @GetMapping("/{d}")
+    @GetMapping("/{id}")
     public ResponseEntity<HabitResponseDto> getHabit(@PathVariable Long id) {
         HabitResponseDto habit = habitService.getHabit(id);
         return ResponseEntity.ok(habit);

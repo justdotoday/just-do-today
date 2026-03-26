@@ -7,7 +7,6 @@ import com.example.just_do_today.dto.auth.kakao.KakaoToken;
 import com.example.just_do_today.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 //@Service
 @RequiredArgsConstructor
