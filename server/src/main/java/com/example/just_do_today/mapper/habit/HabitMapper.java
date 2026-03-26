@@ -1,6 +1,5 @@
 package com.example.just_do_today.mapper.habit;
 
-import com.example.just_do_today.domain.Habit.Habit;
 import com.example.just_do_today.domain.Habit.HabitHistory;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
@@ -14,15 +13,10 @@ import java.util.List;
 public interface HabitMapper {
 
     // 1. 습관 생성
-    // 습관 기본 정보 저장
-    void saveHabit(Habit habit);
     // 유저-습관 연결 정보 저장
     void saveUserHabit(UserHabit userHabit);
     // 요일 저장
     void saveSchedule(UserHabitSchedule userHabitSchedule);
-    // 카테고리 연결 저장
-    void saveHabitCategory(Long habitId, Long categoryId);
-    void deleteHabitCategoryByHabitId(Long habitId);
 
     // 2. 습관 목록 조회
     List<HabitResponseDto> findAllByMemberId(Long memberId);
@@ -52,7 +46,5 @@ public interface HabitMapper {
     void deleteDailyLogsByUserHabitId(Long userHabitId);
 
     // 5. 습관 수정
-    void updateHabit(Habit habit);
     void updateUserHabit(UserHabit userHabit);
-    Long findHabitIdByUserHabitId(Long userHabitId);
 }

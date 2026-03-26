@@ -24,6 +24,12 @@ public class OnboardingService {
         if(Boolean.TRUE.equals(completed)) {
             throw new IllegalStateException("이미 온보딩이 완료된 사용자입니다.");
         }
+
+        // 닉네임 업데이트
+        if (StringUtils.hasText(requestDto.getNickname())) {
+            memberMapper.updateNickname(memberId, requestDto.getNickname().trim());
+        }
+
         // 온보딩 목표 필수 기입
         if (!StringUtils.hasText(requestDto.getGoal())) {
             throw new IllegalArgumentException("온보딩 목표는 필수입니다.");
