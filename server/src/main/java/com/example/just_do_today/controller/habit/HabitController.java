@@ -33,7 +33,7 @@ public class HabitController {
     }
 
     // 습관별 조회 userHabitId
-    @GetMapping("/{d}")
+    @GetMapping("/{id}")
     public ResponseEntity<HabitResponseDto> getHabit(@PathVariable Long id) {
         HabitResponseDto habit = habitService.getHabit(id);
         return ResponseEntity.ok(habit);
@@ -41,8 +41,8 @@ public class HabitController {
 
     // 습관 수정 userHabitId
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateHabit(@PathVariable Long id, @RequestBody UpdateHabitRequestDto dto) {
-        habitService.updateHabit(id, dto);
+    public ResponseEntity<String> updateHabit(@RequestParam Long memberId, @PathVariable Long id, @RequestBody UpdateHabitRequestDto dto) {
+        habitService.updateHabit(memberId, id, dto);
         return ResponseEntity.ok("습관 수정이 완료되었습니다!");
     }
 

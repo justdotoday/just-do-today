@@ -12,12 +12,13 @@ import lombok.Data;
 public class UserHabit {
     private Long id;
     private Long memberId;
-    private Long habitId;
+    private String name;
+    private Long categoryId;
     private UserHabitStatus status;
+    private Color color;
     private LocalDate frozenUntil;
     private Frequency frequency;
     private LocalDate startDate;
-    private Color color;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

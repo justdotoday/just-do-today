@@ -5,29 +5,15 @@
 <mapper namespace="com.example.just_do_today.mapper.habit.HabitMapper">
 
     <!--습관 생성-->
-    <insert id="saveHabit" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO habit (name, is_public, created_at, updated_at)
-        VALUES (#{name}, #{isPublic}, NOW(), NOW())
-    </insert>
-
     <insert id="saveUserHabit" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_habit (member_id, habit_id, status, color, frequency, start_date, created_at, updated_at)
-        VALUES (#{memberId}, #{habitId}, #{status.value}, #{color}, #{frequency}, #{startDate}, NOW(), NOW())
+        INSERT INTO user_habit (member_id, name, category_id, status, color, frequency, start_date, created_at, updated_at)
+        VALUES (#{memberId}, #{name}, #{categoryId}, #{status.value}, #{color}, #{frequency}, #{startDate}, NOW(), NOW())
     </insert>
 
     <insert id="saveSchedule">
         INSERT INTO user_habit_schedule (user_habit_id, day_of_week, times_per_week, created_at, updated_at)
         VALUES (#{userHabitId}, #{dayOfWeek}, #{timesPerWeek}, NOW(), NOW())
     </insert>
-
-    <insert id="saveHabitCategory">
-        INSERT INTO habit_category (habit_id, category_id, created_at)
-        VALUES (#{habitId}, #{categoryId}, NOW())
-    </insert>
-
-    <delete id="deleteHabitCategoryByHabitId">
-        DELETE FROM habit_category WHERE habit_id = #{habitId}
-    </delete>
 
     <!--습관 조회-->
     <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
@@ -49,7 +35,7 @@
     <select id="findAllByMemberId" resultMap="HabitResultMap">
         SELECT
             uh.id,
-            h.name,
+            uh.name,
             uh.color,
             c.id as category_id,
             c.name as category_name,
@@ -58,9 +44,7 @@
             uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
-        JOIN habit h ON uh.habit_id = h.id
-        LEFT JOIN habit_category hc ON h.id = hc.habit_id
-        LEFT JOIN category c ON hc.category_id = c.id
+        LEFT JOIN category c ON uh.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
         WHERE uh.member_id = #{memberId}
         ORDER BY uh.id DESC, uhs.day_of_week ASC
@@ -69,7 +53,7 @@
     <select id="findByUserHabitId" resultMap="HabitResultMap">
         SELECT
             uh.id,
-            h.name,
+            uh.name,
             uh.color,
             c.id as category_id,
             c.name as category_name,
@@ -78,9 +62,7 @@
             uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
-        JOIN habit h ON uh.habit_id = h.id
-        LEFT JOIN habit_category hc ON h.id = hc.habit_id
-        LEFT JOIN category c ON hc.category_id = c.id
+        LEFT JOIN category c ON uh.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
         WHERE uh.id = #{userHabitId}
     </select>
@@ -125,7 +107,8 @@
         SELECT
             id,
             member_id,
-            habit_id,
+            name,
+            category_id,
             status,
             frozen_until,
             frequency,
@@ -163,27 +146,16 @@
     </delete>
 
     <!--습관 수정-->
-    <update id="updateHabit">
-        UPDATE habit
-        SET
-            name = #{name},
-            is_public = #{isPublic},
-            updated_at = NOW()
-        WHERE id = #{id}
-    </update>
-
     <update id="updateUserHabit">
         UPDATE user_habit
         SET
+            name = #{name},
+            category_id = #{categoryId},
             color = #{color},
             frequency = #{frequency},
             start_date = #{startDate},
             updated_at = NOW()
         WHERE id = #{id}
     </update>
-
-    <select id="findHabitIdByUserHabitId" resultType="long">
-        SELECT habit_id FROM user_habit WHERE id = #{userHabitId}
-    </select>
 
 </mapper>

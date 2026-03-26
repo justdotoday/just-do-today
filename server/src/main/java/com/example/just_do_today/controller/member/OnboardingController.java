@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/onBoarding")
+@RequestMapping("/api/onboarding")
 public class OnboardingController {
     private final OnboardingService onboardingService;
 
