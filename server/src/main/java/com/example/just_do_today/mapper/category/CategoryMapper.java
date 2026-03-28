@@ -9,8 +9,8 @@ import java.util.List;
 public interface CategoryMapper {
 
     @Select("""
-        SELECT * FROM category 
-        WHERE member_id IS NULL OR member_id = #{memberId} 
+        SELECT * FROM category
+        WHERE member_id IS NULL OR member_id = #{memberId}
         ORDER BY display_order ASC, created_at DESC
     """)
     List<Category> findAllByMemberId(@Param("memberId") Long memberId);
