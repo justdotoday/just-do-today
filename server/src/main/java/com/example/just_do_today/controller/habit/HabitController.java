@@ -3,9 +3,11 @@ package com.example.just_do_today.controller.habit;
 import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
 import com.example.just_do_today.dto.habit.HabitResponseDto;
 import com.example.just_do_today.dto.habit.UpdateHabitRequestDto;
+import com.example.just_do_today.global.security.UserPrincipal;
 import com.example.just_do_today.service.habit.HabitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,19 +19,18 @@ public class HabitController {
 
     private final HabitService habitService;
 
-    // 습관 생성 memberId
-    @PostMapping("/{memberId}")
-    public ResponseEntity<String> createHabit(@PathVariable Long memberId, @RequestBody CreateHabitRequestDto dto) {
-        habitService.createHabit(memberId, dto);
+    // 습관 생성
+    @PostMapping
+    public ResponseEntity<String> createHabit(@AuthenticationPrincipal UserPrincipal principal, @RequestBody CreateHabitRequestDto dto) {
+        habitService.createHabit(principal.getMemberId(), dto);
         return ResponseEntity.ok("습관 생성이 완료되었습니다!");
     }
 
-    // 유저별 습관 조회 memberId
-    @GetMapping("/user/{memberId}")
-    public ResponseEntity<List<HabitResponseDto>> getHabitList(@PathVariable Long memberId) {
-        List<HabitResponseDto> habits = habitService.getHabitList(memberId);
+    // 유저별 습관 조회
+    @GetMapping
+    public ResponseEntity<List<HabitResponseDto>> getHabitList(@AuthenticationPrincipal UserPrincipal principal) {
+        List<HabitResponseDto> habits = habitService.getHabitList(principal.getMemberId());
         return ResponseEntity.ok(habits);
-
     }
 
     // 습관별 조회 userHabitId
@@ -41,15 +42,15 @@ public class HabitController {
 
     // 습관 수정 userHabitId
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateHabit(@RequestParam Long memberId, @PathVariable Long id, @RequestBody UpdateHabitRequestDto dto) {
-        habitService.updateHabit(memberId, id, dto);
+    public ResponseEntity<String> updateHabit(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long id, @RequestBody UpdateHabitRequestDto dto) {
+        habitService.updateHabit(principal.getMemberId(), id, dto);
         return ResponseEntity.ok("습관 수정이 완료되었습니다!");
     }
 
     // 습관 삭제 userHabitId
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteHabit(@RequestParam Long memberId, @PathVariable("id") Long userHabitId) {
-        habitService.deleteHabit(memberId, userHabitId);
+    public ResponseEntity<String> deleteHabit(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long id) {
+        habitService.deleteHabit(principal.getMemberId(), id);
         return ResponseEntity.ok("습관 삭제가 완료되었습니다!");
     }
 

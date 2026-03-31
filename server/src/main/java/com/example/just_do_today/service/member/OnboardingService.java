@@ -12,13 +12,13 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 public class OnboardingService {
-    private final MemberMapper memberMapper;
     private final HabitService habitService;
     private final OnboardingMapper onboardingMapper;
+    private final MemberMapper memberMapper;
 
     @Transactional
     public void completeOnboarding(Long memberId, OnboardingRequestDto requestDto) {
-        Boolean completed = memberMapper.findOnboardingCompleteById(memberId);
+        Boolean completed = onboardingMapper.findOnboardingCompleteById(memberId);
 
         // 온보딩 여부 확인
         if(Boolean.TRUE.equals(completed)) {
@@ -41,7 +41,7 @@ public class OnboardingService {
             habitService.createHabit(memberId,requestDto.getHabit());
         }
         // 온보딩 완료
-        memberMapper.updateOnboardingCompleted(memberId,true);
+        onboardingMapper.updateOnboardingCompleted(memberId, true);
     }
 
 }

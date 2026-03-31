@@ -14,6 +14,7 @@ public class HabitResponseDto {
     private String color;
     private Long categoryId;
     private String category;
+    private String emoji;
     private Frequency frequency;
     private List<Integer> days;
     private UserHabitStatus status;

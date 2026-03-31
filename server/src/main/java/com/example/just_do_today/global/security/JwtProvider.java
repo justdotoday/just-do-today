@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -37,9 +35,10 @@ public class JwtProvider {
         secretKey = Keys.hmacShaKeyFor(Base64.getEncoder().encode(salt.getBytes()));
     }
 
-    public String createToken(String email, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
+    public String createToken(String subject, String role, Long memberId) {
+        Claims claims = Jwts.claims().setSubject(subject);
         claims.put("role", role);
+        claims.put("memberId", memberId);
         Date now = new Date();
 
         long expMillis = 1000L * 60 * accessExpMin;
@@ -88,9 +87,10 @@ public class JwtProvider {
                 .getBody();
 
         String role = claims.get("role", String.class);
+        Long memberId = claims.get("memberId", Long.class);
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
 
-        UserDetails userDetails = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        UserPrincipal principal = new UserPrincipal(memberId, claims.getSubject(), authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 }

@@ -17,6 +17,4 @@ public class Category {
     private Integer displayOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String emoji;
-    private Long memberId;
 }
