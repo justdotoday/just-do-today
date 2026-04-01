@@ -18,6 +18,9 @@ public interface MemberMapper {
     @Update("UPDATE member SET freezes = #{freezes}, updated_at = NOW() WHERE id = #{id}")
     void updateMemberFreezes(Member member);
 
+    @Update("UPDATE member SET nickname = #{nickname}, updated_at = NOW() WHERE id = #{id}")
+    void updateNickname(@Param("id") Long id, @Param("nickname") String nickname);
+
     @Insert("""
         INSERT INTO member (
             nickname, profile_image_url, user_code,

@@ -16,8 +16,15 @@ const PRIMARY_BLUE = '#2563EB';
 
 const DEFAULT_NICKNAME_DISPLAY = '회원';
 
+export type Step2HabitData = {
+  name: string;
+  color: string;
+  categoryId?: number;
+  userCategoryId?: number;
+};
+
 type Step2Props = {
-  onNext: () => void;
+  onNext: (data: Step2HabitData) => void;
   onBack: () => void;
   /** 나중에 할래요 클릭 시 (MainPage로 이동) */
   onSkip: () => void;
@@ -173,7 +180,15 @@ const Step2 = ({
         </button>
         <button
           type="button"
-          onClick={onNext}
+          onClick={() => {
+              const selected = categories.find((c) => c.name === selectedCategory);
+              if (!selected) return;
+              onNext({
+                name: habitName.trim(),
+                color: habitColor,
+                ...(selected.id ? { categoryId: selected.id } : { userCategoryId: selected.userCategoryId }),
+              });
+            }}
           disabled={!canNext}
           className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98] disabled:bg-zinc-300 disabled:active:scale-100"
           style={canNext ? { backgroundColor: PRIMARY_BLUE } : undefined}

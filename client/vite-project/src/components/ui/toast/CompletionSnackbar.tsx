@@ -18,7 +18,7 @@ const CompletionSnackbar = ({
   visible,
   onDismiss,
   onRecordClick,
-  autoCloseMs = 1000,
+  autoCloseMs = 2500,
 }: CompletionSnackbarProps) => {
   useEffect(() => {
     if (!visible || autoCloseMs <= 0) return;

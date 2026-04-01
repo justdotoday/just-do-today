@@ -7,6 +7,7 @@ import { createUserCategory } from '../../api/category';
 import type { CreateHabitPayload } from '../../types/habitType';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
+import MonthlyDatePickerSheet from '../../components/habit/MonthlyDatePickerSheet';
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
@@ -36,6 +37,8 @@ const CreateHabit = () => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
 
   // --- [공통 디자인 가이드 적용] ---
 
@@ -132,7 +135,7 @@ const CreateHabit = () => {
 
     try {
       const saved = await createUserCategory(trimmed, emoji);
-      setCategories((prev) => [...prev, { userCategoryId: saved.id, name: trimmed }]);
+      setCategories((prev) => [...prev, { userCategoryId: saved.id, name: trimmed, icon: emoji ?? undefined }]);
       setSelectedCategory(trimmed);
       setIsCategoryModalOpen(false);
       showToast.success('카테고리가 추가되었어요');
@@ -179,7 +182,10 @@ const CreateHabit = () => {
         <section className="mt-6 space-y-4">
           <HabitOptionsSection
             frequency={frequency}
-            setFrequency={setFrequency}
+            setFrequency={(val) => {
+                setFrequency(val);
+                if (val === 'MONTHLY') setIsMonthlyPickerOpen(true);
+              }}
             selectedDays={selectedDays}
             toggleDay={toggleDay}
             dayRows={{ first: firstRow, second: secondRow }}
@@ -227,6 +233,15 @@ const CreateHabit = () => {
           open={isCategoryModalOpen}
           onClose={() => setIsCategoryModalOpen(false)}
           onSubmit={handleAddCategory}
+        />
+      )}
+
+      {isMonthlyPickerOpen && (
+        <MonthlyDatePickerSheet
+          open={isMonthlyPickerOpen}
+          onClose={() => setIsMonthlyPickerOpen(false)}
+          onSelect={(day) => setSelectedMonthlyDay(day)}
+          initialDay={selectedMonthlyDay ?? undefined}
         />
       )}
     </div>

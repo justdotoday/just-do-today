@@ -1,6 +1,9 @@
-//습관 관련 api (명세: POST /api/habits)
+//습관 관련 api
+// TODO: JWT에 memberId 클레임 추가되면 하드코딩 제거 필요
 import type { CreateHabitPayload, Day, Habit } from '../types/habitType';
 import api from './client';
+
+const TEMP_MEMBER_ID = 1;
 
 const DAY_TO_NUMBER: Record<Day, number> = {
   MON: 0,
@@ -12,12 +15,14 @@ const DAY_TO_NUMBER: Record<Day, number> = {
   SUN: 6,
 };
 
-//습관 생성 (명세: POST /api/habits)
+//습관 생성 (명세: POST /api/habits/{memberId})
 export const createHabit = async (payload: CreateHabitPayload) => {
   const body = {
     name: payload.name,
     ...(payload.categoryId != null && { categoryId: payload.categoryId }),
-    ...(payload.userCategoryId != null && { userCategoryId: payload.userCategoryId }),
+    ...(payload.userCategoryId != null && {
+      userCategoryId: payload.userCategoryId,
+    }),
     frequency: payload.frequency,
     ...(payload.days?.length && {
       days: payload.days.map((d) => DAY_TO_NUMBER[d]),
@@ -26,15 +31,15 @@ export const createHabit = async (payload: CreateHabitPayload) => {
     startDate: payload.startDate,
     color: payload.color,
   };
-  const res = await api.post('/api/habits', body);
+  const res = await api.post(`/api/habits/${TEMP_MEMBER_ID}`, body);
   return res.data;
 };
 
-// 습관 목록 조회. date 있으면 해당 날짜 기준(서버에서 해당일 완료 상태 등 활용 가능)
+// 습관 목록 조회 (명세: GET /api/habits/user/{memberId})
 export const getHabits = async (params?: {
   date?: string;
 }): Promise<Habit[]> => {
-  const res = await api.get('/api/habits', { params });
+  const res = await api.get(`/api/habits/user/${TEMP_MEMBER_ID}`, { params });
   console.log('getHabits', res.data);
   return Array.isArray(res.data) ? res.data : [];
 };

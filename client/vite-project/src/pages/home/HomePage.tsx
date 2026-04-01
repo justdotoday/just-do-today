@@ -138,9 +138,8 @@ const HomePage = () => {
         try {
           await freezeHabit(userHabitId, postponeDays);
         } catch (err) {
-          const message =
-            (err as { response?: { data?: string } })?.response?.data ||
-            '얼음 사용에 실패했어요';
+          const data = (err as { response?: { data?: unknown } })?.response?.data;
+          const message = typeof data === 'string' ? data : '얼음 사용에 실패했어요';
           showToast.error(message);
           return;
         }

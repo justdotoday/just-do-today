@@ -2,11 +2,11 @@ package com.example.just_do_today.service.habit;
 
 import com.example.just_do_today.domain.Habit.Enum.Color;
 import com.example.just_do_today.domain.Habit.Enum.Frequency;
-import com.example.just_do_today.domain.Habit.Habit;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
 import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
 import com.example.just_do_today.dto.habit.HabitResponseDto;
+import com.example.just_do_today.dto.habit.UpdateHabitRequestDto;
 import com.example.just_do_today.mapper.habit.HabitMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,17 +29,11 @@ public class HabitService {
         if (dto.getCategoryId() == null) {
             throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
         }
-        // Habit 저장 (saveHabit 후 habit.getId()에 생성된 id가 반환됨)
-        Habit habit = new Habit();
-        habit.setName(dto.getName());
-        habit.setIsPublic(dto.getIsPublic());
-        habitMapper.saveHabit(habit);
-        habitMapper.saveHabitCategory(habit.getId(), dto.getCategoryId());
-
         // UserHabit 저장
         UserHabit userHabit = new UserHabit();
         userHabit.setMemberId(memberId);
-        userHabit.setHabitId(habit.getId());
+        userHabit.setName(dto.getName());
+        userHabit.setCategoryId(dto.getCategoryId());
         userHabit.setStatus(ACTIVE);
         userHabit.setColor(Color.fromHex(dto.getColor()));
         userHabit.setFrequency(dto.getFrequency());
@@ -71,7 +65,17 @@ public class HabitService {
 
     // 습관 삭제
     @Transactional
-    public void deleteHabit(Long memberId,Long userHabitId) {
+    public void deleteHabit(Long memberId, Long userHabitId) {
+        UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
+
+        if (userHabit == null) {
+            throw new IllegalArgumentException("존재하지 않는 습관입니다.");
+        }
+
+        if (!userHabit.getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("본인의 습관만 삭제할 수 있습니다.");
+        }
+
         habitMapper.deleteSchedulesByUserHabitId(userHabitId);
         habitMapper.deleteHistoriesByUserHabitId(userHabitId);
         habitMapper.deleteDailyLogsByUserHabitId(userHabitId);
@@ -80,28 +84,27 @@ public class HabitService {
 
     // 습관 수정
     @Transactional
-    public void updateHabit(Long userHabitId, com.example.just_do_today.dto.habit.UpdateHabitRequestDto dto) {
+    public void updateHabit(Long memberId, Long userHabitId, UpdateHabitRequestDto dto) {
 
-        Long habitId = habitMapper.findHabitIdByUserHabitId(userHabitId);
-        if (habitId == null || userHabitId == null) {
+        if (userHabitId == null) {
             throw new IllegalArgumentException("존재하지 않는 습관입니다.");
         }
-        // 1. Habit 기본 정보 수정
-        Habit habit = new Habit();
-        habit.setId(habitId);
-        habit.setName(dto.getName());
-        habit.setIsPublic(dto.getIsPublic());
-        habitMapper.updateHabit(habit);
+        UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
 
-        // 2. UserHabit 수정 (유저별 습관 세부 정보)
-        UserHabit userHabit = new UserHabit();
+        if (!userHabit.getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("본인의 습관만 수정할 수 있습니다.");
+        }
+
+        // 1. UserHabit 수정 (유저별 습관 세부 정보)
         userHabit.setId(userHabitId);
+        userHabit.setName(dto.getName());
+        userHabit.setCategoryId(dto.getCategoryId());
         userHabit.setColor(Color.fromHex(dto.getColor()));
         userHabit.setFrequency(dto.getFrequency());
         userHabit.setStartDate(dto.getStartDate());
         habitMapper.updateUserHabit(userHabit);
 
-        // 3. 스케줄 수정 (삭제 후 재생성)
+        // 2. 스케줄 수정 (삭제 후 재생성)
         habitMapper.deleteSchedulesByUserHabitId(userHabitId);
         if ((Frequency.WEEKLY==dto.getFrequency() || Frequency.CUSTOM==dto.getFrequency()) && dto.getDays() != null) {
             for (Integer day : dto.getDays()) {
@@ -112,13 +115,6 @@ public class HabitService {
                 habitMapper.saveSchedule(schedule);
             }
         }
-
-        // 4. 카테고리 수정 (삭제 후 재생성)
-        if (dto.getCategoryId() == null) {
-            throw new IllegalArgumentException("카테고리는 필수 선택 사항입니다.");
-        }
-        habitMapper.deleteHabitCategoryByHabitId(habitId);
-        habitMapper.saveHabitCategory(habitId, dto.getCategoryId());
     }
 
 }

@@ -6,7 +6,7 @@ const EMOJI_LIST = [
   '🧘', '💊', '🥗', '💧', '😴', '✍️',
   '🙏', '📵', '🍳', '🎵', '💰', '🧹',
   '🌿', '🐾', '📷', '🚗', '🌍', '🤖',
-  '🎧', '📷', '🎯', '📌', '💙', '❤️',
+  '🎧', '✏️', '🎯', '📌', '💙', '❤️',
 ];
 
 type Props = {
@@ -73,9 +73,9 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
 
         {/* 이모지 그리드 */}
         <div className="mb-4 grid grid-cols-6 gap-3 justify-items-center">
-          {EMOJI_LIST.map((emoji, index) => (
+          {EMOJI_LIST.map((emoji) => (
             <button
-              key={index}
+              key={emoji}
               type="button"
               onClick={() => setSelectedEmoji(emoji)}
               className={`flex h-11 w-11 items-center justify-center rounded-full text-[22px] transition ${
