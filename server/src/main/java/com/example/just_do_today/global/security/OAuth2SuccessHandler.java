@@ -66,6 +66,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                     .queryParam("token", token)
+                    .queryParam("isOnboarding", !member.isOnboardingCompleted())
                     .build().toUriString();
 
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
