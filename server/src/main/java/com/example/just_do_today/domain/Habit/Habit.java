@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Habit {
     private Long id;
     private String name;
-    private Boolean isPublic;
+    private String isPublic;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -1,6 +1,7 @@
 package com.example.just_do_today.domain.Habit;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,12 +10,11 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+@Builder
+public class CategoryUser {
     private Long id;
-    private String code;
-    private String name;
-    private Boolean isActive;
-    private Integer displayOrder;
+    private Long categoryId;
+    private Long memberId;
+    private String emoji;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

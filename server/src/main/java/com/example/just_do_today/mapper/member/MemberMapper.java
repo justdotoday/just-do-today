@@ -34,6 +34,4 @@ public interface MemberMapper {
     """)
     void saveMember(Member member);
 
-    Boolean findOnboardingCompleteById(@Param("memberId") Long memberId);
-    void updateOnboardingCompleted(@Param("memberId") Long memberId, @Param("completed") Boolean completed);
 }

@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserHabitStatus {
     ACTIVE,
-    FREEZE;
+    FREEZE
 }
