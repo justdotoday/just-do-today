@@ -6,8 +6,19 @@
 
     <!--습관 생성-->
     <insert id="saveUserHabit" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_habit (member_id, name, category_id, status, color, frequency, start_date, created_at, updated_at)
-        VALUES (#{memberId}, #{name}, #{categoryId}, #{status.value}, #{color}, #{frequency}, #{startDate}, NOW(), NOW())
+        INSERT INTO user_habit (member_id, name, category_user_id, status, color, frequency, start_date, is_public, created_at, updated_at)
+        VALUES (
+            #{memberId}, 
+            #{name}, 
+            #{categoryUserId}, 
+            #{status}, 
+            #{color}, 
+            #{frequency}, 
+            #{startDate}, 
+            CASE WHEN #{isPublic} THEN '1' ELSE '0' END, 
+            NOW(), 
+            NOW()
+        )
     </insert>
 
     <insert id="saveSchedule">
@@ -22,6 +33,7 @@
         <result property="color" column="color"/>
         <result property="categoryId" column="category_id"/>
         <result property="category" column="category_name"/>
+        <result property="emoji" column="emoji"/>
         <result property="frequency" column="frequency"/>
         <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.Enum.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
@@ -39,16 +51,19 @@
             uh.color,
             c.id as category_id,
             c.name as category_name,
+            cu.emoji,
             uh.frequency,
             uh.status,
             uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
-        LEFT JOIN category c ON uh.category_id = c.id
+        LEFT JOIN category_user cu ON uh.category_user_id = cu.id
+        LEFT JOIN category c ON cu.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
         WHERE uh.member_id = #{memberId}
         ORDER BY uh.id DESC, uhs.day_of_week ASC
     </select>
+
     <!--습관 개별 조회-->
     <select id="findByUserHabitId" resultMap="HabitResultMap">
         SELECT
@@ -57,12 +72,14 @@
             uh.color,
             c.id as category_id,
             c.name as category_name,
+            cu.emoji,
             uh.frequency,
             uh.status,
             uh.frozen_until,
             uhs.day_of_week
         FROM user_habit uh
-        LEFT JOIN category c ON uh.category_id = c.id
+        LEFT JOIN category_user cu ON uh.category_user_id = cu.id
+        LEFT JOIN category c ON cu.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
         WHERE uh.id = #{userHabitId}
     </select>
@@ -108,11 +125,12 @@
             id,
             member_id,
             name,
-            category_id,
+            category_user_id,
             status,
             frozen_until,
             frequency,
             start_date,
+            is_public,
             created_at,
             updated_at
         FROM user_habit
@@ -122,7 +140,7 @@
     <update id="updateUserHabitStatusAndFrozenUntil">
         UPDATE user_habit
         SET
-            status = #{status.value},
+            status = #{status},
             frozen_until = #{frozenUntil},
             updated_at = NOW()
         WHERE id = #{id}
@@ -150,10 +168,11 @@
         UPDATE user_habit
         SET
             name = #{name},
-            category_id = #{categoryId},
+            category_user_id = #{categoryUserId},
             color = #{color},
             frequency = #{frequency},
             start_date = #{startDate},
+            is_public = CASE WHEN #{isPublic} THEN '1' ELSE '0' END,
             updated_at = NOW()
         WHERE id = #{id}
     </update>

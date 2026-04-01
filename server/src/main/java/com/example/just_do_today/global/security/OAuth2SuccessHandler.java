@@ -62,7 +62,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
             Member member = memberService.loginOrRegister(loginRequest);
 
-            String token = jwtProvider.createToken(member.getProviderId(), member.getUserRole());
+            String token = jwtProvider.createToken(member.getProviderId(), member.getUserRole(), member.getId());
 
             String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
                     .queryParam("token", token)

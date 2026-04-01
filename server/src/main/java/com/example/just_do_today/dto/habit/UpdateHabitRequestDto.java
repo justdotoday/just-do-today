@@ -11,6 +11,8 @@ import java.util.List;
 public class UpdateHabitRequestDto {
     private String name;
     private Long categoryId;
+    private String categoryName;
+    private String emoji;
     private Frequency frequency;
     private List<Integer> days;
     private Boolean isPublic;
