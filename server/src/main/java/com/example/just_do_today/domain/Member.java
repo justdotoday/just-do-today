@@ -23,6 +23,8 @@ public class Member {
     private int hearts = 3;
     @Builder.Default
     private int freezes = 1;
+    @Builder.Default
+    private boolean onboardingCompleted = false;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 }
