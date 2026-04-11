@@ -4,8 +4,8 @@ import type { Day } from '../types/habitType';
 
 export interface OnboardingHabitPayload {
   name: string;
-  categoryId?: number;
-  userCategoryId?: number;
+  categoryName: string;
+  emoji?: string;
   frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
   days?: Day[];
   isPublic: boolean;

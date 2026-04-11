@@ -1,9 +1,6 @@
 //습관 관련 api
-// TODO: JWT에 memberId 클레임 추가되면 하드코딩 제거 필요
 import type { CreateHabitPayload, Day, Habit } from '../types/habitType';
 import api from './client';
-
-const TEMP_MEMBER_ID = 1;
 
 const DAY_TO_NUMBER: Record<Day, number> = {
   MON: 0,
@@ -19,10 +16,8 @@ const DAY_TO_NUMBER: Record<Day, number> = {
 export const createHabit = async (payload: CreateHabitPayload) => {
   const body = {
     name: payload.name,
-    ...(payload.categoryId != null && { categoryId: payload.categoryId }),
-    ...(payload.userCategoryId != null && {
-      userCategoryId: payload.userCategoryId,
-    }),
+    categoryName: payload.categoryName,
+    ...(payload.emoji && { emoji: payload.emoji }),
     frequency: payload.frequency,
     ...(payload.days?.length && {
       days: payload.days.map((d) => DAY_TO_NUMBER[d]),
@@ -31,7 +26,7 @@ export const createHabit = async (payload: CreateHabitPayload) => {
     startDate: payload.startDate,
     color: payload.color,
   };
-  const res = await api.post(`/api/habits/${TEMP_MEMBER_ID}`, body);
+  const res = await api.post(`/api/habits`, body);
   return res.data;
 };
 
@@ -39,7 +34,7 @@ export const createHabit = async (payload: CreateHabitPayload) => {
 export const getHabits = async (params?: {
   date?: string;
 }): Promise<Habit[]> => {
-  const res = await api.get(`/api/habits/user/${TEMP_MEMBER_ID}`, { params });
+  const res = await api.get(`/api/habits`, { params });
   console.log('getHabits', res.data);
   return Array.isArray(res.data) ? res.data : [];
 };
@@ -57,4 +52,9 @@ export const freezeHabit = async (
   await api.post(`/api/user-habits/${userHabitId}/freeze`, null, {
     params: { postponeDays },
   });
+};
+
+// 완료 토글 (명세: POST /api/user-habits/:userHabitId/done)
+export const toggleDone = async (userHabitId: number): Promise<void> => {
+  await api.post(`/api/user-habits/${userHabitId}/done`);
 };

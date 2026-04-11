@@ -1,7 +1,7 @@
 /** 홈 페이지. 습관 조회·리스트/빈 화면 분기, 섹션·바텀시트·스낵바·삭제 담당. */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getHabits, deleteHabit, freezeHabit } from '../../api/habit';
+import { getHabits, deleteHabit, freezeHabit, toggleDone } from '../../api/habit';
 import { showToast } from '../../components/ui/toast/Toast';
 import CompletionSnackbar from '../../components/ui/toast/CompletionSnackbar';
 import HomeEmpty from './components/HomeEmpty';
@@ -88,21 +88,36 @@ const HomePage = () => {
     );
   }, []);
 
+  // 완료 토글 — API 호출 후 성공 시 UI 반영, 실패 시 에러 토스트
   const handleToggleDone = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      const item = sections.flatMap((s) => s.items).find((i) => i.id === id);
+      const userHabitId = item?.userHabitId;
+
+      if (userHabitId != null) {
+        try {
+          await toggleDone(userHabitId);
+        } catch {
+          showToast.error('완료 처리에 실패했어요');
+          return;
+        }
+      }
+
       updateItem(id, (item) => {
         if (item.status !== 'done') setCompletionSnackbarVisible(true);
         return { ...item, status: item.status === 'done' ? 'notDone' : 'done' };
       });
     },
-    [updateItem]
+    [sections, updateItem]
   );
 
+  // 점(•••) 버튼 클릭 → 상태 바텀시트 열기
   const handleOpenModal = useCallback((id: string) => {
     setActiveItemId(id);
     setIsStatusSheetOpen(true);
   }, []);
 
+  // 바텀시트에서 상태 선택(완료/쉬어가기) → UI 반영 후 시트 닫기
   const handleSelectStatus = useCallback(
     (status: HabitStatus) => {
       if (!activeItemId) return;

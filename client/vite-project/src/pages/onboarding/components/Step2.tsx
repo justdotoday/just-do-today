@@ -19,8 +19,8 @@ const DEFAULT_NICKNAME_DISPLAY = '회원';
 export type Step2HabitData = {
   name: string;
   color: string;
-  categoryId?: number;
-  userCategoryId?: number;
+  categoryName: string;
+  emoji?: string;
 };
 
 type Step2Props = {
@@ -38,7 +38,7 @@ const Step2 = ({
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step2Props) => {
   const [habitName, setHabitName] = useState('');
-  const [habitColor, setHabitColor] = useState(PRIMARY_BLUE);
+  const [habitColor, setHabitColor] = useState('#3B47B3');
   const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
   const [paletteAnchorRect, setPaletteAnchorRect] = useState<DOMRect | null>(
     null
@@ -186,7 +186,8 @@ const Step2 = ({
               onNext({
                 name: habitName.trim(),
                 color: habitColor,
-                ...(selected.id ? { categoryId: selected.id } : { userCategoryId: selected.userCategoryId }),
+                categoryName: selected.name,
+                ...(selected.icon && { emoji: selected.icon }),
               });
             }}
           disabled={!canNext}

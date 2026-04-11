@@ -3,7 +3,6 @@ import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
-import { createUserCategory } from '../../api/category';
 import type { CreateHabitPayload } from '../../types/habitType';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
@@ -11,14 +10,13 @@ import MonthlyDatePickerSheet from '../../components/habit/MonthlyDatePickerShee
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
-import { DEFAULT_CATEGORIES } from '../../constants/categories';
 import type { CategoryItem } from '../../components/habit/CategorySelector';
+import { DEFAULT_CATEGORIES } from '../../constants/categories';
 
 const CreateHabit = () => {
   const navigate = useNavigate();
 
-  const [categories, setCategories] =
-    useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
 
   // 상태 변수들
   const day = ['월', '화', '수', '목', '금', '토', '일'] as const;
@@ -77,18 +75,19 @@ const CreateHabit = () => {
     if (!canSubmit || isLoading) return;
 
     const selected = categories.find((c) => c.name === selectedCategory);
-    if (!selected?.id && !selected?.userCategoryId) {
+    if (!selected) {
       showToast.error('카테고리를 선택해 주세요');
       return;
     }
 
     const payload: CreateHabitPayload = {
       name: name.trim(),
-      ...(selected.id ? { categoryId: selected.id } : { userCategoryId: selected.userCategoryId }),
+      categoryName: selected.name,
+      ...(selected.icon && { emoji: selected.icon }),
       frequency,
       ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,
-      startDate: new Date().toISOString().split('T')[0], // 오늘 날짜를 YYYY-MM-DD 형식으로
+      startDate: new Date().toISOString().split('T')[0],
       color: habitColor,
     };
     try {
@@ -119,13 +118,12 @@ const CreateHabit = () => {
     }
   };
 
-  // 카테고리 직접 추가 처리 (API 호출로 user_category에 저장 후 ID 반환)
-  const handleAddCategory = async (name: string, emoji: string | null) => {
+  // 카테고리 직접 추가 처리 (로컬 상태에만 저장, 습관 생성 시 서버에서 find-or-create)
+  const handleAddCategory = (name: string, emoji: string | null) => {
     const trimmed = name.trim();
     if (!trimmed) return;
 
     const hasSameCategory = categories.some((c) => c.name === trimmed);
-
     if (hasSameCategory) {
       showToast.default('이미 있는 카테고리예요');
       setSelectedCategory(trimmed);
@@ -133,15 +131,10 @@ const CreateHabit = () => {
       return;
     }
 
-    try {
-      const saved = await createUserCategory(trimmed, emoji);
-      setCategories((prev) => [...prev, { userCategoryId: saved.id, name: trimmed, icon: emoji ?? undefined }]);
-      setSelectedCategory(trimmed);
-      setIsCategoryModalOpen(false);
-      showToast.success('카테고리가 추가되었어요');
-    } catch {
-      showToast.error('카테고리 추가에 실패했어요');
-    }
+    setCategories((prev) => [...prev, { name: trimmed, icon: emoji ?? undefined }]);
+    setSelectedCategory(trimmed);
+    setIsCategoryModalOpen(false);
+    showToast.success('카테고리가 추가되었어요');
   };
 
   return (
