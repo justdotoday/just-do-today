@@ -16,6 +16,7 @@ export type HomeListProps = {
   onOpenModal: (id: string) => void;
   onToggleSelect: (id: string) => void;
   onIceThaw: (id: string) => void;
+  onCreateHabit: () => void;
 };
 
 const HomeList = ({
@@ -28,6 +29,7 @@ const HomeList = ({
   onOpenModal,
   onToggleSelect,
   onIceThaw,
+  onCreateHabit,
 }: HomeListProps) => {
   return (
     <div className="px-4 pt-6 pb-28">
@@ -55,12 +57,13 @@ const HomeList = ({
 
       <button
         type="button"
+        onClick={onCreateHabit}
         className="fixed bottom-24"
         style={{
           right: `max(1.5rem, calc((100vw - ${CONTENT_MAX_WIDTH_PX}px) / 2 + 1.5rem))`,
         }}
       >
-        <img src={plusButton} alt="더보기" className="h-14 w-14" />
+        <img src={plusButton} alt="습관 생성" className="h-14 w-14" />
       </button>
     </div>
   );

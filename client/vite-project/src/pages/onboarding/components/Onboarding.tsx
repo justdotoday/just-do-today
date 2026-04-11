@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import GlowEffect from '../../../components/ui/GlowEffect';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import Step4 from './Step4';
 import Step3_5 from './Step3_5';
+import { completeOnboarding } from '../../../api/onboarding';
+import type { Step2HabitData } from './Step2';
+import type { Step3HabitData } from './Step3';
 
 const ONBOARDING_BACKDROP_Z_INDEX = 40;
 const ONBOARDING_MODAL_Z_INDEX = 50;
@@ -30,6 +34,8 @@ type OnboardingProps = {
 const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
   const [step, setStep] = useState<OnboardingStep>('step1');
   const [nickname, setNickname] = useState('');
+  const [habitStep2, setHabitStep2] = useState<Step2HabitData | null>(null);
+  const [habitStep3, setHabitStep3] = useState<Step3HabitData | null>(null);
 
   const handleBack = () => {
     const previous = STEP_TO_PREVIOUS[step];
@@ -45,6 +51,31 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
     setStep('step2');
   };
 
+  const handleStep2Next = (data: Step2HabitData) => {
+    setHabitStep2(data);
+    setStep('step3');
+  };
+
+  const handleStep3Next = (data: Step3HabitData) => {
+    setHabitStep3(data);
+    setStep('step3_5');
+  };
+
+  const handleFinish = async (goal: string) => {
+    // Step2+3 데이터가 있으면 habit 포함, 없으면 null (나중에 할래요 후 재진입 시)
+    const habit =
+      habitStep2 && habitStep3
+        ? {
+            ...habitStep2,
+            ...habitStep3,
+            startDate: new Date().toISOString().split('T')[0],
+          }
+        : null;
+
+    await completeOnboarding({ nickname, goal, habit });
+    onFinish();
+  };
+
   const stepContent = (() => {
     if (step === 'step1') {
       return <Step1 onNext={handleStep1Next} onBack={handleBack} />;
@@ -53,7 +84,7 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
       return (
         <Step2
           nickname={nickname || undefined}
-          onNext={() => setStep('step3')}
+          onNext={handleStep2Next}
           onBack={handleBack}
           onSkip={onSkip ?? onFinish}
         />
@@ -63,7 +94,7 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
       return (
         <Step3
           nickname={nickname || undefined}
-          onNext={() => setStep('step3_5')}
+          onNext={handleStep3Next}
           onBack={handleBack}
           onSkip={onSkip ?? onFinish}
         />
@@ -73,7 +104,7 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
       return <Step3_5 onNext={() => setStep('step4')} />;
     }
     if (step === 'step4') {
-      return <Step4 onFinish={onFinish} onBack={handleBack} />;
+      return <Step4 onFinish={handleFinish} onBack={handleBack} />;
     }
     return null;
   })();
@@ -85,9 +116,10 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
         style={{ zIndex: ONBOARDING_BACKDROP_Z_INDEX }}
       />
       <div
-        className="fixed inset-0 bg-white transition-transform duration-300 translate-y-0"
-        style={{ zIndex: ONBOARDING_MODAL_Z_INDEX }}
+        className="fixed inset-0 overflow-hidden transition-transform duration-300 translate-y-0"
+        style={{ background: '#FFFFFF', zIndex: ONBOARDING_MODAL_Z_INDEX }}
       >
+        <GlowEffect position="top" />
         {stepContent}
       </div>
     </>

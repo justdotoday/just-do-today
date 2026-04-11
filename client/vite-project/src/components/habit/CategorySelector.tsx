@@ -1,5 +1,5 @@
 //카테고리 선택 컴포넌트
-export type CategoryItem = { id?: number; name: string; icon?: string };
+export type CategoryItem = { id?: number; userCategoryId?: number; name: string; icon?: string };
 
 type Props = {
   title?: string;

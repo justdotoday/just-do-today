@@ -1,6 +1,6 @@
 import type { CategoryItem } from '../components/habit/CategorySelector';
 
-/** 습관 카테고리 기본 목록 (온보딩 Step2, CreateHabit 등에서 공통 사용) */
+/** 습관 카테고리 기본 목록 (온보딩 Step2) */
 export const DEFAULT_CATEGORIES: CategoryItem[] = [
   { id: 1,  name: '건강관리', icon: '💊' },
   { id: 2,  name: '마음챙김', icon: '☕️' },

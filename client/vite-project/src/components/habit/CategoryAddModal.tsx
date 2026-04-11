@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import DragHandle from '../DragHandle';
 
+const EMOJI_LIST = [
+  '🧘', '💊', '🥗', '💧', '😴', '✍️',
+  '🙏', '📵', '🍳', '🎵', '💰', '🧹',
+  '🌿', '🐾', '📷', '🚗', '🌍', '🤖',
+  '🎧', '✏️', '🎯', '📌', '💙', '❤️',
+];
+
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSubmit: (categoryName: string) => void;
+  onSubmit: (categoryName: string, emoji: string | null) => void;
 };
 
 const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
   const [value, setValue] = useState('');
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(EMOJI_LIST[0]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleSubmit();
@@ -23,7 +31,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    onSubmit(trimmed);
+    onSubmit(trimmed, selectedEmoji);
     onClose();
   };
 
@@ -47,17 +55,39 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
       >
         <DragHandle />
         <h2 className="mb-4 text-center text-[18px] font-semibold">
-          카테고리 직접 입력
+          카테고리 직접 추가
         </h2>
 
-        <input
-          autoFocus
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="카테고리를 입력해 주세요"
-          className="mb-4 h-12 w-full rounded-full border border-zinc-200 px-4 text-[14px] outline-none focus:border-[#2563EB]"
-        />
+        {/* 이모지 + 텍스트 입력 */}
+        <div className="mb-4 flex h-12 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2563EB]">
+          <span className="text-[20px] leading-none">{selectedEmoji ?? '🏷️'}</span>
+          <input
+            autoFocus
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="카테고리명을 입력해 주세요"
+            className="flex-1 text-[14px] outline-none"
+          />
+        </div>
+
+        {/* 이모지 그리드 */}
+        <div className="mb-4 grid grid-cols-6 gap-3 justify-items-center">
+          {EMOJI_LIST.map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              onClick={() => setSelectedEmoji(emoji)}
+              className={`flex h-11 w-11 items-center justify-center rounded-full text-[22px] transition ${
+                selectedEmoji === emoji
+                  ? 'bg-blue-50 ring-2 ring-[#A5B4FC]'
+                  : 'bg-white border border-zinc-200'
+              }`}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
 
         <button
           type="button"

@@ -1,28 +1,28 @@
 import zaksimLogo from '../assets/zaksim-logo.png';
 import today from '../assets/today.png';
 import { motion } from 'framer-motion';
-import bgAuth from '../assets/bg-auth.png';
-import KaKaoLogin from '../assets/KaKaoLogin.png';
+import backGround from '../assets/backGround.svg';
+import kakaoLogin from '../assets/kakaoLogin.svg';
 
 const SocialSignUp = () => {
-  const handleKakao = () => {
-    const KAKAO_AUTH_URL = "http://localhost:8080/oauth/authorization/kakao";
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
-    window.location.href = KAKAO_AUTH_URL;
+  const handleKakao = () => {
+    window.location.href = `${BASE_URL}/oauth/authorization/kakao`;
   };
 
   const handleGoogle = () => {
-    const GOOGLE_AUTH_URL = "http://localhost:8080/oauth/authorization/google";
-
-    window.location.href = GOOGLE_AUTH_URL;
+    window.location.href = `${BASE_URL}/oauth/authorization/google`;
   };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgAuth})` }}
+      <img
+        src={backGround}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover"
+        aria-hidden="true"
       />
 
       {/* content */}
@@ -59,18 +59,12 @@ const SocialSignUp = () => {
           <button
             type="button"
             onClick={handleKakao}
-            className="
-      relative h-[58px] w-full overflow-hidden rounded-full
-      bg-[#FEE500]
-      shadow-[0_12px_30px_rgba(0,0,0,0.18)]
-      active:scale-[0.98]
-      transition-transform
-    "
+            className="flex items-center justify-center h-[58px] w-full rounded-full bg-[#FEE500] shadow-[0_12px_30px_rgba(0,0,0,0.18)] active:scale-[0.98] transition-transform"
           >
             <img
-              src={KaKaoLogin}
+              src={kakaoLogin}
               alt="카카오로 시작하기"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="h-[26px] w-auto"
               draggable={false}
             />
           </button>

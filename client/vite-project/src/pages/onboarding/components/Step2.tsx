@@ -16,8 +16,15 @@ const PRIMARY_BLUE = '#2563EB';
 
 const DEFAULT_NICKNAME_DISPLAY = '회원';
 
+export type Step2HabitData = {
+  name: string;
+  color: string;
+  categoryName: string;
+  emoji?: string;
+};
+
 type Step2Props = {
-  onNext: () => void;
+  onNext: (data: Step2HabitData) => void;
   onBack: () => void;
   /** 나중에 할래요 클릭 시 (MainPage로 이동) */
   onSkip: () => void;
@@ -31,7 +38,7 @@ const Step2 = ({
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step2Props) => {
   const [habitName, setHabitName] = useState('');
-  const [habitColor, setHabitColor] = useState(PRIMARY_BLUE);
+  const [habitColor, setHabitColor] = useState('#3B47B3');
   const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
   const [paletteAnchorRect, setPaletteAnchorRect] = useState<DOMRect | null>(
     null
@@ -42,7 +49,7 @@ const Step2 = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
-  const handleAddCategory = (name: string) => {
+  const handleAddCategory = (name: string, _emoji: string | null) => {
     const trimmed = name.trim();
     if (trimmed.length === 0) return;
 
@@ -161,11 +168,8 @@ const Step2 = ({
       </div>
 
       <div
-        className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 space-y-2 bg-white px-4 pt-2"
-        style={{
-          ...contentMaxWidthStyle,
-          paddingBottom: bottomAreaPadding,
-        }}
+        className="fixed bottom-0 left-1/2 w-full -translate-x-1/2 space-y-2 px-4 pt-8"
+        style={{ background: 'linear-gradient(180deg, transparent 0%, #ffffff 30%)', ...contentMaxWidthStyle, paddingBottom: bottomAreaPadding }}
       >
         <button
           type="button"
@@ -176,7 +180,16 @@ const Step2 = ({
         </button>
         <button
           type="button"
-          onClick={onNext}
+          onClick={() => {
+              const selected = categories.find((c) => c.name === selectedCategory);
+              if (!selected) return;
+              onNext({
+                name: habitName.trim(),
+                color: habitColor,
+                categoryName: selected.name,
+                ...(selected.icon && { emoji: selected.icon }),
+              });
+            }}
           disabled={!canNext}
           className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98] disabled:bg-zinc-300 disabled:active:scale-100"
           style={canNext ? { backgroundColor: PRIMARY_BLUE } : undefined}

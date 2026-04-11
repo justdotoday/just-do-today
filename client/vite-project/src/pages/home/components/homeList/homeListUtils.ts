@@ -2,7 +2,7 @@
 import type { Habit } from '../../../../types/habitType';
 import { DEFAULT_CATEGORIES } from '../../../../constants/categories';
 
-const FALLBACK_CATEGORY_ICON = '📌';
+const FALLBACK_CATEGORY_ICON = '📌'; //임시 카테고리 이모지
 const UNCATEGORIZED_LABEL = '미분류';
 const DONE_STATUSES: ReadonlySet<string> = new Set(['done', 'heart']);
 

@@ -59,12 +59,12 @@ const Step1 = ({ onNext }: Step1Props) => {
   const canNext = nickname.trim().length > 0 && requiredAgreed;
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-100">
+    <div className="flex min-h-screen flex-col">
       {/* 상단 뒤로가기 및 온보딩 단계 */}
       <div className="mx-auto flex w-full max-w-[414px] flex-1 flex-col bg-white">
         <br />
 
-        <main className="flex flex-1 flex-col px-4 pb-24">
+        <main className="flex flex-1 flex-col px-4 pb-[calc(80px+env(safe-area-inset-bottom))]">
           {/* 인사 + 닉네임 입력 */}
           <section className="mb-8">
             <h1 className="mb-2 flex items-center gap-1.5 font-bold text-2xl text-zinc-900">

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EmptyIllustration from './EmptyIllustration';
+import GlowEffect from '../../../components/ui/GlowEffect';
 
 const HomeEmpty = () => {
   const navigate = useNavigate();
@@ -14,7 +15,8 @@ const HomeEmpty = () => {
   );
 
   return (
-    <div className="px-4 pt-6 pb-28">
+    <div className="relative min-h-[calc(100dvh-96px)] px-4 pt-6">
+      <GlowEffect position="bottom" />
       <div className="text-2xl font-semibold leading-none text-zinc-950">
         {dateLabel}
       </div>

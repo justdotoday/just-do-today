@@ -6,24 +6,24 @@ import { createHabit } from '../../api/habit';
 import type { CreateHabitPayload } from '../../types/habitType';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/habit/CategoryAddModal';
+import MonthlyDatePickerSheet from '../../components/habit/MonthlyDatePickerSheet';
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
-import { DEFAULT_CATEGORIES } from '../../constants/categories';
 import type { CategoryItem } from '../../components/habit/CategorySelector';
+import { DEFAULT_CATEGORIES } from '../../constants/categories';
 
 const CreateHabit = () => {
   const navigate = useNavigate();
 
-  const [categories, setCategories] =
-    useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
 
   // 상태 변수들
   const day = ['월', '화', '수', '목', '금', '토', '일'] as const;
   const firstRow = day.slice(0, 4); // 월 화 수 목
   const secondRow = day.slice(4); // 금 토 일
   const [name, setName] = useState('');
-  const [habitColor, setHabitColor] = useState('#2563EB');
+  const [habitColor, setHabitColor] = useState('#3B47B3');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [frequency, setFrequency] = useState<Frequency>('DAILY');
   type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
@@ -35,6 +35,8 @@ const CreateHabit = () => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
 
   // --- [공통 디자인 가이드 적용] ---
 
@@ -72,20 +74,20 @@ const CreateHabit = () => {
   const handleSubmit = async () => {
     if (!canSubmit || isLoading) return;
 
-    // 선택한 카테고리 이름으로 DB ID 조회 (직접 추가한 카테고리는 id가 없어 차단)
-    const categoryId = categories.find((c) => c.name === selectedCategory)?.id;
-    if (!categoryId) {
-      showToast.error('기본 카테고리 중 하나를 선택해 주세요');
+    const selected = categories.find((c) => c.name === selectedCategory);
+    if (!selected) {
+      showToast.error('카테고리를 선택해 주세요');
       return;
     }
 
     const payload: CreateHabitPayload = {
       name: name.trim(),
-      categoryId,
+      categoryName: selected.name,
+      ...(selected.icon && { emoji: selected.icon }),
       frequency,
       ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,
-      startDate: new Date().toISOString().split('T')[0], // 오늘 날짜를 YYYY-MM-DD 형식으로
+      startDate: new Date().toISOString().split('T')[0],
       color: habitColor,
     };
     try {
@@ -116,26 +118,22 @@ const CreateHabit = () => {
     }
   };
 
-  // 카테고리 직접 추가 처리
-  const handleAddCategory = (name: string) => {
+  // 카테고리 직접 추가 처리 (로컬 상태에만 저장, 습관 생성 시 서버에서 find-or-create)
+  const handleAddCategory = (name: string, emoji: string | null) => {
     const trimmed = name.trim();
     if (!trimmed) return;
 
     const hasSameCategory = categories.some((c) => c.name === trimmed);
-
     if (hasSameCategory) {
-      // 중복 입력 시: 새로 추가하지 않고 기존 카테고리를 선택
       showToast.default('이미 있는 카테고리예요');
       setSelectedCategory(trimmed);
       setIsCategoryModalOpen(false);
       return;
     }
 
-    // 신규 카테고리 추가 + 해당 카테고리를 선택 상태로 설정
-    setCategories((prev) => [...prev, { name: trimmed }]);
-    setSelectedCategory(trimmed); //  추가한 것만 선택(싱글)
+    setCategories((prev) => [...prev, { name: trimmed, icon: emoji ?? undefined }]);
+    setSelectedCategory(trimmed);
     setIsCategoryModalOpen(false);
-
     showToast.success('카테고리가 추가되었어요');
   };
 
@@ -177,7 +175,10 @@ const CreateHabit = () => {
         <section className="mt-6 space-y-4">
           <HabitOptionsSection
             frequency={frequency}
-            setFrequency={setFrequency}
+            setFrequency={(val) => {
+                setFrequency(val);
+                if (val === 'MONTHLY') setIsMonthlyPickerOpen(true);
+              }}
             selectedDays={selectedDays}
             toggleDay={toggleDay}
             dayRows={{ first: firstRow, second: secondRow }}
@@ -225,6 +226,15 @@ const CreateHabit = () => {
           open={isCategoryModalOpen}
           onClose={() => setIsCategoryModalOpen(false)}
           onSubmit={handleAddCategory}
+        />
+      )}
+
+      {isMonthlyPickerOpen && (
+        <MonthlyDatePickerSheet
+          open={isMonthlyPickerOpen}
+          onClose={() => setIsMonthlyPickerOpen(false)}
+          onSelect={(day) => setSelectedMonthlyDay(day)}
+          initialDay={selectedMonthlyDay ?? undefined}
         />
       )}
     </div>

@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import HabitOptionsSection from '../../../components/habit/HabitOptionsSection';
 import OnboardingStepHeader from './OnboardingStepHeader';
+import { mapDaysToServer } from '../../../api/utils';
+import type { Day } from '../../../types/habitType';
 
 const ONBOARDING_CONTENT_MAX_WIDTH_PX = 414;
 const ONBOARDING_BOTTOM_PADDING_PX = 16;
@@ -15,15 +17,21 @@ const DEFAULT_NICKNAME_DISPLAY = '회원';
 const DAYS_FIRST_ROW = ['월', '화', '수', '목'] as const;
 const DAYS_SECOND_ROW = ['금', '토', '일'] as const;
 
+type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
+
+export type Step3HabitData = {
+  frequency: Frequency;
+  days?: Day[];
+  isPublic: boolean;
+};
+
 type Step3Props = {
-  onNext: () => void;
+  onNext: (data: Step3HabitData) => void;
   onBack: () => void;
   /** 나중에 할래요 클릭 시 (MainPage로 이동) */
   onSkip: () => void;
   nickname?: string;
 };
-
-type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
 const Step3 = ({
   onNext,
@@ -71,7 +79,7 @@ const Step3 = ({
     frequency !== 'CUSTOM' || selectedDays.length > 0;
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-100">
+    <div className="flex min-h-screen flex-col">
       <div
         className="mx-auto flex w-full flex-1 flex-col bg-white"
         style={contentMaxWidthStyle}
@@ -138,7 +146,13 @@ const Step3 = ({
         </button>
         <button
           type="button"
-          onClick={onNext}
+          onClick={() =>
+              onNext({
+                frequency,
+                ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
+                isPublic,
+              })
+            }
           disabled={!canNext}
           className="flex h-14 w-full items-center justify-center rounded-full font-semibold text-white transition active:scale-[0.98] disabled:bg-zinc-300 disabled:active:scale-100"
           style={canNext ? { backgroundColor: PRIMARY_BLUE_HEX } : undefined}
