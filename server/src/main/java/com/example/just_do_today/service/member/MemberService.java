@@ -42,12 +42,13 @@ public class MemberService {
 
         // 없으면 회원가입
         if (member == null) {
+            String userCode = UUID.randomUUID().toString().substring(0, 6);
             Member newMember = Member.builder()
                     .provider(loginRequest.getProvider())
                     .providerId(loginRequest.getProviderId())
                     .profileImageUrl(loginRequest.getProfileImageUrl())
-                    .nickname("nickname")
-                    .userCode(UUID.randomUUID().toString().substring(0,6))
+                    .nickname("user_" + userCode)
+                    .userCode(userCode)
                     .userRole(Role.USER.getKey())
                     .build();
             memberMapper.saveMember(newMember);

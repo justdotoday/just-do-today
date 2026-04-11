@@ -3,8 +3,6 @@ package com.example.just_do_today.mapper.category;
 import com.example.just_do_today.domain.Habit.Category;
 import org.apache.ibatis.annotations.*;
 
-import java.util.List;
-
 @Mapper
 public interface CategoryMapper {
 
