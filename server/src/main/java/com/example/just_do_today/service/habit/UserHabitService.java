@@ -22,7 +22,7 @@ public class UserHabitService {
 
     // 습관 완료/취소 토글
     @Transactional
-    public String toggleCompletion(Long userHabitId) {
+    public String toggleCompletion(Long memberId, Long userHabitId) {
         UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
 
         // 1. 습관 존재 여부 확인
@@ -30,7 +30,12 @@ public class UserHabitService {
             throw new IllegalArgumentException("존재하지 않는 습관입니다.");
         }
 
-        // 2. 습관 상태 확인 (ACTIVE 상태일 때만 가능)
+        // 2. 본인 습관 여부 확인
+        if (!userHabit.getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("본인의 습관만 완료/취소할 수 있습니다.");
+        }
+
+        // 3. 습관 상태 확인 (ACTIVE 상태일 때만 가능)
         if (userHabit.getStatus() != UserHabitStatus.ACTIVE) {
             throw new IllegalArgumentException("활성 상태의 습관만 완료/취소할 수 있습니다.");
         }

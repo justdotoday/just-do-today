@@ -28,7 +28,7 @@ public class UserHabitController {
             @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable Long userHabitId
     ) {
-        String result = userHabitService.toggleCompletion(userHabitId);
+        String result = userHabitService.toggleCompletion(principal.getMemberId(), userHabitId);
         return ResponseEntity.ok(result);
     }
 
