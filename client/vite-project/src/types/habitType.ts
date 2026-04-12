@@ -26,6 +26,8 @@ export type Habit = {
   category: string | null;
   /** 유저가 선택한 습관 색상 (완료 체크 UI 등에 사용) */
   color?: string | null;
+  /** 카테고리에 연결된 이모지 (category_user.emoji) */
+  emoji?: string | null;
   frequency: Frequency;
   days?: number[];
   status: string;
