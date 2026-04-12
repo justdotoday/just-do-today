@@ -11,12 +11,10 @@ import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
 import type { CategoryItem } from '../../components/habit/CategorySelector';
-import { DEFAULT_CATEGORIES } from '../../constants/categories';
-
 const CreateHabit = () => {
   const navigate = useNavigate();
 
-  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
 
   // 상태 변수들
   const day = ['월', '화', '수', '목', '금', '토', '일'] as const;

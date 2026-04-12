@@ -2,7 +2,6 @@
 import type { Habit } from '../../../../types/habitType';
 import { DEFAULT_CATEGORIES } from '../../../../constants/categories';
 
-const FALLBACK_CATEGORY_ICON = '📌'; //임시 카테고리 이모지
 const UNCATEGORIZED_LABEL = '미분류';
 const DONE_STATUSES: ReadonlySet<string> = new Set(['done', 'heart']);
 
@@ -68,9 +67,11 @@ export function habitsToSections(habits: Habit[]): Section[] {
   const order = [...knownOrder, ...rest];
 
   return order.map((categoryName) => ({
+    // API 응답의 emoji 우선, 없으면 DEFAULT_CATEGORIES에서 룩업
     icon:
+      byCategory[categoryName][0]?.emoji ??
       DEFAULT_CATEGORIES.find((c) => c.name === categoryName)?.icon ??
-      FALLBACK_CATEGORY_ICON,
+      '',
     title: categoryName,
     items: (byCategory[categoryName] ?? []).map((h) => ({
       id: String(h.id),
