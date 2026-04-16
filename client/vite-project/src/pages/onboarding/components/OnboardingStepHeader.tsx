@@ -1,4 +1,5 @@
 import { IoChevronBack } from 'react-icons/io5';
+import { COLORS } from '../../../constants/colors';
 
 type OnboardingStepHeaderProps = {
   /** 현재 단계 (1부터) */
@@ -28,7 +29,7 @@ const OnboardingStepHeader = ({
           <IoChevronBack className="text-2xl text-zinc-900" />
         </button>
         <span className="text-[15px] font-semibold text-zinc-900">
-          {step}/{totalSteps}
+          <span style={{ color: COLORS.primary }}>{step}</span>/{totalSteps}
         </span>
       </header>
     </>

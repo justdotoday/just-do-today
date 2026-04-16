@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import DragHandle from '../DragHandle';
+import { COLORS } from '../../constants/colors';
 
 type Props = {
   open: boolean;
@@ -59,7 +60,7 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-[18px] font-bold text-zinc-900">반복 날짜 선택</h2>
           <span className="text-[14px] text-zinc-500">
-            매월 <span className="font-bold text-[#2563EB]">{selectedDay}</span>일에 반복
+            매월 <span className="font-bold" style={{ color: COLORS.primary }}>{selectedDay}</span>일에 반복
           </span>
         </div>
 
@@ -70,9 +71,9 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
           className="mb-5 flex items-center gap-2"
         >
           <div
-            className={`flex h-6 w-6 items-center justify-center rounded-full transition ${
-              startFromToday ? 'bg-[#2563EB]' : 'border-2 border-zinc-300 bg-white'
-            }`}
+            className="flex h-6 w-6 items-center justify-center rounded-full transition"
+            style={startFromToday ? { backgroundColor: COLORS.primary } : undefined}
+            {...(!startFromToday && { className: 'flex h-6 w-6 items-center justify-center rounded-full border-2 border-zinc-300 bg-white transition' })}
           >
             {startFromToday && (
               <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
@@ -100,11 +101,12 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
                 <button
                   type="button"
                   onClick={() => setSelectedDay(day)}
-                  className={`flex h-9 w-9 items-center justify-center rounded-full text-[15px] font-medium transition ${
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-[15px] font-medium transition"
+                  style={
                     selectedDay === day
-                      ? 'bg-blue-100 text-[#2563EB]'
-                      : 'text-zinc-800'
-                  }`}
+                      ? { backgroundColor: '#EFF6FF', color: COLORS.primary }
+                      : { color: '#27272a' }
+                  }
                 >
                   {day}
                 </button>
@@ -117,7 +119,8 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
         <button
           type="button"
           onClick={handleConfirm}
-          className="mt-5 h-14 w-full rounded-full bg-[#2563EB] text-[16px] font-semibold text-white"
+          className="mt-5 h-14 w-full rounded-full text-[16px] font-semibold text-white"
+          style={{ backgroundColor: COLORS.primary }}
         >
           선택하기
         </button>

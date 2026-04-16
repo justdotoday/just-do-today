@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import DragHandle from '../DragHandle';
+import { COLORS } from '../../constants/colors';
 
 const EMOJI_LIST = [
   '🧘', '💊', '🥗', '💧', '😴', '✍️',
@@ -59,7 +60,9 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
         </h2>
 
         {/* 이모지 + 텍스트 입력 */}
-        <div className="mb-4 flex h-12 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2563EB]">
+        <div
+          className="mb-4 flex h-12 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2E68EF]"
+        >
           <span className="text-[20px] leading-none">{selectedEmoji ?? '🏷️'}</span>
           <input
             autoFocus
@@ -91,10 +94,10 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
 
         <button
           type="button"
-          className={[
-            'h-14 w-full rounded-full text-[16px] font-medium',
-            canSubmit ? 'bg-blue-600 text-white' : 'bg-zinc-200 text-zinc-500',
-          ].join(' ')}
+          className={`h-14 w-full rounded-full text-[16px] font-medium ${
+            canSubmit ? 'text-white' : 'bg-zinc-200 text-zinc-500'
+          }`}
+          style={canSubmit ? { backgroundColor: COLORS.primary } : undefined}
           onClick={handleSubmit}
           disabled={!canSubmit}
         >

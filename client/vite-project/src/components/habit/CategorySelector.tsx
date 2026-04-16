@@ -25,7 +25,7 @@ const CategorySelector = ({
 
   return (
     <div className="flex flex-wrap gap-2">
-      <h2 className="w-full text-[18px] font-semibold text-zinc-950">
+      <h2 className="w-full font-semibold text-zinc-950">
         {title}
       </h2>
 

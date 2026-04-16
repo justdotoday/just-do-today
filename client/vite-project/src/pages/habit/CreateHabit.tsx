@@ -11,6 +11,8 @@ import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
 import type { CategoryItem } from '../../components/habit/CategorySelector';
+import { COLORS } from '../../constants/colors';
+
 const CreateHabit = () => {
   const navigate = useNavigate();
 
@@ -41,15 +43,15 @@ const CreateHabit = () => {
   // 알림 화면 공통 디자인
   const baseBtn =
     'h-[48px] w-full rounded-[20px] text-[16px] font-medium transition-all active:scale-[0.98] flex items-center justify-center';
-  const outlineBtn = `${baseBtn} border-[1.5px] border-[#2563EB] text-[#2563EB] bg-white`;
-  const filledBtn = `${baseBtn} bg-[#2563EB] text-white`;
+  const outlineBtn = `${baseBtn} border-[1.5px] border-[#2E68EF] text-[#2E68EF] bg-white`;
+  const filledBtn = `${baseBtn} bg-[#2E68EF] text-white`;
 
   // 빈도 선택 버튼 스타일
   const freqBase =
     'h-[55px] w-full rounded-full border-2 ' +
     'text-[16px] leading-[20px] font-medium transition active:scale-[0.98]';
   const freqInactive = `${freqBase} bg-white border-zinc-200 text-zinc-900`;
-  const freqActive = `${freqBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2563EB]`;
+  const freqActive = `${freqBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
 
   const toggleDay = (d: string) => {
     setSelectedDays((prev) =>
@@ -62,7 +64,7 @@ const CreateHabit = () => {
     'text-[14px] leading-[18px] font-medium ' +
     'flex items-center justify-center transition';
   const dayInactive = `${dayBase} bg-white border-zinc-200 text-zinc-900`;
-  const dayActive = `${dayBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2563EB]`;
+  const dayActive = `${dayBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
 
   const canSubmit =
     name.trim().length > 0 &&
@@ -211,8 +213,9 @@ const CreateHabit = () => {
             className={`h-14 w-full rounded-full text-[16px] font-bold transition-all ${
               !canSubmit || isLoading
                 ? 'bg-zinc-200 text-zinc-500'
-                : 'bg-[#2563EB] text-white active:scale-[0.98]'
+                : 'text-white active:scale-[0.98]'
             }`}
+            style={canSubmit && !isLoading ? { backgroundColor: COLORS.primary } : undefined}
           >
             {isLoading ? '등록 중...' : '습관 등록하기'}
           </button>

@@ -1,5 +1,4 @@
 import zaksimLogo from '../assets/zaksim-logo.png';
-import today from '../assets/today.png';
 import { motion } from 'framer-motion';
 import backGround from '../assets/backGround.svg';
 import kakaoLogin from '../assets/kakaotalk_btn.png';
@@ -42,14 +41,6 @@ const SocialSignUp = () => {
               }}
             />
           </div>
-          {/* <motion.img
-            src={today}
-            alt="오늘의 할 일"
-            className="w-[220px] max-w-full"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.3 }}
-          /> */}
           <motion.div
             className="w-[220px] max-w-full text-white text-center drop-shadow-md"
             initial={{ opacity: 0, y: 10 }}
@@ -65,7 +56,7 @@ const SocialSignUp = () => {
           className="mt-auto space-y-4 pb-10"
           initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.3 }}
+          transition={{ delay: 1.1, duration: 0.3 }}
         >
           {/* Kakao */}
           <button
