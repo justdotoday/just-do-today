@@ -9,9 +9,9 @@ type ColorPaletteProps = {
 };
 
 // 팔레트 기본 크기/위치 상수
-const PALETTE_WIDTH_PX = 320;
-const LEFT_OFFSET_PX = 12;
-const TOP_GAP_PX = 8;
+const PALETTE_WIDTH_PX = 240;
+const LEFT_OFFSET_PX = 22;
+const TOP_GAP_PX = 9;
 
 const ColorPalette = ({
   onClose,
@@ -74,7 +74,7 @@ const ColorPalette = ({
         />
 
         {/* 색상 스와치 그리드 */}
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-5 gap-4">
           {colors.map((color) => {
             const isSelected =
               selectedColor != null &&
@@ -84,7 +84,7 @@ const ColorPalette = ({
               <button
                 key={color}
                 type="button"
-                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95"
+                className="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95"
                 style={{ backgroundColor: color }}
                 onClick={() => {
                   onSelect(color);
@@ -95,7 +95,7 @@ const ColorPalette = ({
                 {/* 현재 선택된 색상에만 체크 표시 */}
                 {isSelected && (
                   <span
-                    className="text-base font-bold text-white"
+                    className="text-base text-white text-xs"
                     style={{
                       textShadow:
                         '0 0 1px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3)',

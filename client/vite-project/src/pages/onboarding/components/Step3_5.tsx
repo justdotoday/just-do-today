@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import startIcon from '../../../assets/Start.png';
+import { COLORS } from '../../../constants/colors';
 
 type Step3_5Props = {
   onNext: () => void;
@@ -26,7 +27,9 @@ const Step3_5 = ({ onNext }: Step3_5Props) => {
 
       {/* 텍스트 */}
       <p className="text-2xl font-bold text-zinc-900 mb-2">시작이 반!</p>
-      <p className="text-lg text-zinc-600">첫 습관이 등록되었어요.</p>
+      <p className="text-lg text-zinc-600">
+        <span style={{ color: COLORS.primary }}>첫 습관</span>이 등록되었어요.
+      </p>
     </div>
   );
 };

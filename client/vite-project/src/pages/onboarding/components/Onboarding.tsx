@@ -72,7 +72,11 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
           }
         : null;
 
-    await completeOnboarding({ nickname, goal, habit });
+    try {
+      await completeOnboarding({ nickname, goal, habit });
+    } catch (e) {
+      console.error('[온보딩 완료 실패]', e);
+    }
     onFinish();
   };
 

@@ -72,7 +72,11 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
       <section className="mb-8">
         <h1 className="flex items-center font-bold text-lg text-zinc-900">
           안녕하세요!
-          <IoHeart style={{ color: COLORS.primary }} className="shrink-0" aria-hidden />
+          <IoHeart
+            style={{ color: COLORS.primary }}
+            className="shrink-0"
+            aria-hidden
+          />
         </h1>
         <p className="mb-8 font-bold text-lg text-zinc-900">
           어떻게 불러드릴까요?
@@ -83,7 +87,9 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
           onChange={(e) => setNickname(e.target.value)}
           placeholder="ex)나는야종달새"
           className="w-full rounded-full border border-zinc-200 bg-white px-4 py-3 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
-          style={{ borderColor: nickname.length > 0 ? COLORS.primary : undefined }}
+          style={{
+            borderColor: nickname.length > 0 ? COLORS.primary : undefined,
+          }}
           maxLength={20}
         />
       </section>
@@ -99,15 +105,22 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
           className="flex w-full items-center gap-3 py-2.5 text-left m-1"
         >
           <span
-            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2"
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-zinc-300"
             style={
               agreeAll
-                ? { borderColor: COLORS.primary, backgroundColor: COLORS.primary }
+                ? {
+                    borderColor: COLORS.primary,
+                    backgroundColor: COLORS.primary,
+                  }
                 : undefined
             }
           >
             {agreeAll && (
-              <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <svg
+                className="h-3 w-3 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
                 <path
                   fillRule="evenodd"
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -116,7 +129,9 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
               </svg>
             )}
           </span>
-          <span className="text-sm font-semibold text-zinc-900">전체 동의하기</span>
+          <span className="text-sm font-semibold text-zinc-900">
+            전체 동의하기
+          </span>
         </button>
 
         <ul className="border-t border-zinc-100 p-1">
@@ -136,7 +151,11 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
                     }`}
                   >
                     {agreements[id] && (
-                      <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg
+                        className="h-3 w-3 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"

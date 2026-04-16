@@ -48,8 +48,8 @@ const CreateHabit = () => {
 
   // 빈도 선택 버튼 스타일
   const freqBase =
-    'h-[55px] w-full rounded-full border-2 ' +
-    'text-[16px] leading-[20px] font-medium transition active:scale-[0.98]';
+    'h-11 w-full rounded-full border-2 ' +
+    'text-[12px] leading-[20px] font-medium transition active:scale-[0.98]';
   const freqInactive = `${freqBase} bg-white border-zinc-200 text-zinc-900`;
   const freqActive = `${freqBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
 
@@ -152,7 +152,7 @@ const CreateHabit = () => {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[414px] px-4 pt-8 pb-32">
+      <main className="mx-auto w-full max-w-[320px] px-4 pt-8 pb-32">
         {/* 습관명 입력 필드 */}
         <HabitNameField
           value={name}
@@ -204,9 +204,9 @@ const CreateHabit = () => {
         </section>
       </main>
 
-      {/* 습관 등록하기 버튼: 하단 고정, 콘텐츠 영역(414px) 안에 위치 */}
+      {/* 습관 등록하기 버튼: 하단 고정, 콘텐츠 영역 안에 위치 */}
       <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
-        <div className="mx-auto w-full max-w-[414px]">
+        <div className="mx-auto w-full max-w-[320px]">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit || isLoading}

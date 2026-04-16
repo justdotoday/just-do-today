@@ -37,7 +37,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
   };
 
   return (
-    <div className="fixed inset-y-0 left-1/2 z-999 w-full max-w-[414px] -translate-x-1/2">
+    <div className="fixed inset-y-0 left-1/2 z-999 w-full max-w-[320px] -translate-x-1/2">
       <button
         type="button"
         aria-label="close overlay"
@@ -46,7 +46,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
       />
 
       <motion.div
-        className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[414px] rounded-t-3xl bg-white px-4 pb-6 pt-3"
+        className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[320px] rounded-t-3xl bg-white px-4 pb-3 pt-2"
         drag="y"
         dragConstraints={{ top: 0 }}
         dragElastic={0.2}
@@ -55,13 +55,13 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
         }}
       >
         <DragHandle />
-        <h2 className="mb-4 text-center text-[18px] font-semibold">
+        <h2 className="m-4 text-center text-[14px] font-semibold">
           카테고리 직접 추가
         </h2>
 
         {/* 이모지 + 텍스트 입력 */}
         <div
-          className="mb-4 flex h-12 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2E68EF]"
+          className="mb-4 flex h-10 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2E68EF]"
         >
           <span className="text-[20px] leading-none">{selectedEmoji ?? '🏷️'}</span>
           <input
@@ -70,18 +70,18 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="카테고리명을 입력해 주세요"
-            className="flex-1 text-[14px] outline-none"
+            className="flex-1 text-[12px] outline-none"
           />
         </div>
 
         {/* 이모지 그리드 */}
-        <div className="mb-4 grid grid-cols-6 gap-3 justify-items-center">
+        <div className="mb-4 grid grid-cols-6 justify-items-center">
           {EMOJI_LIST.map((emoji) => (
             <button
               key={emoji}
               type="button"
               onClick={() => setSelectedEmoji(emoji)}
-              className={`flex h-11 w-11 items-center justify-center rounded-full text-[22px] transition ${
+              className={`flex m-2 h-8 w-8 items-center justify-center rounded-full text-[16px] transition ${
                 selectedEmoji === emoji
                   ? 'bg-blue-50 ring-2 ring-[#A5B4FC]'
                   : 'bg-white border border-zinc-200'
@@ -94,7 +94,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
 
         <button
           type="button"
-          className={`h-14 w-full rounded-full text-[16px] font-medium ${
+          className={`h-10 w-full rounded-full text-[14px] ${
             canSubmit ? 'text-white' : 'bg-zinc-200 text-zinc-500'
           }`}
           style={canSubmit ? { backgroundColor: COLORS.primary } : undefined}

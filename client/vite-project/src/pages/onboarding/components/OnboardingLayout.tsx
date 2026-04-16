@@ -30,7 +30,7 @@ const OnboardingLayout = ({
 }: OnboardingLayoutProps) => {
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="mx-auto flex w-full max-w-[414px] flex-1 flex-col bg-white">
+      <div className="mx-auto flex w-full max-w-[320px] flex-1 flex-col bg-white">
         <OnboardingStepHeader step={step} totalSteps={totalSteps} onBack={onBack} />
 
         <main className="flex flex-1 flex-col px-4 pb-[calc(80px+env(safe-area-inset-bottom))]">
@@ -40,14 +40,14 @@ const OnboardingLayout = ({
 
       {/* 하단 고정 버튼 */}
       <div
-        className="fixed bottom-0 left-1/2 w-full max-w-[414px] -translate-x-1/2 space-y-2 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]"
+        className="fixed bottom-0 left-1/2 w-full max-w-[320px] -translate-x-1/2 space-y-2 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]"
         style={onSkip ? { background: 'linear-gradient(180deg, transparent 0%, #ffffff 30%)', paddingTop: '2rem' } : { background: '#ffffff' }}
       >
         {onSkip && (
           <button
             type="button"
             onClick={onSkip}
-            className="block w-full py-3 text-center text-[15px] font-medium text-zinc-500 active:opacity-80"
+            className="block w-full py-1.5 text-center text-[13px] text-zinc-500 active:opacity-80"
           >
             {skipLabel}
           </button>

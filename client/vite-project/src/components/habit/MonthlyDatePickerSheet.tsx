@@ -38,7 +38,7 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
   };
 
   return (
-    <div className="fixed inset-y-0 left-1/2 z-50 w-full max-w-[414px] -translate-x-1/2">
+    <div className="fixed inset-y-0 left-1/2 z-50 w-full max-w-[320px] -translate-x-1/2">
       <button
         type="button"
         aria-label="close"
@@ -87,7 +87,7 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
         {/* 요일 헤더 */}
         <div className="mb-1 grid grid-cols-7">
           {WEEK_HEADERS.map((d) => (
-            <div key={d} className="py-1 text-center text-[13px] font-medium text-zinc-400">
+            <div key={d} className="py-1 text-center text-[12px] font-medium text-zinc-400">
               {d}
             </div>
           ))}
@@ -101,7 +101,7 @@ const MonthlyDatePickerSheet = ({ open, onClose, onSelect, initialDay }: Props) 
                 <button
                   type="button"
                   onClick={() => setSelectedDay(day)}
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-[15px] font-medium transition"
+                  className="flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-medium transition"
                   style={
                     selectedDay === day
                       ? { backgroundColor: '#EFF6FF', color: COLORS.primary }

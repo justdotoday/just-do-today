@@ -57,14 +57,14 @@ const Step3 = ({
   const filledBtn = `${baseBtn} bg-[#2E68EF] text-white`;
 
   const freqBase =
-    'h-[55px] w-full rounded-full border-2 ' +
-    'text-[16px] leading-[20px] font-medium transition active:scale-[0.98]';
+    'h-11 w-full rounded-full border ' +
+    'text-[12px] leading-[20px] font-medium transition active:scale-[0.98]';
   const freqInactive = `${freqBase} bg-white border-zinc-200 text-zinc-900`;
   const freqActive = `${freqBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
 
   const dayBase =
-    'h-[64px] w-[64px] rounded-full border-2 ' +
-    'text-[14px] leading-[18px] font-medium ' +
+    'h-[45px] w-[45px] rounded-full border ' +
+    'text-[12px] leading-[18px] font-medium ' +
     'flex items-center justify-center transition';
   const dayInactive = `${dayBase} bg-white border-zinc-200 text-zinc-900`;
   const dayActive = `${dayBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
@@ -90,11 +90,11 @@ const Step3 = ({
       onSkip={onSkip}
     >
       <section className="mb-6">
-        <h2 className="mb-1 font-bold text-2xl text-zinc-900">
+        <h2 className="font-bold text-lg text-zinc-900">
           <span style={{ color: COLORS.primary }}>{nickname}</span>
           <span className="text-zinc-900">님, 반가워요!</span>
         </h2>
-        <p className="font-bold text-2xl text-zinc-900">
+        <p className="font-bold text-lg text-zinc-900">
           지금 바로 습관 하나 등록해 볼까요?
         </p>
       </section>

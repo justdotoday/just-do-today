@@ -18,16 +18,9 @@ const CategorySelector = ({
   onOpenAdd,
   addButtonClassName,
 }: Props) => {
-  const chipBase =
-    'inline-flex items-center justify-center gap-2 rounded-full ' +
-    'h-10 px-4 ' +
-    'text-[13px] font-medium leading-none';
-
   return (
     <div className="flex flex-wrap gap-2">
-      <h2 className="w-full font-semibold text-zinc-950">
-        {title}
-      </h2>
+      <h2 className="w-full font-semibold text-zinc-950">{title}</h2>
 
       {categories.map((c) => {
         const active = selected === c.name;
@@ -37,7 +30,7 @@ const CategorySelector = ({
             key={c.name}
             type="button"
             onClick={() => onSelect(c.name)}
-            className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 transition
+            className={`inline-flex h-9 px-3.5 items-center gap-2 rounded-full border transition
               ${
                 active
                   ? 'bg-blue-50 border-blue-400'
@@ -46,10 +39,10 @@ const CategorySelector = ({
             `}
           >
             {c.icon && (
-              <span className="text-[18px] leading-none">{c.icon}</span>
+              <span className="text-[16px] leading-none">{c.icon}</span>
             )}
             <span
-              className={`text-[14px] font-semibold ${
+              className={`text-[12px] font-medium ${
                 active ? 'text-blue-600' : 'text-zinc-600'
               }`}
             >
@@ -65,16 +58,13 @@ const CategorySelector = ({
           onClick={onOpenAdd}
           className={
             addButtonClassName ??
-            [
-              chipBase,
-              'bg-white border border-dashed border-zinc-300 text-zinc-700',
-            ].join(' ')
+            'inline-flex h-9 px-3.5 items-center gap-2 rounded-full border border-dashed border-zinc-300 bg-white transition'
           }
         >
-          <span className="text-[18px] leading-none font-bold text-zinc-700">
+          <span className="pb-0.5 text-[16px] font-bold text-zinc-700">
             +
           </span>
-          <span className="text-[14px] font-semibold text-zinc-600">
+          <span className="text-[12px] font-medium text-zinc-500">
             직접 추가
           </span>
         </button>

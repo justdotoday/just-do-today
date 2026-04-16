@@ -115,10 +115,8 @@ const HabitOptionsSection = ({
     <div className="space-y-10">
       {/* 1. 빈도 선택 섹션 */}
       <section className="space-y-4">
-        <h2 className="text-[18px] font-semibold text-zinc-950">
-          얼마나 자주 할 건가요?
-        </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <h2 className="font-semibold text-zinc-950">얼마나 자주 할 건가요?</h2>
+        <div className="grid grid-cols-2 gap-2">
           {(['DAILY', 'WEEKLY', 'MONTHLY', 'CUSTOM'] as const).map((type) => (
             <button
               key={type}
@@ -140,8 +138,8 @@ const HabitOptionsSection = ({
         </div>
 
         {frequency === 'CUSTOM' && (
-          <div className="mt-6 flex flex-col items-center gap-5">
-            <div className="grid grid-cols-4 gap-5">
+          <div className="mt-4 flex flex-col items-center gap-1">
+            <div className="grid grid-cols-4 gap-3">
               {dayRows.first.map((d) => (
                 <button
                   key={d}
@@ -157,7 +155,7 @@ const HabitOptionsSection = ({
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 gap-3">
               {dayRows.second.map((d) => (
                 <button
                   key={d}
@@ -180,9 +178,7 @@ const HabitOptionsSection = ({
       {/* 2. 알림 설정 섹션 */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-[18px] font-semibold text-zinc-950">
-            알림을 받으시겠어요?
-          </h2>
+          <h2 className="font-semibold text-zinc-950">알림을 받으시겠어요?</h2>
           <Toggle checked={alarmEnabled} onChange={setAlarmEnabled} />
         </div>
         <div
@@ -195,7 +191,7 @@ const HabitOptionsSection = ({
               type="button"
               disabled={!alarmEnabled}
               onClick={() => setAmpm(ampm === 'AM' ? 'PM' : 'AM')}
-              className="h-12 min-w-28 shrink-0 rounded-2xl border border-zinc-200 bg-white px-4 text-[16px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
+              className="h-11 min-w-22 shrink-0 rounded-full border border-zinc-200 bg-white px-2 text-[12px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
             >
               {ampm === 'AM' ? '오전' : '오후'}
             </button>
@@ -206,13 +202,13 @@ const HabitOptionsSection = ({
                 onClick={() =>
                   setOpenPicker(openPicker === 'hour' ? null : 'hour')
                 }
-                className="h-12 w-28 rounded-2xl border border-zinc-200 bg-white text-center text-[16px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
+                className="h-11 w-22 rounded-full border border-zinc-200 bg-white text-center text-[12px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
               >
                 {safeHour}
               </button>
               {openPicker === 'hour' && (
                 <ul
-                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-28 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-22 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
                   role="listbox"
                 >
                   {HOUR_OPTIONS.map((h) => (
@@ -220,7 +216,7 @@ const HabitOptionsSection = ({
                       <button
                         type="button"
                         onClick={() => handleHourSelect(h)}
-                        className={`w-full py-2 text-center text-[16px] font-medium ${
+                        className={`mx-1 my-0.5 border-white rounded-xl w-20 py-1 text-center text-[12px] font-medium hover:bg-blue-50 ${
                           h === safeHour
                             ? 'bg-zinc-100 text-zinc-900'
                             : 'text-zinc-700'
@@ -241,13 +237,13 @@ const HabitOptionsSection = ({
                 onClick={() =>
                   setOpenPicker(openPicker === 'minute' ? null : 'minute')
                 }
-                className="h-12 w-28 rounded-2xl border border-zinc-200 bg-white text-center text-[16px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
+                className="h-11 w-22 rounded-full border border-zinc-200 bg-white text-center text-[12px] font-medium text-zinc-900 transition active:scale-[0.98] disabled:opacity-30"
               >
                 {safeMinute}
               </button>
               {openPicker === 'minute' && (
                 <ul
-                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-28 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-22 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
                   role="listbox"
                 >
                   {MINUTE_OPTIONS.map((m) => (
@@ -255,7 +251,7 @@ const HabitOptionsSection = ({
                       <button
                         type="button"
                         onClick={() => handleMinuteSelect(m)}
-                        className={`w-full py-2 text-center text-[16px] font-medium ${
+                        className={`mx-1 my-0.5 border-white rounded-xl w-20 py-1 text-center text-[12px] font-medium hover:bg-blue-50 ${
                           m === safeMinute
                             ? 'bg-zinc-100 text-zinc-900'
                             : 'text-zinc-700'
@@ -274,7 +270,7 @@ const HabitOptionsSection = ({
 
       {/* 3. 공개 여부 섹션 */}
       <section className="mb-10 flex items-center justify-between">
-        <h2 className="text-[18px] font-semibold text-zinc-900">
+        <h2 className="font-semibold text-zinc-900">
           이 습관을 친구에게 공개할까요?
         </h2>
         <Toggle checked={isPublic} onChange={setIsPublic} />

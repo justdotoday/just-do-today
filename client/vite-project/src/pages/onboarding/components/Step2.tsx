@@ -37,13 +37,16 @@ const Step2 = ({
   const [habitName, setHabitName] = useState('');
   const [habitColor, setHabitColor] = useState('#3B47B3');
   const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
-  const [paletteAnchorRect, setPaletteAnchorRect] = useState<DOMRect | null>(null);
+  const [paletteAnchorRect, setPaletteAnchorRect] = useState<DOMRect | null>(
+    null
+  );
   const colorButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] =
+    useState<CategoryItem[]>(DEFAULT_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
-  const handleAddCategory = (name: string, _emoji: string | null) => {
+  const handleAddCategory = (name: string, emoji: string | null) => {
     const trimmed = name.trim();
     if (trimmed.length === 0) return;
 
@@ -51,14 +54,19 @@ const Step2 = ({
     if (isExistingCategory) {
       setSelectedCategory(trimmed);
     } else {
-      setCategories((prev) => [...prev, { name: trimmed }]);
+      setCategories((prev) => [
+        ...prev,
+        { name: trimmed, icon: emoji ?? undefined },
+      ]);
       setSelectedCategory(trimmed);
     }
     setIsCategoryModalOpen(false);
   };
 
   const handleOpenColorPalette = () => {
-    setPaletteAnchorRect(colorButtonRef.current?.getBoundingClientRect() ?? null);
+    setPaletteAnchorRect(
+      colorButtonRef.current?.getBoundingClientRect() ?? null
+    );
     setIsColorPaletteOpen(true);
   };
 
@@ -109,7 +117,7 @@ const Step2 = ({
         onSkip={onSkip}
       >
         <section className="mb-6">
-          <h2 className="mb-1 font-bold text-lg text-zinc-900">
+          <h2 className="font-bold text-lg text-zinc-900">
             <span style={{ color: COLORS.primary }}>{nickname}</span>
             <span className="text-zinc-900">님, 반가워요!</span>
           </h2>
@@ -119,15 +127,13 @@ const Step2 = ({
         </section>
 
         <section className="mb-6">
-          <p className="mb-2 font-semibold text-zinc-900">
-            어떤 습관인가요?
-          </p>
+          <p className="mb-2 font-semibold text-zinc-900">어떤 습관인가요?</p>
           <div className="relative">
             <button
               type="button"
               onClick={handleOpenColorPalette}
               ref={colorButtonRef}
-              className="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full shrink-0"
+              className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full shrink-0"
               style={{ backgroundColor: habitColor }}
               aria-label="습관 색상 선택"
               title="색상 변경"
@@ -137,7 +143,7 @@ const Step2 = ({
               value={habitName}
               onChange={(e) => setHabitName(e.target.value)}
               placeholder="ex)일어나자마자 물 마시기"
-              className="w-full rounded-full border-2 border-zinc-200 py-3 pl-12 pr-4 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+              className="w-full rounded-full border border-zinc-200 py-3 pl-12 pr-4 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
               style={{
                 borderColor: habitName.length > 0 ? habitColor : undefined,
               }}
