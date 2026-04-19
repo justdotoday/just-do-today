@@ -3,17 +3,17 @@
  */
 import { useState } from 'react';
 import HabitOptionsSection from '../../../components/habit/HabitOptionsSection';
+import MonthlyDatePickerSheet from '../../../components/habit/MonthlyDatePickerSheet';
 import OnboardingLayout from './OnboardingLayout';
 import { mapDaysToServer } from '../../../api/utils';
 import type { Day } from '../../../types/habitType';
 import { COLORS } from '../../../constants/colors';
+import { useHabitForm } from '../../../hooks/useHabitForm';
+import { HABIT_FORM_STYLES, DAYS_FIRST_ROW, DAYS_SECOND_ROW } from '../../../constants/habitFormStyles';
 
 const ONBOARDING_STEP_INDEX = 3;
 const ONBOARDING_STEP_TOTAL = 3;
 const DEFAULT_NICKNAME_DISPLAY = '회원';
-
-const DAYS_FIRST_ROW = ['월', '화', '수', '목'] as const;
-const DAYS_SECOND_ROW = ['금', '토', '일'] as const;
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
@@ -37,40 +37,30 @@ const Step3 = ({
   onSkip,
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step3Props) => {
-  const [frequency, setFrequency] = useState<Frequency>('DAILY');
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [alarmEnabled, setAlarmEnabled] = useState(false);
-  const [ampm, setAmpm] = useState<'AM' | 'PM'>('AM');
-  const [hour, setHour] = useState('00');
-  const [minute, setMinute] = useState('00');
-  const [isPublic, setIsPublic] = useState(false);
+  const {
+    frequency,
+    setFrequency,
+    selectedDays,
+    toggleDay,
+    alarmEnabled,
+    setAlarmEnabled,
+    ampm,
+    setAmpm,
+    hour,
+    setHour,
+    minute,
+    setMinute,
+    isPublic,
+    setIsPublic,
+    selectSingleDay,
+  } = useHabitForm();
 
-  const toggleDay = (d: string) => {
-    setSelectedDays((prev) =>
-      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
-    );
-  };
+  const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
 
-  const baseBtn =
-    'h-[48px] w-full rounded-[20px] text-[16px] font-medium transition-all active:scale-[0.98] flex items-center justify-center';
-  const outlineBtn = `${baseBtn} border-[1.5px] border-[#2E68EF] text-[#2E68EF] bg-white`;
-  const filledBtn = `${baseBtn} bg-[#2E68EF] text-white`;
-
-  const freqBase =
-    'h-11 w-full rounded-full border ' +
-    'text-[12px] leading-[20px] font-medium transition active:scale-[0.98]';
-  const freqInactive = `${freqBase} bg-white border-zinc-200 text-zinc-900`;
-  const freqActive = `${freqBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
-
-  const dayBase =
-    'h-[45px] w-[45px] rounded-full border ' +
-    'text-[12px] leading-[18px] font-medium ' +
-    'flex items-center justify-center transition';
-  const dayInactive = `${dayBase} bg-white border-zinc-200 text-zinc-900`;
-  const dayActive = `${dayBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
-
-  // 빈도가 '요일로 선택'이면 최소 1개 요일 선택 필수
-  const canNext = frequency !== 'CUSTOM' || selectedDays.length > 0;
+  // WEEKLY·CUSTOM은 요일 최소 1개 선택 필수
+  const canNext =
+    frequency === 'DAILY' || frequency === 'MONTHLY' || selectedDays.length > 0;
 
   const handleNext = () => {
     onNext({
@@ -81,6 +71,7 @@ const Step3 = ({
   };
 
   return (
+    <>
     <OnboardingLayout
       step={ONBOARDING_STEP_INDEX}
       totalSteps={ONBOARDING_STEP_TOTAL}
@@ -99,10 +90,12 @@ const Step3 = ({
         </p>
       </section>
 
-      {/* 습관 설정 섹션 컴포넌트 사용 */}
       <HabitOptionsSection
         frequency={frequency}
-        setFrequency={setFrequency}
+        setFrequency={(val) => {
+            setFrequency(val);
+            if (val === 'MONTHLY') setIsMonthlyPickerOpen(true);
+          }}
         selectedDays={selectedDays}
         toggleDay={toggleDay}
         dayRows={{ first: DAYS_FIRST_ROW, second: DAYS_SECOND_ROW }}
@@ -116,16 +109,22 @@ const Step3 = ({
         setMinute={setMinute}
         isPublic={isPublic}
         setIsPublic={setIsPublic}
-        styles={{
-          freqActive,
-          freqInactive,
-          dayActive,
-          dayInactive,
-          filledBtn,
-          outlineBtn,
-        }}
+        onSingleDaySelect={selectSingleDay}
+        selectedMonthlyDay={selectedMonthlyDay}
+        onReopenMonthlyPicker={() => setIsMonthlyPickerOpen(true)}
+        styles={HABIT_FORM_STYLES}
       />
     </OnboardingLayout>
+
+    {isMonthlyPickerOpen && (
+      <MonthlyDatePickerSheet
+        open={isMonthlyPickerOpen}
+        onClose={() => setIsMonthlyPickerOpen(false)}
+        onSelect={(day) => setSelectedMonthlyDay(day)}
+        initialDay={selectedMonthlyDay ?? undefined}
+      />
+    )}
+    </>
   );
 };
 

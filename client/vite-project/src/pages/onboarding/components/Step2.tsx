@@ -1,11 +1,11 @@
 // 온보딩 Step2 — 첫 습관 등록 화면: 습관명·색상·카테고리 입력 (2/3)
 
-import { useRef, useState } from 'react';
-import ColorPalette from '../../../components/ColorPalette';
+import { useState } from 'react';
 import CategorySelector from '../../../components/habit/CategorySelector';
-import type { CategoryItem } from '../../../components/habit/CategorySelector';
 import CategoryAddModal from '../../../components/habit/CategoryAddModal';
+import HabitNameField from '../../../components/habit/HabitNameField';
 import { DEFAULT_CATEGORIES } from '../../../constants/categories';
+import { useHabitForm } from '../../../hooks/useHabitForm';
 import OnboardingLayout from './OnboardingLayout';
 import { COLORS } from '../../../constants/colors';
 
@@ -34,52 +34,24 @@ const Step2 = ({
   onSkip,
   nickname = DEFAULT_NICKNAME_DISPLAY,
 }: Step2Props) => {
-  const [habitName, setHabitName] = useState('');
-  const [habitColor, setHabitColor] = useState('#3B47B3');
-  const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
-  const [paletteAnchorRect, setPaletteAnchorRect] = useState<DOMRect | null>(
-    null
-  );
-  const colorButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [categories, setCategories] =
-    useState<CategoryItem[]>(DEFAULT_CATEGORIES);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const {
+    name,
+    setName,
+    habitColor,
+    setHabitColor,
+    categories,
+    selectedCategory,
+    setSelectedCategory,
+    handleAddCategory,
+  } = useHabitForm({ initialCategories: DEFAULT_CATEGORIES });
+
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-
-  const handleAddCategory = (name: string, emoji: string | null) => {
-    const trimmed = name.trim();
-    if (trimmed.length === 0) return;
-
-    const isExistingCategory = categories.some((c) => c.name === trimmed);
-    if (isExistingCategory) {
-      setSelectedCategory(trimmed);
-    } else {
-      setCategories((prev) => [
-        ...prev,
-        { name: trimmed, icon: emoji ?? undefined },
-      ]);
-      setSelectedCategory(trimmed);
-    }
-    setIsCategoryModalOpen(false);
-  };
-
-  const handleOpenColorPalette = () => {
-    setPaletteAnchorRect(
-      colorButtonRef.current?.getBoundingClientRect() ?? null
-    );
-    setIsColorPaletteOpen(true);
-  };
-
-  const handleColorSelect = (color: string) => {
-    setHabitColor(color);
-    setIsColorPaletteOpen(false);
-  };
 
   const handleNext = () => {
     const selected = categories.find((c) => c.name === selectedCategory);
     if (!selected) return;
     onNext({
-      name: habitName.trim(),
+      name: name.trim(),
       color: habitColor,
       categoryName: selected.name,
       ...(selected.icon && { emoji: selected.icon }),
@@ -87,24 +59,18 @@ const Step2 = ({
   };
 
   // 필수: 습관명 + 카테고리 선택 시에만 다음으로 진행
-  const canNext = habitName.trim().length > 0 && selectedCategory !== null;
+  const canNext = name.trim().length > 0 && selectedCategory !== null;
 
   return (
     <>
-      {isColorPaletteOpen && paletteAnchorRect && (
-        <ColorPalette
-          onClose={() => setIsColorPaletteOpen(false)}
-          onSelect={handleColorSelect}
-          selectedColor={habitColor}
-          anchorRect={paletteAnchorRect}
-        />
-      )}
-
       {isCategoryModalOpen && (
         <CategoryAddModal
           open={isCategoryModalOpen}
           onClose={() => setIsCategoryModalOpen(false)}
-          onSubmit={handleAddCategory}
+          onSubmit={(categoryName, emoji) => {
+            handleAddCategory(categoryName, emoji);
+            setIsCategoryModalOpen(false);
+          }}
         />
       )}
 
@@ -127,28 +93,12 @@ const Step2 = ({
         </section>
 
         <section className="mb-6">
-          <p className="mb-2 font-semibold text-zinc-900">어떤 습관인가요?</p>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={handleOpenColorPalette}
-              ref={colorButtonRef}
-              className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full shrink-0"
-              style={{ backgroundColor: habitColor }}
-              aria-label="습관 색상 선택"
-              title="색상 변경"
-            />
-            <input
-              type="text"
-              value={habitName}
-              onChange={(e) => setHabitName(e.target.value)}
-              placeholder="ex)일어나자마자 물 마시기"
-              className="w-full rounded-full border border-zinc-200 py-3 pl-12 pr-4 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
-              style={{
-                borderColor: habitName.length > 0 ? habitColor : undefined,
-              }}
-            />
-          </div>
+          <HabitNameField
+            value={name}
+            onChange={setName}
+            selectedColor={habitColor}
+            onColorChange={setHabitColor}
+          />
         </section>
 
         <section className="flex-1">

@@ -29,11 +29,15 @@ const OnboardingLayout = ({
   skipLabel = '나중에 할래요',
 }: OnboardingLayoutProps) => {
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="mx-auto flex w-full max-w-[320px] flex-1 flex-col bg-white">
-        <OnboardingStepHeader step={step} totalSteps={totalSteps} onBack={onBack} />
+    <div className="flex h-full flex-col">
+      <div className="mx-auto flex w-full max-w-[320px] flex-1 flex-col overflow-hidden bg-white">
+        <OnboardingStepHeader
+          step={step}
+          totalSteps={totalSteps}
+          onBack={onBack}
+        />
 
-        <main className="flex flex-1 flex-col px-4 pb-[calc(80px+env(safe-area-inset-bottom))]">
+        <main className="flex flex-1 flex-col overflow-y-auto px-4 pb-[calc(80px+env(safe-area-inset-bottom))]">
           {children}
         </main>
       </div>
@@ -41,7 +45,15 @@ const OnboardingLayout = ({
       {/* 하단 고정 버튼 */}
       <div
         className="fixed bottom-0 left-1/2 w-full max-w-[320px] -translate-x-1/2 space-y-2 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]"
-        style={onSkip ? { background: 'linear-gradient(180deg, transparent 0%, #ffffff 30%)', paddingTop: '2rem' } : { background: '#ffffff' }}
+        style={
+          onSkip
+            ? {
+                background:
+                  'linear-gradient(180deg, transparent 0%, #ffffff 30%)',
+                paddingTop: '2rem',
+              }
+            : { background: '#ffffff' }
+        }
       >
         {onSkip && (
           <button

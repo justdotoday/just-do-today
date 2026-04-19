@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import Toggle from '../../components/Toggle';
+import repeat from '../../assets/bottomSheet/repeat.png';
 
 /** 시 옵션 (12시간제 1~12) */
 const HOUR_OPTIONS = [
-  '00',
   '01',
   '02',
   '03',
@@ -43,6 +43,12 @@ type Props = {
   selectedDays: string[];
   toggleDay: (d: string) => void;
   dayRows: { first: readonly string[]; second: readonly string[] };
+  // WEEKLY 단일 선택용 핸들러 (없으면 toggleDay 사용)
+  onSingleDaySelect?: (d: string) => void;
+  // MONTHLY 선택 시 표시할 일자 (없으면 미표시)
+  selectedMonthlyDay?: number | null;
+  // MONTHLY 일자 다시 선택하기
+  onReopenMonthlyPicker?: () => void;
   // 알림 관련
   alarmEnabled: boolean;
   setAlarmEnabled: (val: boolean) => void;
@@ -71,6 +77,9 @@ const HabitOptionsSection = ({
   setFrequency,
   selectedDays,
   toggleDay,
+  onSingleDaySelect,
+  selectedMonthlyDay,
+  onReopenMonthlyPicker,
   dayRows,
   alarmEnabled,
   setAlarmEnabled,
@@ -137,40 +146,77 @@ const HabitOptionsSection = ({
           ))}
         </div>
 
-        {frequency === 'CUSTOM' && (
+        {frequency === 'MONTHLY' && selectedMonthlyDay != null && (
+          <div className="flex items-center justify-between">
+            <p className="flex items-center gap-1.5 text-[13px] text-zinc-500">
+              <img src={repeat} className="size-3" />
+              <span>
+                매월{' '}
+                <span className="font-semibold text-[#2E68EF]">
+                  {selectedMonthlyDay}
+                </span>
+                일에 반복
+              </span>
+            </p>
+            {onReopenMonthlyPicker && (
+              <button
+                type="button"
+                onClick={onReopenMonthlyPicker}
+                className="text-[13px] font-medium text-[#2E68EF] underline underline-offset-2"
+              >
+                다시 선택하기
+              </button>
+            )}
+          </div>
+        )}
+
+        {(frequency === 'CUSTOM' || frequency === 'WEEKLY') && (
           <div className="mt-4 flex flex-col items-center gap-1">
-            <div className="grid grid-cols-4 gap-3">
-              {dayRows.first.map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => toggleDay(d)}
-                  className={
-                    selectedDays.includes(d)
-                      ? styles.dayActive
-                      : styles.dayInactive
-                  }
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {dayRows.second.map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => toggleDay(d)}
-                  className={
-                    selectedDays.includes(d)
-                      ? styles.dayActive
-                      : styles.dayInactive
-                  }
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
+            {/* WEEKLY: 단일 선택(다중 선택 시 하이라이트 없음), CUSTOM: 다중 선택 */}
+            {(() => {
+              const isWeekly = frequency === 'WEEKLY';
+              const isActive = (d: string) =>
+                isWeekly
+                  ? selectedDays.length === 1 && selectedDays[0] === d
+                  : selectedDays.includes(d);
+              const handleClick = (d: string) =>
+                isWeekly && onSingleDaySelect
+                  ? onSingleDaySelect(d)
+                  : toggleDay(d);
+
+              return (
+                <>
+                  <div className="grid grid-cols-4 gap-3">
+                    {dayRows.first.map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => handleClick(d)}
+                        className={
+                          isActive(d) ? styles.dayActive : styles.dayInactive
+                        }
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    {dayRows.second.map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => handleClick(d)}
+                        className={
+                          isActive(d) ? styles.dayActive : styles.dayInactive
+                        }
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
           </div>
         )}
       </section>
@@ -208,7 +254,7 @@ const HabitOptionsSection = ({
               </button>
               {openPicker === 'hour' && (
                 <ul
-                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-22 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-full z-100 mt-1 max-h-40 w-22 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
                   role="listbox"
                 >
                   {HOUR_OPTIONS.map((h) => (
@@ -243,7 +289,7 @@ const HabitOptionsSection = ({
               </button>
               {openPicker === 'minute' && (
                 <ul
-                  className="absolute left-0 top-full z-[100] mt-1 max-h-40 w-22 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
+                  className="absolute left-0 top-full z-100 mt-1 max-h-40 w-22 overflow-y-auto rounded-2xl border border-zinc-200 bg-white py-1 shadow-lg"
                   role="listbox"
                 >
                   {MINUTE_OPTIONS.map((m) => (

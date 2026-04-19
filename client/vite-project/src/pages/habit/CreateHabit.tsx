@@ -10,66 +10,49 @@ import MonthlyDatePickerSheet from '../../components/habit/MonthlyDatePickerShee
 import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
-import type { CategoryItem } from '../../components/habit/CategorySelector';
+import { useHabitForm } from '../../hooks/useHabitForm';
+import { HABIT_FORM_STYLES, DAYS_FIRST_ROW, DAYS_SECOND_ROW } from '../../constants/habitFormStyles';
 import { COLORS } from '../../constants/colors';
 
 const CreateHabit = () => {
   const navigate = useNavigate();
 
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const {
+    name,
+    setName,
+    habitColor,
+    setHabitColor,
+    categories,
+    selectedCategory,
+    setSelectedCategory,
+    frequency,
+    setFrequency,
+    selectedDays,
+    toggleDay,
+    alarmEnabled,
+    setAlarmEnabled,
+    ampm,
+    setAmpm,
+    hour,
+    setHour,
+    minute,
+    setMinute,
+    isPublic,
+    setIsPublic,
+    handleAddCategory,
+    selectSingleDay,
+  } = useHabitForm();
 
-  // 상태 변수들
-  const day = ['월', '화', '수', '목', '금', '토', '일'] as const;
-  const firstRow = day.slice(0, 4); // 월 화 수 목
-  const secondRow = day.slice(4); // 금 토 일
-  const [name, setName] = useState('');
-  const [habitColor, setHabitColor] = useState('#3B47B3');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [frequency, setFrequency] = useState<Frequency>('DAILY');
-  type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
-  const [isPublic, setIsPublic] = useState(true);
-  const [alarmEnabled, setAlarmEnabled] = useState(true);
-  const [ampm, setAmpm] = useState<'AM' | 'PM'>('AM');
-  const [hour, setHour] = useState('12');
-  const [minute, setMinute] = useState('00');
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
   const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
 
-  // --- [공통 디자인 가이드 적용] ---
-
-  // 알림 화면 공통 디자인
-  const baseBtn =
-    'h-[48px] w-full rounded-[20px] text-[16px] font-medium transition-all active:scale-[0.98] flex items-center justify-center';
-  const outlineBtn = `${baseBtn} border-[1.5px] border-[#2E68EF] text-[#2E68EF] bg-white`;
-  const filledBtn = `${baseBtn} bg-[#2E68EF] text-white`;
-
-  // 빈도 선택 버튼 스타일
-  const freqBase =
-    'h-11 w-full rounded-full border-2 ' +
-    'text-[12px] leading-[20px] font-medium transition active:scale-[0.98]';
-  const freqInactive = `${freqBase} bg-white border-zinc-200 text-zinc-900`;
-  const freqActive = `${freqBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
-
-  const toggleDay = (d: string) => {
-    setSelectedDays((prev) =>
-      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
-    );
-  };
-  // 요일로 선택 버튼 스타일
-  const dayBase =
-    'h-[64px] w-[64px] rounded-full border-2 ' +
-    'text-[14px] leading-[18px] font-medium ' +
-    'flex items-center justify-center transition';
-  const dayInactive = `${dayBase} bg-white border-zinc-200 text-zinc-900`;
-  const dayActive = `${dayBase} bg-[#EFF6FF] border-[#A5B4FC] text-[#2E68EF]`;
-
+  // WEEKLY·CUSTOM은 요일 최소 1개 선택 필수
   const canSubmit =
     name.trim().length > 0 &&
     selectedCategory !== null &&
-    (frequency !== 'CUSTOM' || selectedDays.length > 0);
+    (frequency === 'DAILY' || frequency === 'MONTHLY' || selectedDays.length > 0);
 
   const handleSubmit = async () => {
     if (!canSubmit || isLoading) return;
@@ -90,6 +73,7 @@ const CreateHabit = () => {
       startDate: new Date().toISOString().split('T')[0],
       color: habitColor,
     };
+
     try {
       setIsLoading(true);
       await createHabit(payload);
@@ -105,9 +89,7 @@ const CreateHabit = () => {
       const body = msg?.data;
       console.error('[습관 생성 실패]', { status, body, err });
       const fallback =
-        status != null
-          ? `요청 실패 (${status})`
-          : '네트워크 또는 서버 연결 실패';
+        status != null ? `요청 실패 (${status})` : '네트워크 또는 서버 연결 실패';
       showToast.error(
         typeof body === 'object' && body != null && 'message' in body
           ? String((body as { message: unknown }).message)
@@ -116,25 +98,6 @@ const CreateHabit = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // 카테고리 직접 추가 처리 (로컬 상태에만 저장, 습관 생성 시 서버에서 find-or-create)
-  const handleAddCategory = (name: string, emoji: string | null) => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-
-    const hasSameCategory = categories.some((c) => c.name === trimmed);
-    if (hasSameCategory) {
-      showToast.default('이미 있는 카테고리예요');
-      setSelectedCategory(trimmed);
-      setIsCategoryModalOpen(false);
-      return;
-    }
-
-    setCategories((prev) => [...prev, { name: trimmed, icon: emoji ?? undefined }]);
-    setSelectedCategory(trimmed);
-    setIsCategoryModalOpen(false);
-    showToast.success('카테고리가 추가되었어요');
   };
 
   return (
@@ -176,12 +139,12 @@ const CreateHabit = () => {
           <HabitOptionsSection
             frequency={frequency}
             setFrequency={(val) => {
-                setFrequency(val);
-                if (val === 'MONTHLY') setIsMonthlyPickerOpen(true);
-              }}
+              setFrequency(val);
+              if (val === 'MONTHLY') setIsMonthlyPickerOpen(true);
+            }}
             selectedDays={selectedDays}
             toggleDay={toggleDay}
-            dayRows={{ first: firstRow, second: secondRow }}
+            dayRows={{ first: DAYS_FIRST_ROW, second: DAYS_SECOND_ROW }}
             alarmEnabled={alarmEnabled}
             setAlarmEnabled={setAlarmEnabled}
             ampm={ampm}
@@ -192,19 +155,15 @@ const CreateHabit = () => {
             setMinute={setMinute}
             isPublic={isPublic}
             setIsPublic={setIsPublic}
-            styles={{
-              freqActive,
-              freqInactive,
-              dayActive,
-              dayInactive,
-              filledBtn,
-              outlineBtn,
-            }}
+            onSingleDaySelect={selectSingleDay}
+            selectedMonthlyDay={selectedMonthlyDay}
+            onReopenMonthlyPicker={() => setIsMonthlyPickerOpen(true)}
+            styles={HABIT_FORM_STYLES}
           />
         </section>
       </main>
 
-      {/* 습관 등록하기 버튼: 하단 고정, 콘텐츠 영역 안에 위치 */}
+      {/* 습관 등록하기 버튼: 하단 고정 */}
       <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
         <div className="mx-auto w-full max-w-[320px]">
           <button
@@ -226,7 +185,10 @@ const CreateHabit = () => {
         <CategoryAddModal
           open={isCategoryModalOpen}
           onClose={() => setIsCategoryModalOpen(false)}
-          onSubmit={handleAddCategory}
+          onSubmit={(categoryName, emoji) => {
+            handleAddCategory(categoryName, emoji);
+            setIsCategoryModalOpen(false);
+          }}
         />
       )}
 

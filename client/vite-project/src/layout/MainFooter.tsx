@@ -33,7 +33,7 @@ const MainFooter = () => {
 
   return (
     <footer className="fixed inset-x-0 bottom-0 z-50 pb-[calc(16px+env(safe-area-inset-bottom))] sm:pb-6">
-      <nav className="mx-auto grid h-[72px] max-w-[360px] grid-cols-4 rounded-full bg-white px-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+      <nav className="mx-auto grid h-[60px] max-w-[310px] grid-cols-4 rounded-full bg-white px-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
         {navItems.map((item) => (
           <NavLink
             key={item.to}

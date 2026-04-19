@@ -17,7 +17,7 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen bg-zinc-100">
-      <div className="mx-auto min-h-screen w-full max-w-[414px] bg-white">
+      <div className="mx-auto min-h-screen w-full max-w-[320px] bg-white">
         <main className={hideFooter ? '' : 'pb-[96px]'}>
           <Outlet />
         </main>
