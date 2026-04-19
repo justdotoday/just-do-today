@@ -34,7 +34,7 @@ const HomeEmpty = () => {
         <button
           type="button"
           onClick={() => navigate('/createHabit')}
-          className="mt-10 h-14 w-full max-w-[320px] rounded-full bg-blue-600 text-white"
+          className="mt-10 h-14 w-full max-w-[420px] rounded-full bg-blue-600 text-white"
         >
           습관 등록하기
         </button>

@@ -11,7 +11,11 @@ import CategorySelector from '../../components/habit/CategorySelector';
 import HabitNameField from '../../components/habit/HabitNameField';
 import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
 import { useHabitForm } from '../../hooks/useHabitForm';
-import { HABIT_FORM_STYLES, DAYS_FIRST_ROW, DAYS_SECOND_ROW } from '../../constants/habitFormStyles';
+import {
+  HABIT_FORM_STYLES,
+  DAYS_FIRST_ROW,
+  DAYS_SECOND_ROW,
+} from '../../constants/habitFormStyles';
 import { COLORS } from '../../constants/colors';
 
 const CreateHabit = () => {
@@ -46,13 +50,17 @@ const CreateHabit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
-  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(
+    null
+  );
 
   // WEEKLY·CUSTOM은 요일 최소 1개 선택 필수
   const canSubmit =
     name.trim().length > 0 &&
     selectedCategory !== null &&
-    (frequency === 'DAILY' || frequency === 'MONTHLY' || selectedDays.length > 0);
+    (frequency === 'DAILY' ||
+      frequency === 'MONTHLY' ||
+      selectedDays.length > 0);
 
   const handleSubmit = async () => {
     if (!canSubmit || isLoading) return;
@@ -89,7 +97,9 @@ const CreateHabit = () => {
       const body = msg?.data;
       console.error('[습관 생성 실패]', { status, body, err });
       const fallback =
-        status != null ? `요청 실패 (${status})` : '네트워크 또는 서버 연결 실패';
+        status != null
+          ? `요청 실패 (${status})`
+          : '네트워크 또는 서버 연결 실패';
       showToast.error(
         typeof body === 'object' && body != null && 'message' in body
           ? String((body as { message: unknown }).message)
@@ -115,7 +125,7 @@ const CreateHabit = () => {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[320px] px-4 pt-8 pb-32">
+      <main className="mx-auto w-full max-w-[420px] px-4 pt-8 pb-32">
         {/* 습관명 입력 필드 */}
         <HabitNameField
           value={name}
@@ -165,7 +175,7 @@ const CreateHabit = () => {
 
       {/* 습관 등록하기 버튼: 하단 고정 */}
       <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
-        <div className="mx-auto w-full max-w-[320px]">
+        <div className="mx-auto w-full max-w-[420px]">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit || isLoading}
@@ -174,7 +184,11 @@ const CreateHabit = () => {
                 ? 'bg-zinc-200 text-zinc-500'
                 : 'text-white active:scale-[0.98]'
             }`}
-            style={canSubmit && !isLoading ? { backgroundColor: COLORS.primary } : undefined}
+            style={
+              canSubmit && !isLoading
+                ? { backgroundColor: COLORS.primary }
+                : undefined
+            }
           >
             {isLoading ? '등록 중...' : '습관 등록하기'}
           </button>

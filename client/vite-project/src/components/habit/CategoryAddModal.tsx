@@ -37,7 +37,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
   };
 
   return (
-    <div className="fixed inset-y-0 left-1/2 z-999 w-full max-w-[320px] -translate-x-1/2">
+    <div className="fixed inset-y-0 left-1/2 z-999 w-full max-w-[420px] -translate-x-1/2">
       <button
         type="button"
         aria-label="close overlay"
@@ -46,7 +46,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
       />
 
       <motion.div
-        className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[320px] rounded-t-3xl bg-white px-4 pb-3 pt-2"
+        className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-[420px] rounded-t-3xl bg-white px-4 pb-3 pt-2"
         drag="y"
         dragConstraints={{ top: 0 }}
         dragElastic={0.2}

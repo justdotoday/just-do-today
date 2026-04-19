@@ -69,7 +69,7 @@ const Step1 = ({ onNext, onBack }: Step1Props) => {
       canNext={canNext}
     >
       {/* 인사 + 닉네임 입력 */}
-      <section className="mb-8">
+      <section className="my-8 p-1">
         <h1 className="flex items-center font-bold text-lg text-zinc-900">
           안녕하세요!
           <IoHeart

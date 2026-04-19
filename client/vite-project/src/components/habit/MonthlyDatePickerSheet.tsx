@@ -53,7 +53,7 @@ const MonthlyDatePickerSheet = ({
   };
 
   return (
-    <div className="fixed inset-y-0 left-1/2 z-50 w-full max-w-[320px] -translate-x-1/2">
+    <div className="fixed inset-y-0 left-1/2 z-50 w-full max-w-[420px] -translate-x-1/2">
       <button
         type="button"
         aria-label="close"

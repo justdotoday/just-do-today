@@ -6,7 +6,7 @@ const EmptyIllustration = () => {
       <img
         src={emptyImg}
         alt="건강 리스트 예시"
-        className="w-full max-w-[320px] h-auto"
+        className="w-full max-w-[420px] h-auto"
       />
     </div>
   );

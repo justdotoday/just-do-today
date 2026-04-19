@@ -61,7 +61,7 @@ const IceConfirmSheet = ({
           <img
             src={iceThaw}
             alt="이 얼음을 땡! 할까요? 땡하면 성공으로 기록돼요."
-            className="w-full max-w-[320px] object-contain"
+            className="w-full max-w-[420px] object-contain"
           />
         </div>
 

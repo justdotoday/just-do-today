@@ -23,7 +23,7 @@ const MainPage = () => {
         <button
           type="button"
           onClick={() => navigate('/createHabit')}
-          className="mt-10 h-14 w-full max-w-[320px] rounded-full font-semibold text-white transition active:scale-[0.98]"
+          className="mt-10 h-14 w-full max-w-[420px] rounded-full font-semibold text-white transition active:scale-[0.98]"
           style={{ backgroundColor: COLORS.primary }}
         >
           습관 등록하기

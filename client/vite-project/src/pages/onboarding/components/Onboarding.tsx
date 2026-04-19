@@ -6,6 +6,7 @@ import Step3 from './Step3';
 import Step4 from './Step4';
 import Step3_5 from './Step3_5';
 import { completeOnboarding } from '../../../api/onboarding';
+import { showToast } from '../../../components/ui/toast/Toast';
 import type { Step2HabitData } from './Step2';
 import type { Step3HabitData } from './Step3';
 
@@ -72,12 +73,25 @@ const Onboarding = ({ onFinish, onSkip, onExit }: OnboardingProps) => {
           }
         : null;
 
+    console.log('[온보딩 완료 요청]', { nickname, goal, habit });
+
     try {
       await completeOnboarding({ nickname, goal, habit });
-    } catch (e) {
-      console.error('[온보딩 완료 실패]', e);
+      onFinish();
+    } catch (e: unknown) {
+      const res = (e as { response?: { status?: number; data?: unknown } })
+        ?.response;
+      console.error('[온보딩 완료 실패]', res?.status, res?.data, e);
+      const msg =
+        typeof res?.data === 'object' &&
+        res?.data !== null &&
+        'message' in res.data
+          ? String((res.data as { message: unknown }).message)
+          : res?.status
+            ? `서버 오류 (${res.status})`
+            : '네트워크 연결을 확인해 주세요';
+      showToast.error(msg);
     }
-    onFinish();
   };
 
   const stepContent = (() => {

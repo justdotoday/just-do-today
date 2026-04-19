@@ -30,7 +30,7 @@ const OnboardingLayout = ({
 }: OnboardingLayoutProps) => {
   return (
     <div className="flex h-full flex-col">
-      <div className="mx-auto flex w-full max-w-[320px] flex-1 flex-col overflow-hidden bg-white">
+      <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col overflow-hidden bg-white">
         <OnboardingStepHeader
           step={step}
           totalSteps={totalSteps}
@@ -44,7 +44,7 @@ const OnboardingLayout = ({
 
       {/* 하단 고정 버튼 */}
       <div
-        className="fixed bottom-0 left-1/2 w-full max-w-[320px] -translate-x-1/2 space-y-2 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]"
+        className="fixed bottom-0 left-1/2 w-full max-w-[420px] -translate-x-1/2 space-y-2 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]"
         style={
           onSkip
             ? {
