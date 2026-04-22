@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import checkLogo from '../../../assets/snackbar/check-logo.png';
+import checkLogo from '../../../assets/buttons/check-grey.png';
 
 /**
  * 완료 체크 시 하단에 뜨는 스낵바. "더 자세히 남겨볼까요?" + 기록하기 CTA.
@@ -32,10 +32,10 @@ const CompletionSnackbar = ({
     <div
       role="status"
       aria-live="polite"
-      className="fixed left-0 right-0 z-40 mx-auto max-w-[414px] px-4"
+      className="fixed left-0 right-0 z-40 flex justify-center"
       style={{ bottom: SNACKBAR_BOTTOM_OFFSET }}
     >
-      <div className="flex min-h-[64px] items-center justify-between gap-3 rounded-[20px] bg-[#a2a9b0]/85 px-4 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
+      <div className="flex min-h-[64px] w-[90vw] max-w-[373px] items-center justify-between gap-3 rounded-[20px] bg-[#a2a9b0]/85 px-4 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <img
             src={checkLogo}

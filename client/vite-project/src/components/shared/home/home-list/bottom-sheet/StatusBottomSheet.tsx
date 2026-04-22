@@ -21,8 +21,8 @@ type Props = {
 };
 
 // 임시
-const freezeCount = 1;
-const heartCount = 1;
+const freezeCount = 4;
+const heartCount = 5;
 const isIceDisabled = (freezeCount ?? 0) <= 0;
 const isHeartDisabled = (heartCount ?? 0) <= 0;
 
@@ -129,30 +129,6 @@ const StatusBottomSheet = ({
         {/* 잠시 미루기(얼음) / 오늘은 쉬어가기(하트) 선택 */}
         <div className="mt-5 grid grid-cols-2 gap-3">
           {/* 프리즈 */}
-          {/* <button
-            type="button"
-            onClick={onIceClick}
-            className="relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl py-10"
-            style={{
-              background:
-                'radial-gradient(circle at 50% 40%, rgba(214,235,255,0.8) 0%, rgba(239,246,255,0.6) 100%)',
-            }}
-          >
-            <div className="absolute top-2 right-2 px-2 rounded-full text-sm text-[#4B93DC] bg-[#dbe8f5] flex">
-              <p className="">x</p>
-              <p className="pl-1">3</p>
-            </div>
-            <img
-              src={freeze}
-              alt="잠시 미루기"
-              className="h-12 w-12 object-contain"
-            />
-            <p className="text-[16px] font-semibold text-[#4B93DC]">
-              얼음 사용하기
-            </p>
-            <p className="text-[12px] text-[#4B93DC]">잠시 미루기</p>
-          </button> */}
-
           <button
             type="button"
             onClick={!isIceDisabled ? onIceClick : undefined}

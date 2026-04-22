@@ -15,6 +15,9 @@ export type CreateHabitPayload = {
   color: string;
 };
 
+// 습관 수정 요청 payload 타입
+export type UpdateHabitPayload = Omit<CreateHabitPayload, 'startDate'>;
+
 //습관 조회 응답 타입
 export type Habit = {
   /** 습관(habit) PK. 삭제 API에 사용 */

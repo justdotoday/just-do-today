@@ -1,0 +1,232 @@
+/** 습관 수정 페이지. location.state.habit 으로 기존 데이터를 받아 폼에 pre-fill 후 수정 요청 */
+import { useState } from 'react';
+import { IoChevronBack } from 'react-icons/io5';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { mapDaysToServer, mapDaysFromServer } from '../../api/utils';
+import { updateHabit } from '../../api/habit';
+import type { UpdateHabitPayload, Habit } from '../../types/habit.type';
+import { showToast } from '../../components/ui/toast/Toast';
+import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
+import MonthlyDatePickerSheet from '../../components/shared/habit/MonthlyDatePickerSheet';
+import CategorySelector from '../../components/shared/habit/CategorySelector';
+import HabitNameField from '../../components/shared/habit/HabitNameField';
+import HabitOptionsSection from '../../components/shared/habit/HabitOptionsSection';
+import { useHabitForm } from '../../hooks/useHabitForm';
+import {
+  HABIT_FORM_STYLES,
+  DAYS_FIRST_ROW,
+  DAYS_SECOND_ROW,
+} from '../../constants/habitFormStyles';
+import { DEFAULT_CATEGORIES } from '../../constants/categories';
+import { COLORS } from '../../constants/colors';
+import type { CategoryItem } from '../../components/shared/habit/CategorySelector';
+
+type LocationState = { habit: Habit };
+
+const EditHabit = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation() as { state: LocationState };
+  const habit = state?.habit;
+
+  // 기존 카테고리가 기본 목록에 없으면 추가 (유저 커스텀 카테고리 대응)
+  const initialCategories: CategoryItem[] = (() => {
+    if (!habit?.category) return DEFAULT_CATEGORIES;
+    const inDefaults = DEFAULT_CATEGORIES.some((c) => c.name === habit.category);
+    if (inDefaults) return DEFAULT_CATEGORIES;
+    return [...DEFAULT_CATEGORIES, { name: habit.category, icon: habit.emoji ?? undefined }];
+  })();
+
+  const {
+    name,
+    setName,
+    habitColor,
+    setHabitColor,
+    categories,
+    selectedCategory,
+    setSelectedCategory,
+    frequency,
+    setFrequency,
+    selectedDays,
+    toggleDay,
+    alarmEnabled,
+    setAlarmEnabled,
+    ampm,
+    setAmpm,
+    hour,
+    setHour,
+    minute,
+    setMinute,
+    isPublic,
+    setIsPublic,
+    handleAddCategory,
+    selectSingleDay,
+  } = useHabitForm({
+    initialCategories,
+    initialValues: {
+      name: habit?.name,
+      color: habit?.color ?? '#3B47B3',
+      selectedCategory: habit?.category ?? null,
+      frequency: habit?.frequency,
+      selectedDays: habit?.days ? mapDaysFromServer(habit.days) : [],
+      isPublic: false,
+    },
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
+
+  const canSubmit =
+    name.trim().length > 0 &&
+    selectedCategory !== null &&
+    (frequency === 'DAILY' ||
+      frequency === 'MONTHLY' ||
+      selectedDays.length > 0);
+
+  const handleSubmit = async () => {
+    if (!canSubmit || isLoading || !habit) return;
+
+    const selected = categories.find((c) => c.name === selectedCategory);
+    if (!selected) {
+      showToast.error('카테고리를 선택해 주세요');
+      return;
+    }
+
+    const payload: UpdateHabitPayload = {
+      name: name.trim(),
+      categoryName: selected.name,
+      ...(selected.icon && { emoji: selected.icon }),
+      frequency,
+      ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
+      isPublic,
+      color: habitColor,
+    };
+
+    try {
+      setIsLoading(true);
+      await updateHabit(habit.id, payload);
+      showToast.success('습관이 수정되었습니다!');
+      navigate('/home');
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number; data?: unknown } }).response
+          : null;
+      const status = msg?.status;
+      const body = msg?.data;
+      console.error('[습관 수정 실패]', { status, body, err });
+      const fallback =
+        status != null ? `요청 실패 (${status})` : '네트워크 또는 서버 연결 실패';
+      showToast.error(
+        typeof body === 'object' && body != null && 'message' in body
+          ? String((body as { message: unknown }).message)
+          : fallback
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* 상단바 */}
+      <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white">
+        <div className="pt-[env(safe-area-inset-top)]" />
+        <div className="relative flex h-14 items-center justify-center px-4">
+          <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
+            <IoChevronBack className="text-2xl text-zinc-900" />
+          </button>
+          <h1 className="text-[16px] font-semibold text-zinc-950">습관 수정하기</h1>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-[420px] px-4 pt-8 pb-32">
+        <HabitNameField
+          value={name}
+          onChange={setName}
+          selectedColor={habitColor}
+          onColorChange={setHabitColor}
+        />
+
+        <section className="mt-10 space-y-4">
+          <CategorySelector
+            categories={categories}
+            selected={selectedCategory}
+            onSelect={setSelectedCategory}
+            onOpenAdd={() => setIsCategoryModalOpen(true)}
+          />
+        </section>
+
+        <section className="mt-6 space-y-4">
+          <HabitOptionsSection
+            frequency={frequency}
+            setFrequency={(val) => {
+              setFrequency(val);
+              if (val === 'MONTHLY') setIsMonthlyPickerOpen(true);
+            }}
+            selectedDays={selectedDays}
+            toggleDay={toggleDay}
+            dayRows={{ first: DAYS_FIRST_ROW, second: DAYS_SECOND_ROW }}
+            alarmEnabled={alarmEnabled}
+            setAlarmEnabled={setAlarmEnabled}
+            ampm={ampm}
+            setAmpm={setAmpm}
+            hour={hour}
+            setHour={setHour}
+            minute={minute}
+            setMinute={setMinute}
+            isPublic={isPublic}
+            setIsPublic={setIsPublic}
+            onSingleDaySelect={selectSingleDay}
+            selectedMonthlyDay={selectedMonthlyDay}
+            onReopenMonthlyPicker={() => setIsMonthlyPickerOpen(true)}
+            styles={HABIT_FORM_STYLES}
+          />
+        </section>
+      </main>
+
+      {/* 수정하기 버튼: 하단 고정 */}
+      <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
+        <div className="mx-auto w-full max-w-[420px]">
+          <button
+            onClick={handleSubmit}
+            disabled={!canSubmit || isLoading}
+            className={`h-14 w-full rounded-full text-[16px] font-bold transition-all ${
+              !canSubmit || isLoading
+                ? 'bg-zinc-200 text-zinc-500'
+                : 'text-white active:scale-[0.98]'
+            }`}
+            style={
+              canSubmit && !isLoading ? { backgroundColor: COLORS.primary } : undefined
+            }
+          >
+            {isLoading ? '수정 중...' : '수정하기'}
+          </button>
+        </div>
+      </div>
+
+      {isCategoryModalOpen && (
+        <CategoryAddModal
+          open={isCategoryModalOpen}
+          onClose={() => setIsCategoryModalOpen(false)}
+          onSubmit={(categoryName, emoji) => {
+            handleAddCategory(categoryName, emoji);
+            setIsCategoryModalOpen(false);
+          }}
+        />
+      )}
+
+      {isMonthlyPickerOpen && (
+        <MonthlyDatePickerSheet
+          open={isMonthlyPickerOpen}
+          onClose={() => setIsMonthlyPickerOpen(false)}
+          onSelect={(day) => setSelectedMonthlyDay(day)}
+          initialDay={selectedMonthlyDay ?? undefined}
+        />
+      )}
+    </div>
+  );
+};
+
+export default EditHabit;

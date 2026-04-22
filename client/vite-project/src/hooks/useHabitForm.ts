@@ -5,22 +5,37 @@ import { showToast } from '../components/ui/toast/Toast';
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
 
-type UseHabitFormOptions = {
-  initialCategories?: CategoryItem[];
+type InitialValues = {
+  name?: string;
+  color?: string;
+  selectedCategory?: string | null;
+  frequency?: Frequency;
+  selectedDays?: string[];
+  isPublic?: boolean;
 };
 
-export const useHabitForm = ({ initialCategories = [] }: UseHabitFormOptions = {}) => {
-  const [name, setName] = useState('');
-  const [habitColor, setHabitColor] = useState('#3B47B3');
+type UseHabitFormOptions = {
+  initialCategories?: CategoryItem[];
+  initialValues?: InitialValues;
+};
+
+export const useHabitForm = ({
+  initialCategories = [],
+  initialValues = {},
+}: UseHabitFormOptions = {}) => {
+  const [name, setName] = useState(initialValues.name ?? '');
+  const [habitColor, setHabitColor] = useState(initialValues.color ?? '#3B47B3');
   const [categories, setCategories] = useState<CategoryItem[]>(initialCategories);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [frequency, setFrequency] = useState<Frequency>('DAILY');
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    initialValues.selectedCategory ?? null
+  );
+  const [frequency, setFrequency] = useState<Frequency>(initialValues.frequency ?? 'DAILY');
+  const [selectedDays, setSelectedDays] = useState<string[]>(initialValues.selectedDays ?? []);
   const [alarmEnabled, setAlarmEnabled] = useState(false);
   const [ampm, setAmpm] = useState<'AM' | 'PM'>('AM');
   const [hour, setHour] = useState('00');
   const [minute, setMinute] = useState('00');
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(initialValues.isPublic ?? false);
 
   // CUSTOM: 다중 선택 토글
   const toggleDay = useCallback((d: string) => {

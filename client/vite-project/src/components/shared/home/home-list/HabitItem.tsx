@@ -61,7 +61,11 @@ const HabitItem = ({
     <div className={wrapperClass} onClick={onToggleSelect}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button type="button" onClick={handleToggleDone} className="">
+          <button
+            type="button"
+            onClick={handleToggleDone}
+            className="flex h-8 w-8 shrink-0 items-center justify-center"
+          >
             {status === 'done' || status === 'notDone' ? (
               <span
                 className="flex h-4.5 w-4.5 items-center justify-center rounded-full text-xs font-bold text-white"
