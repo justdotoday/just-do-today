@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import homeIcon from '../assets/mainFooter/basicIcon/homeIcon.png';
-import habitIcon from '../assets/mainFooter/basicIcon/habitIcon.png';
-import socialIcon from '../assets/mainFooter/basicIcon/socialIcon.png';
-import settingIcon from '../assets/mainFooter/basicIcon/settingIcon.png';
-import homeBlue from '../assets/mainFooter/BlueIcon/HomeBlue.png';
-import habitBlue from '../assets/mainFooter/BlueIcon/habitBlue.png';
-import socialBlue from '../assets/mainFooter/BlueIcon/socialBlue.png';
-import settingBlue from '../assets/mainFooter/BlueIcon/settingBlue.png';
+import homeIcon from '../../../assets/mainFooter/basicIcon/homeIcon.png';
+import habitIcon from '../../../assets/mainFooter/basicIcon/habitIcon.png';
+import socialIcon from '../../../assets/mainFooter/basicIcon/socialIcon.png';
+import settingIcon from '../../../assets/mainFooter/basicIcon/settingIcon.png';
+import homeBlue from '../../../assets/mainFooter/BlueIcon/HomeBlue.png';
+import habitBlue from '../../../assets/mainFooter/BlueIcon/habitBlue.png';
+import socialBlue from '../../../assets/mainFooter/BlueIcon/socialBlue.png';
+import settingBlue from '../../../assets/mainFooter/BlueIcon/settingBlue.png';
 
 const MainFooter = () => {
   const navItems = [

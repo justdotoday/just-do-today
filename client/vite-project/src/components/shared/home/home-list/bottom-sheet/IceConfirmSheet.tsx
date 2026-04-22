@@ -1,7 +1,7 @@
 /** 얼음 해제 확인 바텀시트: 미뤘던 습관을 다시 활성화(땡!)할지 확인. */
 import { motion } from 'framer-motion';
-import DragHandle from '../../../../components/ui/DragHandle';
-import iceThaw from '../../../assets/bottomSheet/iceThaw.png';
+import DragHandle from '../../../../ui/DragHandle';
+import iceThaw from '../../../../../assets/bottomSheet/iceThaw.png';
 
 type Props = {
   open: boolean;
@@ -51,7 +51,7 @@ const IceConfirmSheet = ({
           </span>
           {freezeUntil && (
             <span className="text-[14px] text-zinc-400">
-              ~{' '}{formatDateKo(freezeUntil)}까지
+              ~ {formatDateKo(freezeUntil)}까지
             </span>
           )}
         </div>

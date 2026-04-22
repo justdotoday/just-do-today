@@ -1,5 +1,5 @@
 //요일 한글 → 영어 서버 값 변환 유틸
-import type { Day } from '../types/habitType';
+import type { Day } from '../types/habit.type';
 
 const DAY_MAP: Record<string, Day> = {
   월: 'MON',

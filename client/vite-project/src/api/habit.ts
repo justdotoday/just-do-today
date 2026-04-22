@@ -1,5 +1,5 @@
 //습관 관련 api
-import type { CreateHabitPayload, Day, Habit } from '../types/habitType';
+import type { CreateHabitPayload, Day, Habit } from '../types/habit.type';
 import api from './client';
 
 const DAY_TO_NUMBER: Record<Day, number> = {

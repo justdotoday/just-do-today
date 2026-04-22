@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import { motion } from 'framer-motion';
-import DragHandle from '../../../../components/DragHandle';
+import DragHandle from '../../../../ui/DragHandle';
 
 type CalendarValue = Date | null | [Date | null, Date | null];
 

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import GlowEffect from '../../../components/ui/GlowEffect';
+import GlowEffect from '../../components/ui/GlowEffect';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import Step4 from './Step4';
 import Step3_5 from './Step3_5';
-import { completeOnboarding } from '../../../api/onboarding';
-import { showToast } from '../../../components/ui/toast/Toast';
+import { completeOnboarding } from '../../api/onboarding';
+import { showToast } from '../../components/ui/toast/Toast';
 import type { Step2HabitData } from './Step2';
 import type { Step3HabitData } from './Step3';
 

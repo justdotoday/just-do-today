@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import Toggle from '../../components/Toggle';
-import repeat from '../../assets/bottomSheet/repeat.png';
+import Toggle from '../../ui/Toggle';
+import repeat from '../../../assets/bottomSheet/repeat.png';
 
 /** 시 옵션 (12시간제 1~12) */
 const HOUR_OPTIONS = [

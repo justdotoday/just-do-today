@@ -1,6 +1,6 @@
 // 습관 폼 공통 상태·로직 훅 — 온보딩(Step2/3)과 CreateHabit이 공유
 import { useCallback, useState } from 'react';
-import type { CategoryItem } from '../components/habit/CategorySelector';
+import type { CategoryItem } from '../components/shared/habit/CategorySelector';
 import { showToast } from '../components/ui/toast/Toast';
 
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';

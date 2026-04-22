@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { IoChevronForward, IoHeart } from 'react-icons/io5';
-import OnboardingLayout from './OnboardingLayout';
-import { COLORS } from '../../../constants/colors';
+import OnboardingLayout from '../../components/shared/onboarding/OnboardingLayout';
+import { COLORS } from '../../constants/colors';
 
 type Step1Props = {
   onNext: (nickname: string) => void;

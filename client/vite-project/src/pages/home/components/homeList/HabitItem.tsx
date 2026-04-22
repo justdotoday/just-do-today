@@ -1,7 +1,6 @@
 /** 습관 한 개 행: 완료 체크, 제목, 상태(쉬어가기/미루기) 설정용 점 버튼. */
 import type { MouseEvent } from 'react';
-import checkGrey from '../../../../assets/buttons/check-grey.png';
-import heart from '../../../../assets/buttons/heart.png';
+import heart from '../../../assets/buttons/heart.png';
 import ice from '../../../../assets/buttons/ice.png';
 import dotIcon from '../../../../assets/buttons/dot.png';
 
@@ -26,9 +25,12 @@ const HabitItem = ({
   onToggleSelect,
   onIceThaw,
 }: Props) => {
-  const wrapperClass = isSelected
-    ? 'rounded-xl bg-blue-50 px-2 py-3'
-    : 'rounded-xl px-2 py-3';
+  const wrapperClass =
+    status === 'freeze'
+      ? 'bg-sky-50 px-3 p-0.5'
+      : isSelected
+        ? 'bg-blue-50 px-3 p-0.5'
+        : 'px-3 p-0.5';
   const titleClass =
     status === 'done'
       ? 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-zinc-400 line-through'
@@ -37,7 +39,6 @@ const HabitItem = ({
         : 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-zinc-800';
 
   const statusIconMap = {
-    notDone: checkGrey,
     heart,
     freeze: ice,
   } as const;
@@ -60,27 +61,22 @@ const HabitItem = ({
     <div className={wrapperClass} onClick={onToggleSelect}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button type="button" onClick={handleToggleDone} className="p-0">
-            {status === 'done' ? (
+          <button type="button" onClick={handleToggleDone} className="">
+            {status === 'done' || status === 'notDone' ? (
               <span
-                className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
+                className="flex h-4.5 w-4.5 items-center justify-center rounded-full text-xs font-bold text-white"
                 style={{
-                  backgroundColor: color?.trim() ?? '#a1a1aa',
+                  backgroundColor:
+                    status === 'done' ? (color?.trim() ?? '#a1a1aa') : '#d4d4d8',
                 }}
-                aria-label="완료"
+                aria-label={status === 'done' ? '완료' : '아직 안함'}
               >
                 ✓
               </span>
             ) : (
               <img
                 src={statusIconMap[status]}
-                alt={
-                  status === 'heart'
-                    ? '오늘은 쉬어가기'
-                    : status === 'freeze'
-                      ? '잠시 미루기'
-                      : '아직 안함'
-                }
+                alt={status === 'heart' ? '오늘은 쉬어가기' : '잠시 미루기'}
                 className="h-8 w-8"
               />
             )}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Onboarding from './components/Onboarding';
+import Onboarding from './Onboarding';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from '../../constants/colors';
 

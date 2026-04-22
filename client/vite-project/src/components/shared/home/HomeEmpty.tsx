@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EmptyIllustration from './EmptyIllustration';
-import GlowEffect from '../../../components/ui/GlowEffect';
+import GlowEffect from '../../ui/GlowEffect';
 
 const HomeEmpty = () => {
   const navigate = useNavigate();

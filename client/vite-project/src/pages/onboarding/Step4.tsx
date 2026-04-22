@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import OnboardingLayout from './OnboardingLayout';
-import { COLORS } from '../../../constants/colors';
+import OnboardingLayout from '../../components/shared/onboarding/OnboardingLayout';
+import { COLORS } from '../../constants/colors';
 
 /** 온보딩 Step4 — 목표 입력 및 완료 (4/4) */
 

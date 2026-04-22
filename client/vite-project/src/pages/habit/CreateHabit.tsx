@@ -3,13 +3,13 @@ import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
-import type { CreateHabitPayload } from '../../types/habitType';
+import type { CreateHabitPayload } from '../../types/habit.type';
 import { showToast } from '../../components/ui/toast/Toast';
-import CategoryAddModal from '../../components/habit/CategoryAddModal';
-import MonthlyDatePickerSheet from '../../components/habit/MonthlyDatePickerSheet';
-import CategorySelector from '../../components/habit/CategorySelector';
-import HabitNameField from '../../components/habit/HabitNameField';
-import HabitOptionsSection from '../../components/habit/HabitOptionsSection';
+import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
+import MonthlyDatePickerSheet from '../../components/shared/habit/MonthlyDatePickerSheet';
+import CategorySelector from '../../components/shared/habit/CategorySelector';
+import HabitNameField from '../../components/shared/habit/HabitNameField';
+import HabitOptionsSection from '../../components/shared/habit/HabitOptionsSection';
 import { useHabitForm } from '../../hooks/useHabitForm';
 import {
   HABIT_FORM_STYLES,

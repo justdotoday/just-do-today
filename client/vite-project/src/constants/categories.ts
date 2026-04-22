@@ -1,4 +1,4 @@
-import type { CategoryItem } from '../components/habit/CategorySelector';
+import type { CategoryItem } from '../components/shared/habit/CategorySelector';
 
 /** 습관 카테고리 기본 목록 (온보딩 Step2) */
 export const DEFAULT_CATEGORIES: CategoryItem[] = [

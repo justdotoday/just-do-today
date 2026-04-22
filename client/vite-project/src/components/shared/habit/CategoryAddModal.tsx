@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import DragHandle from '../DragHandle';
-import { COLORS } from '../../constants/colors';
+import DragHandle from '../../ui/DragHandle';
+import { COLORS } from '../../../constants/colors';
 
 const EMOJI_LIST = [
   '🧘', '💊', '🥗', '💧', '😴', '✍️',

@@ -1,13 +1,13 @@
 // 온보딩 Step2 — 첫 습관 등록 화면: 습관명·색상·카테고리 입력 (2/3)
 
 import { useState } from 'react';
-import CategorySelector from '../../../components/habit/CategorySelector';
-import CategoryAddModal from '../../../components/habit/CategoryAddModal';
-import HabitNameField from '../../../components/habit/HabitNameField';
-import { DEFAULT_CATEGORIES } from '../../../constants/categories';
-import { useHabitForm } from '../../../hooks/useHabitForm';
-import OnboardingLayout from './OnboardingLayout';
-import { COLORS } from '../../../constants/colors';
+import CategorySelector from '../../components/shared/habit/CategorySelector';
+import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
+import HabitNameField from '../../components/shared/habit/HabitNameField';
+import { DEFAULT_CATEGORIES } from '../../constants/categories';
+import { useHabitForm } from '../../hooks/useHabitForm';
+import OnboardingLayout from '../../components/shared/onboarding/OnboardingLayout';
+import { COLORS } from '../../constants/colors';
 
 const ONBOARDING_STEP_INDEX = 2;
 const ONBOARDING_STEP_TOTAL = 3;

@@ -1,8 +1,8 @@
 // 월간 반복 날짜 선택 바텀시트
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import DragHandle from '../DragHandle';
-import { COLORS } from '../../constants/colors';
+import DragHandle from '../../ui/DragHandle';
+import { COLORS } from '../../../constants/colors';
 
 type Props = {
   open: boolean;

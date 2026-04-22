@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import startIcon from '../../../assets/Start.png';
-import { COLORS } from '../../../constants/colors';
+import startIcon from '../../assets/Start.png';
+import { COLORS } from '../../constants/colors';
 
 type Step3_5Props = {
   onNext: () => void;
