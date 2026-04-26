@@ -5,6 +5,7 @@ import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
 import com.example.just_do_today.dto.habit.HabitResponseDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,8 +19,8 @@ public interface HabitMapper {
     // 요일 저장
     void saveSchedule(UserHabitSchedule userHabitSchedule);
 
-    // 2. 습관 목록 조회
-    List<HabitResponseDto> findAllByMemberId(Long memberId);
+    // 2. 습관 목록 조회 (date 기준 habit_history status 포함)
+    List<HabitResponseDto> findAllByMemberId(@Param("memberId") Long memberId, @Param("date") LocalDate date);
     HabitResponseDto findByUserHabitId(Long userHabitId);
 
     //3. 습관 완료 처리
@@ -35,6 +36,9 @@ public interface HabitMapper {
 
     // 유저의 습관 완료 기록 조회
     HabitHistory findHistoryByHabitIdAndDate(Long userHabitId, LocalDate checkDate);
+
+    // 특정 습관의 DONE 기록 날짜 목록 조회 (연속 성공 일수 계산용, 최신순)
+    List<LocalDate> findDoneHistoryDates(Long userHabitId);
 
     // 유저-습관 상태 및 프리즈 해제 날짜 업데이트
     void updateUserHabitStatusAndFrozenUntil(UserHabit userHabit);

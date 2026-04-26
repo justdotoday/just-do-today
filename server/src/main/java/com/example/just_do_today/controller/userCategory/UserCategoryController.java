@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-public class UserCategoryController {
+public class UserCategoryController { // 습관생성시 기존 카테고리 조회
 
     private final CategoryService categoryService;
 

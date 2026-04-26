@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.just_do_today.domain.Habit.Enum.UserHabitStatus.ACTIVE;
@@ -55,8 +56,9 @@ public class HabitService {
     }
 
     @Transactional(readOnly = true)
-    public List<HabitResponseDto> getHabitList(Long memberId) {
-        return habitMapper.findAllByMemberId(memberId);
+    public List<HabitResponseDto> getHabitList(Long memberId, LocalDate date) {
+        // 전달된 날짜 기준으로 habit_history status 포함하여 조회
+        return habitMapper.findAllByMemberId(memberId, date);
     }
 
     @Transactional(readOnly = true)
