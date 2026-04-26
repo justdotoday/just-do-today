@@ -1,5 +1,5 @@
 //습관 관련 api
-import type { CreateHabitPayload, Day, Habit } from '../types/habitType';
+import type { CreateHabitPayload, UpdateHabitPayload, Day, Habit } from '../types/habit.type';
 import api from './client';
 
 const DAY_TO_NUMBER: Record<Day, number> = {
@@ -27,6 +27,26 @@ export const createHabit = async (payload: CreateHabitPayload) => {
     color: payload.color,
   };
   const res = await api.post(`/api/habits`, body);
+  return res.data;
+};
+
+// 습관 수정 (PUT /api/habits/:id)
+export const updateHabit = async (
+  id: string,
+  payload: UpdateHabitPayload
+) => {
+  const body = {
+    name: payload.name,
+    categoryName: payload.categoryName,
+    ...(payload.emoji && { emoji: payload.emoji }),
+    frequency: payload.frequency,
+    ...(payload.days?.length && {
+      days: payload.days.map((d) => DAY_TO_NUMBER[d]),
+    }),
+    isPublic: payload.isPublic,
+    color: payload.color,
+  };
+  const res = await api.put(`/api/habits/${id}`, body);
   return res.data;
 };
 

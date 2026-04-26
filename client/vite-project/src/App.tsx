@@ -4,11 +4,12 @@ import Signup from './auth/SocialSignUp';
 import OAuthCallback from './auth/OAuthCallback';
 import MainPage from './pages/onboarding/MainPage';
 import CreateHabit from './pages/habit/CreateHabit';
+import EditHabit from './pages/habit/EditHabit';
 import HabitPage from './pages/habit/HabitPage';
-import Layout from './layout/Layout';
+import Layout from './components/shared/layout/Layout';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/home/HomePage';
-import HomeEmpty from './pages/home/components/HomeEmpty';
+import HomeEmpty from './components/shared/home/HomeEmpty';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
 
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/home/empty" element={<ProtectedRoute><HomeEmpty /></ProtectedRoute>} />
           <Route path="/home/list" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/createHabit" element={<ProtectedRoute><CreateHabit /></ProtectedRoute>} />
+          <Route path="/editHabit" element={<ProtectedRoute><EditHabit /></ProtectedRoute>} />
         </Route>
       </Routes>
     </>

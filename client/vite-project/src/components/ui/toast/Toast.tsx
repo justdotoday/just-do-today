@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import checkLogo from '../../../assets/snackbar/check-logo.png';
+import checkLogo from '../../../assets/buttons/check-grey.png';
 
 /* eslint-disable react-refresh/only-export-components -- Toast + showToast 한 파일에서 관리 */
 
@@ -12,7 +12,7 @@ type ToastProps = {
 };
 
 const barClass =
-  'flex min-h-[64px] min-w-[280px] max-w-[343px] items-center gap-2 rounded-[20px] px-4 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.12)]';
+  'flex min-h-[64px] w-[90vw] max-w-[373px] items-center gap-3 rounded-[20px] px-4 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.12)]';
 
 const Toast = ({
   message,

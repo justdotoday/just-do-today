@@ -1,7 +1,8 @@
 /** 얼음 해제 확인 바텀시트: 미뤘던 습관을 다시 활성화(땡!)할지 확인. */
 import { motion } from 'framer-motion';
-import DragHandle from '../../../../components/ui/DragHandle';
-import iceThaw from '../../../assets/bottomSheet/iceThaw.png';
+import DragHandle from '../../../../ui/DragHandle';
+import freeze from '../../../../../assets/bottomSheet/freeze.svg';
+import { COLORS } from '../../../../../constants/colors';
 
 type Props = {
   open: boolean;
@@ -50,19 +51,26 @@ const IceConfirmSheet = ({
             {habitTitle}
           </span>
           {freezeUntil && (
-            <span className="text-[14px] text-zinc-400">
-              ~{' '}{formatDateKo(freezeUntil)}까지
+            <span className="text-[14px] text-gray-400">
+              ~ {formatDateKo(freezeUntil)}까지
             </span>
           )}
         </div>
 
         {/* 안내 이미지를 그대로 사용 */}
-        <div className="my-8 flex justify-center">
+        <div
+          className="
+        relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl py-5"
+        >
           <img
-            src={iceThaw}
-            alt="이 얼음을 땡! 할까요? 땡하면 성공으로 기록돼요."
-            className="w-full max-w-[420px] object-contain"
+            src={freeze}
+            alt="잠시 미루기"
+            className="h-18 w-18 object-contain"
           />
+          <p className="text-[18px] font-semibold">
+            이 얼음을 <span style={{ color: COLORS.primary }}>땡!</span> 할까요?
+          </p>
+          <p className="text-gray-400">땡하면 성공으로 기록돼요.</p>
         </div>
 
         {/* 버튼 */}
@@ -70,14 +78,14 @@ const IceConfirmSheet = ({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 rounded-full border border-blue-500 py-4 text-[16px] font-semibold text-blue-500"
+            className="flex-1 rounded-full border border-blue-500 py-3.5 text-[16px] font-semibold text-blue-500"
           >
             아니요
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="flex-1 rounded-full bg-blue-500 py-4 text-[16px] font-semibold text-white"
+            className="flex-1 rounded-full bg-blue-500 py-3.5 text-[16px] font-semibold text-white"
           >
             땡! 할래요
           </button>

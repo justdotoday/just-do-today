@@ -1,9 +1,10 @@
+/** 습관 수정 페이지. location.state.habit 으로 기존 데이터를 받아 폼에 pre-fill 후 수정 요청 */
 import { useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
-import { mapDaysToServer } from '../../api/utils';
-import { createHabit } from '../../api/habit';
-import type { CreateHabitPayload } from '../../types/habit.type';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { mapDaysToServer, mapDaysFromServer } from '../../api/utils';
+import { updateHabit } from '../../api/habit';
+import type { UpdateHabitPayload, Habit } from '../../types/habit.type';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
 import MonthlyDatePickerSheet from '../../components/shared/habit/MonthlyDatePickerSheet';
@@ -16,10 +17,24 @@ import {
   DAYS_FIRST_ROW,
   DAYS_SECOND_ROW,
 } from '../../constants/habitFormStyles';
+import { DEFAULT_CATEGORIES } from '../../constants/categories';
 import { COLORS } from '../../constants/colors';
+import type { CategoryItem } from '../../components/shared/habit/CategorySelector';
 
-const CreateHabit = () => {
+type LocationState = { habit: Habit };
+
+const EditHabit = () => {
   const navigate = useNavigate();
+  const { state } = useLocation() as { state: LocationState };
+  const habit = state?.habit;
+
+  // 기존 카테고리가 기본 목록에 없으면 추가 (유저 커스텀 카테고리 대응)
+  const initialCategories: CategoryItem[] = (() => {
+    if (!habit?.category) return DEFAULT_CATEGORIES;
+    const inDefaults = DEFAULT_CATEGORIES.some((c) => c.name === habit.category);
+    if (inDefaults) return DEFAULT_CATEGORIES;
+    return [...DEFAULT_CATEGORIES, { name: habit.category, icon: habit.emoji ?? undefined }];
+  })();
 
   const {
     name,
@@ -45,16 +60,23 @@ const CreateHabit = () => {
     setIsPublic,
     handleAddCategory,
     selectSingleDay,
-  } = useHabitForm();
+  } = useHabitForm({
+    initialCategories,
+    initialValues: {
+      name: habit?.name,
+      color: habit?.color ?? '#3B47B3',
+      selectedCategory: habit?.category ?? null,
+      frequency: habit?.frequency,
+      selectedDays: habit?.days ? mapDaysFromServer(habit.days) : [],
+      isPublic: false,
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
-  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(
-    null
-  );
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
 
-  // WEEKLY·CUSTOM은 요일 최소 1개 선택 필수
   const canSubmit =
     name.trim().length > 0 &&
     selectedCategory !== null &&
@@ -63,7 +85,7 @@ const CreateHabit = () => {
       selectedDays.length > 0);
 
   const handleSubmit = async () => {
-    if (!canSubmit || isLoading) return;
+    if (!canSubmit || isLoading || !habit) return;
 
     const selected = categories.find((c) => c.name === selectedCategory);
     if (!selected) {
@@ -71,35 +93,31 @@ const CreateHabit = () => {
       return;
     }
 
-    const payload: CreateHabitPayload = {
+    const payload: UpdateHabitPayload = {
       name: name.trim(),
       categoryName: selected.name,
       ...(selected.icon && { emoji: selected.icon }),
       frequency,
       ...(frequency === 'CUSTOM' && { days: mapDaysToServer(selectedDays) }),
       isPublic,
-      startDate: new Date().toISOString().split('T')[0],
       color: habitColor,
     };
 
     try {
       setIsLoading(true);
-      await createHabit(payload);
-      showToast.success('습관이 생성되었습니다!');
+      await updateHabit(habit.id, payload);
+      showToast.success('습관이 수정되었습니다!');
       navigate('/home');
     } catch (err: unknown) {
-      // 디버깅: 원인 확인용 (외부=백엔드/네트워크 vs 내부=프론트 로직)
       const msg =
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { status?: number; data?: unknown } }).response
           : null;
       const status = msg?.status;
       const body = msg?.data;
-      console.error('[습관 생성 실패]', { status, body, err });
+      console.error('[습관 수정 실패]', { status, body, err });
       const fallback =
-        status != null
-          ? `요청 실패 (${status})`
-          : '네트워크 또는 서버 연결 실패';
+        status != null ? `요청 실패 (${status})` : '네트워크 또는 서버 연결 실패';
       showToast.error(
         typeof body === 'object' && body != null && 'message' in body
           ? String((body as { message: unknown }).message)
@@ -113,20 +131,17 @@ const CreateHabit = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* 상단바 */}
-      <header className="sticky top-0 z-50 bg-white border-b border-zinc-100">
+      <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white">
         <div className="pt-[env(safe-area-inset-top)]" />
         <div className="relative flex h-14 items-center justify-center px-4">
           <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
             <IoChevronBack className="text-2xl text-zinc-900" />
           </button>
-          <h1 className="text-[16px] font-semibold text-zinc-950">
-            습관 생성하기
-          </h1>
+          <h1 className="text-[16px] font-semibold text-zinc-950">습관 수정하기</h1>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-[420px] px-4 pt-8 pb-32">
-        {/* 습관명 입력 필드 */}
         <HabitNameField
           value={name}
           onChange={setName}
@@ -134,7 +149,6 @@ const CreateHabit = () => {
           onColorChange={setHabitColor}
         />
 
-        {/* 카테고리 */}
         <section className="mt-10 space-y-4">
           <CategorySelector
             categories={categories}
@@ -144,7 +158,6 @@ const CreateHabit = () => {
           />
         </section>
 
-        {/* 빈도 */}
         <section className="mt-6 space-y-4">
           <HabitOptionsSection
             frequency={frequency}
@@ -173,7 +186,7 @@ const CreateHabit = () => {
         </section>
       </main>
 
-      {/* 습관 등록하기 버튼: 하단 고정 */}
+      {/* 수정하기 버튼: 하단 고정 */}
       <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
         <div className="mx-auto w-full max-w-[420px]">
           <button
@@ -185,12 +198,10 @@ const CreateHabit = () => {
                 : 'text-white active:scale-[0.98]'
             }`}
             style={
-              canSubmit && !isLoading
-                ? { backgroundColor: COLORS.primary }
-                : undefined
+              canSubmit && !isLoading ? { backgroundColor: COLORS.primary } : undefined
             }
           >
-            {isLoading ? '등록 중...' : '습관 등록하기'}
+            {isLoading ? '수정 중...' : '수정하기'}
           </button>
         </div>
       </div>
@@ -218,4 +229,4 @@ const CreateHabit = () => {
   );
 };
 
-export default CreateHabit;
+export default EditHabit;

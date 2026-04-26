@@ -1,8 +1,8 @@
 /** 홈 습관 리스트 UI. 목록·카테고리 묶음·체크 상태만 표시하고, 클릭은 콜백으로 전달. */
-import HeaderDate from './HeaderDate';
-import HabitSection from './HabitSection';
+import HeaderDate from '../../../../components/shared/home/home-list/HeaderDate';
+import HabitSection from '../../../../components/shared/home/home-list/HabitSection';
 import plusButton from '../../../../assets/buttons/plus-button.png';
-import type { Section } from './homeListUtils';
+import type { Section } from '../../../../components/shared/home/home-list/homeList.utils';
 
 const CONTENT_MAX_WIDTH_PX = 414;
 

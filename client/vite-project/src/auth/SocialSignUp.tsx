@@ -1,8 +1,7 @@
 import zaksimLogo from '../assets/zaksim-logo.png';
-import today from '../assets/today.png';
 import { motion } from 'framer-motion';
 import backGround from '../assets/backGround.svg';
-import kakaoLogin from '../assets/kakaoLogin.svg';
+import kakaoLogin from '../assets/kakaotalk_btn.png';
 
 const SocialSignUp = () => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -27,7 +26,7 @@ const SocialSignUp = () => {
 
       {/* content */}
       <div className="relative mx-auto flex min-h-screen w-full max-w-[420px] flex-col px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-        <div className="flex flex-1 flex-col items-center justify-center gap-6">
+        <div className="flex flex-1 flex-col items-center justify-center gap-3">
           <div className="relative">
             <motion.img
               src={zaksimLogo}
@@ -42,19 +41,23 @@ const SocialSignUp = () => {
               }}
             />
           </div>
-
-          <motion.img
-            src={today}
-            alt="오늘의 할 일"
-            className="w-[220px] max-w-full"
+          <motion.div
+            className="w-[220px] max-w-full text-white text-center drop-shadow-md"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.3 }}
-          />
+          >
+            <span className="">완벽한 하루보다, 계속되는 하루</span>
+          </motion.div>
         </div>
 
         {/* ✅ 버튼은 “묶어서” 하단에 고정 */}
-        <div className="mt-auto space-y-4 pb-10">
+        <motion.div
+          className="mt-auto space-y-4 pb-10"
+          initial={{ opacity: 0, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, duration: 0.3 }}
+        >
           {/* Kakao */}
           <button
             type="button"
@@ -64,22 +67,17 @@ const SocialSignUp = () => {
             <img
               src={kakaoLogin}
               alt="카카오로 시작하기"
-              className="h-[26px] w-auto"
+              className="h-[40px] w-auto"
               draggable={false}
             />
+            <span className="h-[26px] w-auto">카카오로 시작하기</span>
           </button>
 
           {/* 구글 */}
           <button
             type="button"
             onClick={handleGoogle}
-            className="
-              flex items-center justify-center gap-3
-              h-[58px] w-full
-              rounded-full bg-white
-              shadow-[0_12px_30px_rgba(0,0,0,0.18)]
-              active:scale-[0.98] transition-transform
-            "
+            className="flex items-center justify-center gap-1.5 h-[58px] w-full rounded-full bg-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] active:scale-[0.98] transition-transform"
           >
             {/* 구글 공식 컬러 G 로고 SVG */}
             <svg
@@ -104,11 +102,9 @@ const SocialSignUp = () => {
                 d="M43.611,20.083L43.611,20.083C43.611,20.083,43.611,20.083,43.611,20.083c0.251,1.267,0.389,2.575,0.389,3.917c0,11.045-8.955,20-20,20c-0.012,0-0.023,0-0.035,0l6.57-5.283C31.666,37.868,33.792,36.078,35.303,34h0.046c1.649-4.657,0.679-9.996-2.247-13.917H43.611z"
               />
             </svg>
-            <span className="text-[15px] font-semibold text-slate-800 font-['Pretendard']">
-              Google로 시작하기
-            </span>
+            <span className="h-[26px] w-auto">Google로 시작하기</span>
           </button>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

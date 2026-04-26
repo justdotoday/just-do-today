@@ -4,19 +4,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getHabits, deleteHabit, freezeHabit, toggleDone } from '../../api/habit';
 import { showToast } from '../../components/ui/toast/Toast';
 import CompletionSnackbar from '../../components/ui/toast/CompletionSnackbar';
-import HomeEmpty from './components/HomeEmpty';
-import HomeList from './components/homeList';
-import StatusBottomSheet from './components/homeList/StatusBottomSheet';
-import IceDatePickerSheet from './components/homeList/IceDatePickerSheet';
-import IceConfirmSheet from './components/homeList/IceConfirmSheet';
+import HomeEmpty from '../../components/shared/home/HomeEmpty';
+import HomeList from '../../components/shared/home/home-list';
+import StatusBottomSheet from '../../components/shared/home/home-list/bottom-sheet/StatusBottomSheet';
+import IceDatePickerSheet from '../../components/shared/home/home-list/bottom-sheet/IceDatePickerSheet';
+import IceConfirmSheet from '../../components/shared/home/home-list/bottom-sheet/IceConfirmSheet';
 import {
   habitsToSections,
   computeProgress,
   formatDateLabel,
   type Section,
   type HabitItem,
-} from './components/homeList/homeListUtils';
-import type { Habit } from '../../types/habitType';
+} from '../../components/shared/home/home-list/homeList.utils';
+import type { Habit } from '../../types/habit.type';
 
 type HomeViewState = { view?: 'list' | 'empty' };
 type HabitStatus = 'done' | 'heart' | 'freeze' | 'notDone';

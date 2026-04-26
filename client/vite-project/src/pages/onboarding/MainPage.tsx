@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import Onboarding from './components/Onboarding';
+import Onboarding from './Onboarding';
 import { useNavigate } from 'react-router-dom';
+import { COLORS } from '../../constants/colors';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -22,7 +23,8 @@ const MainPage = () => {
         <button
           type="button"
           onClick={() => navigate('/createHabit')}
-          className="mt-10 h-14 w-full max-w-[320px] rounded-full bg-[#2563EB] font-semibold text-white transition active:scale-[0.98]"
+          className="mt-10 h-14 w-full max-w-[420px] rounded-full font-semibold text-white transition active:scale-[0.98]"
+          style={{ backgroundColor: COLORS.primary }}
         >
           습관 등록하기
         </button>
