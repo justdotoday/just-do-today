@@ -37,6 +37,7 @@
         <result property="frequency" column="frequency"/>
         <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.Enum.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
+        <result property="todayStatus" column="today_status"/>
 
         <collection property="days" ofType="java.lang.Integer">
             <result column="day_of_week"/>
@@ -55,11 +56,13 @@
             uh.frequency,
             uh.status,
             uh.frozen_until,
-            uhs.day_of_week
+            uhs.day_of_week,
+            hh.status as today_status
         FROM user_habit uh
         LEFT JOIN category_user cu ON uh.category_user_id = cu.id
         LEFT JOIN category c ON cu.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
+        LEFT JOIN habit_history hh ON uh.id = hh.user_habit_id AND hh.check_date = CURDATE()
         WHERE uh.member_id = #{memberId}
         ORDER BY uh.id DESC, uhs.day_of_week ASC
     </select>
@@ -76,11 +79,13 @@
             uh.frequency,
             uh.status,
             uh.frozen_until,
-            uhs.day_of_week
+            uhs.day_of_week,
+            hh.status as today_status
         FROM user_habit uh
         LEFT JOIN category_user cu ON uh.category_user_id = cu.id
         LEFT JOIN category c ON cu.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
+        LEFT JOIN habit_history hh ON uh.id = hh.user_habit_id AND hh.check_date = CURDATE()
         WHERE uh.id = #{userHabitId}
     </select>
 
