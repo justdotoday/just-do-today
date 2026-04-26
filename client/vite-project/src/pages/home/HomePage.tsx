@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getHabits, deleteHabit, freezeHabit, toggleDone } from '../../api/habit';
+import { createDailyLog } from '../../api/dailyLog';
 import { showToast } from '../../components/ui/toast/Toast';
 import CompletionSnackbar from '../../components/ui/toast/CompletionSnackbar';
 import HomeEmpty from '../../components/shared/home/HomeEmpty';
@@ -9,6 +10,7 @@ import HomeList from '../../components/shared/home/home-list';
 import StatusBottomSheet from '../../components/shared/home/home-list/bottom-sheet/StatusBottomSheet';
 import IceDatePickerSheet from '../../components/shared/home/home-list/bottom-sheet/IceDatePickerSheet';
 import IceConfirmSheet from '../../components/shared/home/home-list/bottom-sheet/IceConfirmSheet';
+import DailyLogBottomSheet from '../../components/shared/home/home-list/bottom-sheet/DailyLogBottomSheet';
 import {
   habitsToSections,
   computeProgress,
@@ -35,6 +37,7 @@ const HomePage = () => {
   );
   const [completionSnackbarVisible, setCompletionSnackbarVisible] =
     useState(false);
+  const [isDailyLogOpen, setIsDailyLogOpen] = useState(false);
 
   // API — 오늘 날짜 기준 습관 목록 조회
   const fetchHabits = useCallback(async () => {
@@ -104,7 +107,10 @@ const HomePage = () => {
       }
 
       updateItem(id, (item) => {
-        if (item.status !== 'done') setCompletionSnackbarVisible(true);
+        if (item.status !== 'done') {
+          setActiveItemId(id);
+          setCompletionSnackbarVisible(true);
+        }
         return { ...item, status: item.status === 'done' ? 'notDone' : 'done' };
       });
     },
@@ -260,8 +266,9 @@ const HomePage = () => {
         onSelectStatus={handleSelectStatus}
         onIceClick={handleIceClick}
         onEdit={() => {
+          const habit = habits.find((h) => String(h.id) === activeItemId);
           setIsStatusSheetOpen(false);
-          showToast.default('수정 기능 준비 중이에요');
+          navigate('/editHabit', { state: { habit } });
         }}
         onDelete={handleDelete}
         onHabitsRefetch={fetchHabits}
@@ -284,10 +291,31 @@ const HomePage = () => {
         onConfirm={handleIceThawConfirm}
       />
 
+      <DailyLogBottomSheet
+        open={isDailyLogOpen}
+        onClose={() => setIsDailyLogOpen(false)}
+        onFinish={async ({ mood, note }) => {
+          const userHabitId = activeItem?.userHabitId;
+          if (userHabitId == null) return;
+          const logDate = new Date().toISOString().split('T')[0];
+          try {
+            await createDailyLog({ userHabitId, logDate, mood, note });
+            showToast.success('기록이 저장됐어요!');
+          } catch {
+            showToast.error('기록 저장에 실패했어요');
+          } finally {
+            setIsDailyLogOpen(false);
+          }
+        }}
+      />
+
       <CompletionSnackbar
         visible={completionSnackbarVisible}
         onDismiss={() => setCompletionSnackbarVisible(false)}
-        onRecordClick={() => {}}
+        onRecordClick={() => {
+            setCompletionSnackbarVisible(false);
+            setIsDailyLogOpen(true);
+          }}
       />
     </>
   );
