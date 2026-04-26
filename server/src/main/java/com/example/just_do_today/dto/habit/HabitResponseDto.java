@@ -19,4 +19,5 @@ public class HabitResponseDto {
     private List<Integer> days;
     private UserHabitStatus status;
     private LocalDate frozenUntil;
+    private String todayStatus; // 오늘 날짜의 habit_history.status (DONE / HEART / null)
 }
