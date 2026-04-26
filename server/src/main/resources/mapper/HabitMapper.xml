@@ -62,7 +62,7 @@
         LEFT JOIN category_user cu ON uh.category_user_id = cu.id
         LEFT JOIN category c ON cu.category_id = c.id
         LEFT JOIN user_habit_schedule uhs ON uh.id = uhs.user_habit_id
-        LEFT JOIN habit_history hh ON uh.id = hh.user_habit_id AND hh.check_date = CURDATE()
+        LEFT JOIN habit_history hh ON uh.id = hh.user_habit_id AND hh.check_date = #{date}
         WHERE uh.member_id = #{memberId}
         ORDER BY uh.id DESC, uhs.day_of_week ASC
     </select>
@@ -181,5 +181,15 @@
             updated_at = NOW()
         WHERE id = #{id}
     </update>
+
+    <select id="findDoneHistoryDates" resultType="java.time.LocalDate">
+        SELECT check_date
+        FROM habit_history
+        WHERE user_habit_id = #{userHabitId} AND status = 'DONE'
+        ORDER BY check_date DESC
+    </select>
+
+
+
 
 </mapper>

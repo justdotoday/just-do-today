@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,10 +27,13 @@ public class HabitController {
         return ResponseEntity.ok("습관 생성이 완료되었습니다!");
     }
 
-    // 유저별 습관 조회
+    // 유저별 습관 조회 (date 기준 habit_history status 포함, 미전달 시 오늘 날짜 기본값)
     @GetMapping
-    public ResponseEntity<List<HabitResponseDto>> getHabitList(@AuthenticationPrincipal UserPrincipal principal) {
-        List<HabitResponseDto> habits = habitService.getHabitList(principal.getMemberId());
+    public ResponseEntity<List<HabitResponseDto>> getHabitList(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam(required = false) LocalDate date) {
+        LocalDate targetDate = (date != null) ? date : LocalDate.now();
+        List<HabitResponseDto> habits = habitService.getHabitList(principal.getMemberId(), targetDate);
         return ResponseEntity.ok(habits);
     }
 

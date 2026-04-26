@@ -1,25 +1,25 @@
-//package com.example.just_do_today.controller.member;
-//
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//@RestController
-//public class MemberController {
-//
-//
-//    public String getTest() {
-//        return "TEST Controller 연결";
-//    }
-//
-//    @GetMapping("/test/json")
-//    public Map<String, String> getTestJson() {
-//        Map<String, String> res = new HashMap<>();
-//        res.put("status", "success");
-//        res.put("message", "TEST JSON Response");
-//        return res;
-//    }
-//}
+package com.example.just_do_today.controller.member;
+
+import com.example.just_do_today.dto.member.MemberStatusResDto;
+import com.example.just_do_today.global.security.UserPrincipal;
+import com.example.just_do_today.service.member.MemberService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/members")
+@RequiredArgsConstructor
+public class MemberController {
+    private final MemberService memberService;
+
+    // 유저 하트/프리즈 잔여량 조회
+    @GetMapping("/todaystatus")
+    public ResponseEntity<MemberStatusResDto> getMemberStatus(
+            @AuthenticationPrincipal UserPrincipal principal){
+        return ResponseEntity.ok(memberService.getMemberStatus(principal.getMemberId()));
+    }
+}

@@ -45,6 +45,19 @@ public class UserHabitController {
         }
     }
 
+    // 땡 (복구) - 약속 날짜에 프리즈 해제
+    @PostMapping("/{userHabitId}/thaw")
+    public ResponseEntity<String> thawHabit(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long userHabitId) {
+        try {
+            userHabitService.thawHabit(principal.getMemberId(), userHabitId);
+            return ResponseEntity.ok("프리즈가 해제되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     // 프리즈 사용/취소 토글
     @PostMapping("/{userHabitId}/freeze")
     public ResponseEntity<String> toggleFreeze(

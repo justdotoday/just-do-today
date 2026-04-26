@@ -2,6 +2,7 @@ package com.example.just_do_today.service.member;
 
 import com.example.just_do_today.domain.Member;
 import com.example.just_do_today.dto.auth.LoginRequest;
+import com.example.just_do_today.dto.member.MemberStatusResDto;
 import com.example.just_do_today.dto.member.constant.Role;
 import com.example.just_do_today.global.exception.MemberNotFoundException;
 import com.example.just_do_today.global.exception.NotEnoughFreezesException;
@@ -95,5 +96,12 @@ public class MemberService {
         }
         member.setFreezes(member.getFreezes() + 1);
         memberMapper.updateMemberFreezes(member);
+    }
+
+    // 유저 하트/프리즈 잔여량 조회
+    public MemberStatusResDto getMemberStatus(Long memberId){
+        Member member = memberMapper.findById(memberId);
+        // Member → DTO 변환해서 반환
+        return new MemberStatusResDto(member.getFreezes(),member.getHearts());
     }
 }
