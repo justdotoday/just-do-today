@@ -39,7 +39,7 @@ const MainPage = () => {
           }}
           onSkip={() => {
             setIsOnboardingOpen(false);
-            navigate('/home/empty', { replace: true });
+            navigate('/home', { replace: true });
           }}
           onExit={() => {
             setIsOnboardingOpen(false);

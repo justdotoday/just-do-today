@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { mapDaysToServer } from '../../api/utils';
 import { createHabit } from '../../api/habit';
+import { getUserCategories } from '../../api/category';
 import type { CreateHabitPayload } from '../../types/habit.type';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
@@ -20,6 +22,20 @@ import { COLORS } from '../../constants/colors';
 
 const CreateHabit = () => {
   const navigate = useNavigate();
+
+  const { data: serverCategories } = useQuery({
+    queryKey: ['userCategories'],
+    queryFn: getUserCategories,
+  });
+
+  const baseCategories = useMemo(
+    () =>
+      (serverCategories ?? []).map((c) => ({
+        name: c.categoryName,
+        icon: c.emoji ?? undefined,
+      })),
+    [serverCategories]
+  );
 
   const {
     name,
@@ -45,7 +61,7 @@ const CreateHabit = () => {
     setIsPublic,
     handleAddCategory,
     selectSingleDay,
-  } = useHabitForm();
+  } = useHabitForm({ baseCategories });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -116,7 +132,7 @@ const CreateHabit = () => {
       <header className="sticky top-0 z-50 bg-white border-b border-zinc-100">
         <div className="pt-[env(safe-area-inset-top)]" />
         <div className="relative flex h-14 items-center justify-center px-4">
-          <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
+          <button onClick={() => navigate('/home')} className="absolute left-2 p-2">
             <IoChevronBack className="text-2xl text-zinc-900" />
           </button>
           <h1 className="text-[16px] font-semibold text-zinc-950">

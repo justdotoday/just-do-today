@@ -1,9 +1,11 @@
 /** 습관 수정 페이지. location.state.habit 으로 기존 데이터를 받아 폼에 pre-fill 후 수정 요청 */
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IoChevronBack } from 'react-icons/io5';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { mapDaysToServer, mapDaysFromServer } from '../../api/utils';
 import { updateHabit } from '../../api/habit';
+import { getUserCategories } from '../../api/category';
 import type { UpdateHabitPayload, Habit } from '../../types/habit.type';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
@@ -17,9 +19,7 @@ import {
   DAYS_FIRST_ROW,
   DAYS_SECOND_ROW,
 } from '../../constants/habitFormStyles';
-import { DEFAULT_CATEGORIES } from '../../constants/categories';
-import { COLORS } from '../../constants/colors';
-import type { CategoryItem } from '../../components/shared/habit/CategorySelector';
+import { COLORS, colorToHex } from '../../constants/colors';
 
 type LocationState = { habit: Habit };
 
@@ -28,13 +28,19 @@ const EditHabit = () => {
   const { state } = useLocation() as { state: LocationState };
   const habit = state?.habit;
 
-  // 기존 카테고리가 기본 목록에 없으면 추가 (유저 커스텀 카테고리 대응)
-  const initialCategories: CategoryItem[] = (() => {
-    if (!habit?.category) return DEFAULT_CATEGORIES;
-    const inDefaults = DEFAULT_CATEGORIES.some((c) => c.name === habit.category);
-    if (inDefaults) return DEFAULT_CATEGORIES;
-    return [...DEFAULT_CATEGORIES, { name: habit.category, icon: habit.emoji ?? undefined }];
-  })();
+  const { data: serverCategories } = useQuery({
+    queryKey: ['userCategories'],
+    queryFn: getUserCategories,
+  });
+
+  const baseCategories = useMemo(
+    () =>
+      (serverCategories ?? []).map((c) => ({
+        name: c.categoryName,
+        icon: c.emoji ?? undefined,
+      })),
+    [serverCategories]
+  );
 
   const {
     name,
@@ -61,10 +67,10 @@ const EditHabit = () => {
     handleAddCategory,
     selectSingleDay,
   } = useHabitForm({
-    initialCategories,
+    baseCategories,
     initialValues: {
       name: habit?.name,
-      color: habit?.color ?? '#3B47B3',
+      color: colorToHex(habit?.color),
       selectedCategory: habit?.category ?? null,
       frequency: habit?.frequency,
       selectedDays: habit?.days ? mapDaysFromServer(habit.days) : [],
@@ -134,7 +140,7 @@ const EditHabit = () => {
       <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white">
         <div className="pt-[env(safe-area-inset-top)]" />
         <div className="relative flex h-14 items-center justify-center px-4">
-          <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
+          <button onClick={() => navigate('/home')} className="absolute left-2 p-2">
             <IoChevronBack className="text-2xl text-zinc-900" />
           </button>
           <h1 className="text-[16px] font-semibold text-zinc-950">습관 수정하기</h1>
