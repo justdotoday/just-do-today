@@ -1,7 +1,14 @@
 /** 홈 페이지. 습관 조회·리스트/빈 화면 분기, 섹션·바텀시트·스낵바·삭제 담당. */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getHabits, deleteHabit, freezeHabit, toggleDone } from '../../api/habit';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  getHabits,
+  deleteHabit,
+  freezeHabit,
+  toggleDone,
+} from '../../api/habit';
+import { createDailyLog } from '../../api/dailyLog';
 import { showToast } from '../../components/ui/toast/Toast';
 import CompletionSnackbar from '../../components/ui/toast/CompletionSnackbar';
 import HomeEmpty from '../../components/shared/home/HomeEmpty';
@@ -9,6 +16,7 @@ import HomeList from '../../components/shared/home/home-list';
 import StatusBottomSheet from '../../components/shared/home/home-list/bottom-sheet/StatusBottomSheet';
 import IceDatePickerSheet from '../../components/shared/home/home-list/bottom-sheet/IceDatePickerSheet';
 import IceConfirmSheet from '../../components/shared/home/home-list/bottom-sheet/IceConfirmSheet';
+import DailyLogBottomSheet from '../../components/shared/home/home-list/bottom-sheet/DailyLogBottomSheet';
 import {
   habitsToSections,
   computeProgress,
@@ -16,17 +24,18 @@ import {
   type Section,
   type HabitItem,
 } from '../../components/shared/home/home-list/homeList.utils';
-import type { Habit } from '../../types/habit.type';
 
 type HomeViewState = { view?: 'list' | 'empty' };
 type HabitStatus = 'done' | 'heart' | 'freeze' | 'notDone';
 
+const today = new Date().toISOString().split('T')[0];
+
 const HomePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const state = (location.state ?? {}) as HomeViewState;
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [loading, setLoading] = useState(true);
+
   const [sections, setSections] = useState<Section[]>([]);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [isStatusSheetOpen, setIsStatusSheetOpen] = useState(false);
@@ -35,29 +44,38 @@ const HomePage = () => {
   );
   const [completionSnackbarVisible, setCompletionSnackbarVisible] =
     useState(false);
+  const [isDailyLogOpen, setIsDailyLogOpen] = useState(false);
 
-  // API — 오늘 날짜 기준 습관 목록 조회
-  const fetchHabits = useCallback(async () => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const data = await getHabits({ date: today });
-      setHabits(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // 습관 목록 조회
+  const { data: habits, isLoading } = useQuery({
+    queryKey: ['habits', today],
+    queryFn: () => getHabits({ date: today }),
+  });
 
-  // 마운트 시 습관 목록 fetch
-  useEffect(() => {
-    fetchHabits();
-  }, [fetchHabits]);
+  const [prevHabits, setPrevHabits] = useState<typeof habits>(undefined);
 
-  // habits 변경 시 카테고리별 섹션 동기화
-  useEffect(() => {
-    setSections(habitsToSections(habits));
-  }, [habits]);
+  // habits 변경 시 카테고리별 섹션 동기화 (렌더 중 setState — effect보다 안전)
+  if (prevHabits !== habits) {
+    setPrevHabits(habits);
+    setSections(habitsToSections(habits ?? []));
+  }
+
+  // 삭제 뮤테이션
+  const deleteMutation = useMutation({
+    mutationFn: deleteHabit,
+    onSuccess: () => {
+      showToast.success('습관이 삭제되었어요');
+      queryClient.invalidateQueries({ queryKey: ['habits'] });
+    },
+    onError: () => showToast.error('삭제에 실패했어요'),
+  });
+
+  // 기록 저장 뮤테이션
+  const dailyLogMutation = useMutation({
+    mutationFn: createDailyLog,
+    onSuccess: () => showToast.success('기록이 저장됐어요!'),
+    onError: () => showToast.error('기록 저장에 실패했어요'),
+  });
 
   // 섹션 내 특정 id 아이템만 갱신(완료 토글·상태 변경·선택)
   const updateItem = useCallback(
@@ -88,7 +106,7 @@ const HomePage = () => {
     );
   }, []);
 
-  // 완료 토글 — API 호출 후 성공 시 UI 반영, 실패 시 에러 토스트
+  // 완료 토글 habit_history api 추후 적용
   const handleToggleDone = useCallback(
     async (id: string) => {
       const item = sections.flatMap((s) => s.items).find((i) => i.id === id);
@@ -103,10 +121,17 @@ const HomePage = () => {
         }
       }
 
-      updateItem(id, (item) => {
-        if (item.status !== 'done') setCompletionSnackbarVisible(true);
-        return { ...item, status: item.status === 'done' ? 'notDone' : 'done' };
-      });
+      const currentItem = sections
+        .flatMap((s) => s.items)
+        .find((i) => i.id === id);
+      if (currentItem?.status !== 'done') {
+        setActiveItemId(id);
+        setCompletionSnackbarVisible(true);
+      }
+      updateItem(id, (item) => ({
+        ...item,
+        status: item.status === 'done' ? 'notDone' : 'done',
+      }));
     },
     [sections, updateItem]
   );
@@ -117,7 +142,7 @@ const HomePage = () => {
     setIsStatusSheetOpen(true);
   }, []);
 
-  // 바텀시트에서 상태 선택(완료/쉬어가기) → UI 반영 후 시트 닫기
+  // 바텀시트에서 상태 선택(하트/프리즈)
   const handleSelectStatus = useCallback(
     (status: HabitStatus) => {
       if (!activeItemId) return;
@@ -133,7 +158,7 @@ const HomePage = () => {
     setIceStep('datePicker');
   }, []);
 
-  // 날짜 선택 완료 → 즉시 freeze API 호출 후 상태 반영
+  // 날짜 선택 완료 → freeze API 호출 예정
   const handleIceDateSelect = useCallback(
     async (date: Date) => {
       if (!activeItemId) return;
@@ -143,18 +168,20 @@ const HomePage = () => {
         .find((i) => i.id === activeItemId);
       const userHabitId = activeItem?.userHabitId;
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
       const postponeDays = Math.round(
-        (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+        (date.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24)
       );
 
       if (userHabitId != null) {
         try {
           await freezeHabit(userHabitId, postponeDays);
         } catch (err) {
-          const data = (err as { response?: { data?: unknown } })?.response?.data;
-          const message = typeof data === 'string' ? data : '얼음 사용에 실패했어요';
+          const data = (err as { response?: { data?: unknown } })?.response
+            ?.data;
+          const message =
+            typeof data === 'string' ? data : '프리즈 실패했어요';
           showToast.error(message);
           return;
         }
@@ -167,8 +194,9 @@ const HomePage = () => {
       }));
       setIceStep(null);
       showToast.success('잠시 미뤘어요 🧊');
+      queryClient.invalidateQueries({ queryKey: ['habits'] });
     },
-    [activeItemId, sections, updateItem]
+    [activeItemId, sections, updateItem, queryClient]
   );
 
   // 얼음 아이콘 클릭 → thaw 확인 시트 열기
@@ -186,22 +214,9 @@ const HomePage = () => {
   }, [activeItemId, updateItem]);
 
   // 얼음 플로우 전체 닫기
-  const handleIceClose = useCallback(() => {
-    setIceStep(null);
-  }, []);
+  const handleIceClose = useCallback(() => setIceStep(null), []);
 
-  // 삭제 API 호출 후 토스트, 실패 시 에러 토스트
-  const handleDelete = useCallback(async (habitId: string) => {
-    try {
-      await deleteHabit(habitId);
-      showToast.success('습관이 삭제되었어요');
-    } catch {
-      showToast.error('삭제에 실패했어요');
-      throw new Error('delete failed');
-    }
-  }, []);
-
-  // 바텀시트에 넘길 현재 선택 습관(제목·id)
+  // 바텀시트에 넘길 현재 선택 습관
   const activeItem = useMemo(
     () =>
       sections.flatMap((s) => s.items).find((i) => i.id === activeItemId) ??
@@ -215,10 +230,9 @@ const HomePage = () => {
     [sections]
   );
 
-  // 로딩/빈 목록/empty 뷰 분기
-  if (loading) return <div>로딩중...</div>;
+  if (isLoading) return <div>로딩중...</div>;
 
-  if (habits.length === 0) {
+  if (!habits?.length || state.view === 'empty') {
     return (
       <div className="px-4">
         <HomeEmpty />
@@ -226,15 +240,6 @@ const HomePage = () => {
     );
   }
 
-  if (state.view === 'empty') {
-    return (
-      <div className="px-4">
-        <HomeEmpty />
-      </div>
-    );
-  }
-
-  // 리스트 + 바텀시트 + 완료 스낵바
   return (
     <>
       <div className="px-4">
@@ -260,14 +265,16 @@ const HomePage = () => {
         onSelectStatus={handleSelectStatus}
         onIceClick={handleIceClick}
         onEdit={() => {
+          const habit = habits?.find((h) => String(h.id) === activeItemId);
           setIsStatusSheetOpen(false);
-          showToast.default('수정 기능 준비 중이에요');
+          navigate('/editHabit', { state: { habit } });
         }}
-        onDelete={handleDelete}
-        onHabitsRefetch={fetchHabits}
+        onDelete={(habitId) => deleteMutation.mutateAsync(habitId)}
+        onHabitsRefetch={() =>
+          queryClient.invalidateQueries({ queryKey: ['habits'] })
+        }
       />
 
-      {/* 얼음 날짜 선택 */}
       <IceDatePickerSheet
         open={iceStep === 'datePicker'}
         habitTitle={activeItem?.title}
@@ -275,7 +282,6 @@ const HomePage = () => {
         onSelectDate={handleIceDateSelect}
       />
 
-      {/* 얼음 해제 확인 */}
       <IceConfirmSheet
         open={iceStep === 'thawConfirm'}
         habitTitle={activeItem?.title}
@@ -284,10 +290,30 @@ const HomePage = () => {
         onConfirm={handleIceThawConfirm}
       />
 
+      <DailyLogBottomSheet
+        open={isDailyLogOpen}
+        onClose={() => setIsDailyLogOpen(false)}
+        onFinish={async ({ mood, note }) => {
+          const userHabitId = activeItem?.userHabitId;
+          if (userHabitId == null) return;
+          const logDate = new Date().toISOString().split('T')[0];
+          await dailyLogMutation.mutateAsync({
+            userHabitId,
+            logDate,
+            mood,
+            note,
+          });
+          setIsDailyLogOpen(false);
+        }}
+      />
+
       <CompletionSnackbar
         visible={completionSnackbarVisible}
         onDismiss={() => setCompletionSnackbarVisible(false)}
-        onRecordClick={() => {}}
+        onRecordClick={() => {
+          setCompletionSnackbarVisible(false);
+          setIsDailyLogOpen(true);
+        }}
       />
     </>
   );

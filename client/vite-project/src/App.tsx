@@ -9,7 +9,6 @@ import HabitPage from './pages/habit/HabitPage';
 import Layout from './components/shared/layout/Layout';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/home/HomePage';
-import HomeEmpty from './components/shared/home/HomeEmpty';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
 
@@ -49,7 +48,6 @@ export default function App() {
           <Route path="/habit" element={<ProtectedRoute><HabitPage /></ProtectedRoute>} />
           <Route path="/social" element={<ProtectedRoute><SocialPage /></ProtectedRoute>} />
           <Route path="/my" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-          <Route path="/home/empty" element={<ProtectedRoute><HomeEmpty /></ProtectedRoute>} />
           <Route path="/home/list" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/createHabit" element={<ProtectedRoute><CreateHabit /></ProtectedRoute>} />
           <Route path="/editHabit" element={<ProtectedRoute><EditHabit /></ProtectedRoute>} />

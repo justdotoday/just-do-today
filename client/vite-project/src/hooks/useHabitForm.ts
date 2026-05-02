@@ -1,5 +1,5 @@
 // 습관 폼 공통 상태·로직 훅 — 온보딩(Step2/3)과 CreateHabit이 공유
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { CategoryItem } from '../components/shared/habit/CategorySelector';
 import { showToast } from '../components/ui/toast/Toast';
 
@@ -15,17 +15,21 @@ type InitialValues = {
 };
 
 type UseHabitFormOptions = {
-  initialCategories?: CategoryItem[];
+  baseCategories?: CategoryItem[];
   initialValues?: InitialValues;
 };
 
 export const useHabitForm = ({
-  initialCategories = [],
+  baseCategories = [],
   initialValues = {},
 }: UseHabitFormOptions = {}) => {
   const [name, setName] = useState(initialValues.name ?? '');
   const [habitColor, setHabitColor] = useState(initialValues.color ?? '#3B47B3');
-  const [categories, setCategories] = useState<CategoryItem[]>(initialCategories);
+  const [extraCategories, setExtraCategories] = useState<CategoryItem[]>([]);
+  const categories = useMemo(
+    () => [...baseCategories, ...extraCategories],
+    [baseCategories, extraCategories]
+  );
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     initialValues.selectedCategory ?? null
   );
@@ -60,7 +64,7 @@ export const useHabitForm = ({
         showToast.default('이미 있는 카테고리예요');
         setSelectedCategory(trimmed);
       } else {
-        setCategories((prev) => [
+        setExtraCategories((prev) => [
           ...prev,
           { name: trimmed, icon: emoji ?? undefined },
         ]);
