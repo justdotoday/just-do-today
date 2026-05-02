@@ -168,7 +168,7 @@
         DELETE FROM daily_log WHERE user_habit_id = #{userHabitId}
     </delete>
 
-    <!--습관 수정-->
+    <!--습관 수정 (startDate null이면 기존 값 유지)-->
     <update id="updateUserHabit">
         UPDATE user_habit
         SET
@@ -176,7 +176,9 @@
             category_user_id = #{categoryUserId},
             color = #{color},
             frequency = #{frequency},
-            start_date = #{startDate},
+            <if test="startDate != null">
+                start_date = #{startDate},
+            </if>
             is_public = CASE WHEN #{isPublic} THEN '1' ELSE '0' END,
             updated_at = NOW()
         WHERE id = #{id}
