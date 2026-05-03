@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import DragHandle from '../../../../ui/DragHandle';
 import freeze from '../../../../../assets/bottomSheet/freeze.svg';
 import heart from '../../../../../assets/bottomSheet/skipheart.svg';
+import { useTodayStatus } from '../../../../../hooks/useTodayStatus';
 
 /** 바텀시트 props: 열림 여부, 제목, 습관 id, 콜백들 */
 type Props = {
@@ -20,12 +21,6 @@ type Props = {
   onHabitsRefetch?: () => void | Promise<void>;
 };
 
-// 임시
-const freezeCount = 4;
-const heartCount = 5;
-const isIceDisabled = (freezeCount ?? 0) <= 0;
-const isHeartDisabled = (heartCount ?? 0) <= 0;
-
 const StatusBottomSheet = ({
   open,
   title,
@@ -37,6 +32,11 @@ const StatusBottomSheet = ({
   onDelete,
   onHabitsRefetch,
 }: Props) => {
+  const todayStatus = useTodayStatus(open);
+  const freezeCount = todayStatus?.freeze ?? 0;
+  const heartCount = todayStatus?.heart ?? 0;
+  const isIceDisabled = freezeCount <= 0;
+  const isHeartDisabled = heartCount <= 0;
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   /** 삭제 실행 후 refetch·시트 닫기, 실패 시 토스트는 부모 onDelete에서 처리 */

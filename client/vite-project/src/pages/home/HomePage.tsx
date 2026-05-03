@@ -6,6 +6,7 @@ import {
   getHabits,
   deleteHabit,
   freezeHabit,
+  thawHabit,
   toggleDone,
 } from '../../api/habit';
 import { createDailyLog } from '../../api/dailyLog';
@@ -205,13 +206,25 @@ const HomePage = () => {
     setIceStep('thawConfirm');
   }, []);
 
-  // thaw 확인 → 상태를 notDone으로 복구
-  const handleIceThawConfirm = useCallback(() => {
+  // thaw 확인 → API 호출 후 habits 재조회
+  const handleIceThawConfirm = useCallback(async () => {
     if (!activeItemId) return;
-    updateItem(activeItemId, (item) => ({ ...item, status: 'notDone' }));
+    const activeItem = sections.flatMap((s) => s.items).find((i) => i.id === activeItemId);
+    const userHabitId = activeItem?.userHabitId;
+    if (userHabitId != null) {
+      try {
+        await thawHabit(userHabitId);
+      } catch (err) {
+        const data = (err as { response?: { data?: unknown } })?.response?.data;
+        const message = typeof data === 'string' ? data : '프리즈 해제에 실패했어요';
+        showToast.error(message);
+        return;
+      }
+    }
     setIceStep(null);
     showToast.success('얼음을 땡! 했어요 🔥');
-  }, [activeItemId, updateItem]);
+    queryClient.invalidateQueries({ queryKey: ['habits'] });
+  }, [activeItemId, sections, queryClient]);
 
   // 얼음 플로우 전체 닫기
   const handleIceClose = useCallback(() => setIceStep(null), []);
