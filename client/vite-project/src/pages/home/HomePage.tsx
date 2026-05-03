@@ -8,6 +8,7 @@ import {
   freezeHabit,
   thawHabit,
   toggleDone,
+  toggleHeart,
 } from '../../api/habit';
 import { createDailyLog } from '../../api/dailyLog';
 import { showToast } from '../../components/ui/toast/Toast';
@@ -107,7 +108,7 @@ const HomePage = () => {
     );
   }, []);
 
-  // 완료 토글 habit_history api 추후 적용
+  // 완료 토글
   const handleToggleDone = useCallback(
     async (id: string) => {
       const item = sections.flatMap((s) => s.items).find((i) => i.id === id);
@@ -143,14 +144,29 @@ const HomePage = () => {
     setIsStatusSheetOpen(true);
   }, []);
 
-  // 바텀시트에서 상태 선택(하트/프리즈)
+  // 바텀시트에서 하트 선택 → API 호출
   const handleSelectStatus = useCallback(
-    (status: HabitStatus) => {
+    async (status: HabitStatus) => {
       if (!activeItemId) return;
+      if (status === 'heart') {
+        const activeItem = sections.flatMap((s) => s.items).find((i) => i.id === activeItemId);
+        const userHabitId = activeItem?.userHabitId;
+        if (userHabitId != null) {
+          try {
+            await toggleHeart(userHabitId);
+          } catch (err) {
+            const data = (err as { response?: { data?: unknown } })?.response?.data;
+            const message = typeof data === 'string' ? data : '하트 사용에 실패했어요';
+            showToast.error(message);
+            return;
+          }
+        }
+        queryClient.invalidateQueries({ queryKey: ['habits'] });
+      }
       updateItem(activeItemId, (item) => ({ ...item, status }));
       setIsStatusSheetOpen(false);
     },
-    [activeItemId, updateItem]
+    [activeItemId, sections, updateItem, queryClient]
   );
 
   // 얼음 버튼 클릭 → 상태 시트 닫고 날짜 선택으로 진입
@@ -181,8 +197,7 @@ const HomePage = () => {
         } catch (err) {
           const data = (err as { response?: { data?: unknown } })?.response
             ?.data;
-          const message =
-            typeof data === 'string' ? data : '프리즈 실패했어요';
+          const message = typeof data === 'string' ? data : '프리즈 실패했어요';
           showToast.error(message);
           return;
         }
@@ -209,14 +224,17 @@ const HomePage = () => {
   // thaw 확인 → API 호출 후 habits 재조회
   const handleIceThawConfirm = useCallback(async () => {
     if (!activeItemId) return;
-    const activeItem = sections.flatMap((s) => s.items).find((i) => i.id === activeItemId);
+    const activeItem = sections
+      .flatMap((s) => s.items)
+      .find((i) => i.id === activeItemId);
     const userHabitId = activeItem?.userHabitId;
     if (userHabitId != null) {
       try {
         await thawHabit(userHabitId);
       } catch (err) {
         const data = (err as { response?: { data?: unknown } })?.response?.data;
-        const message = typeof data === 'string' ? data : '프리즈 해제에 실패했어요';
+        const message =
+          typeof data === 'string' ? data : '프리즈 해제에 실패했어요';
         showToast.error(message);
         return;
       }

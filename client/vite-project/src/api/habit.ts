@@ -83,3 +83,8 @@ export const toggleDone = async (userHabitId: number): Promise<void> => {
 export const thawHabit = async (userHabitId: number): Promise<void> => {
   await api.post(`/api/user-habits/${userHabitId}/thaw`);
 };
+
+// 하트 사용 토글 (POST /api/user-habits/:userHabitId/heart)
+export const toggleHeart = async (userHabitId: number): Promise<void> => {
+  await api.post(`/api/user-habits/${userHabitId}/heart`);
+};
