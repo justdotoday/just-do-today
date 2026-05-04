@@ -1,8 +1,10 @@
 package com.example.just_do_today.mapper.category;
 
 import com.example.just_do_today.domain.Habit.CategoryUser;
+import com.example.just_do_today.dto.userCategory.CategoryManageResDto;
 import com.example.just_do_today.dto.userCategory.UserCategoryResDto;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -40,4 +42,19 @@ public interface CategoryUserMapper {
             @Result(property = "emoji", column = "emoji")
     })
     List<UserCategoryResDto>findAllWithCategoryByMemberId(Long memberId);
+
+    // 카테고리 관리 화면용 목록 (습관 수 포함) - XML로 작성
+    List<CategoryManageResDto> findAllWithCountByMemberId(Long memberId);
+
+    // 카테고리 이름/이모지 수정
+    @Update("""
+    UPDATE category_user
+    SET name = #{name}, emoji = #{emoji}
+    WHERE id = #{id}
+""")
+    void updateNameAndEmoji(@Param("id") Long id, @Param("name") String name, @Param("emoji") String emoji);
+
+    // 습관 수 조회 (삭제 전 검증용)
+    @Select("SELECT COUNT(*) FROM user_habit WHERE category_user_id = #{categoryUserId}")
+    int countHabitsByCategoryUserId(Long categoryUserId);
 }

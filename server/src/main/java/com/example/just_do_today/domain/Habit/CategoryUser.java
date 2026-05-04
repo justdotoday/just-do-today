@@ -16,5 +16,6 @@ public class CategoryUser {
     private Long categoryId;
     private Long memberId;
     private String emoji;
+    private String name; // 추가 : 유저 커스텀 이름(null이면 category.name 사용)
     private LocalDateTime createdAt;
 }
