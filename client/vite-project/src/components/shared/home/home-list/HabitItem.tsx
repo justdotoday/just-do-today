@@ -29,14 +29,14 @@ const HabitItem = ({
     status === 'freeze'
       ? 'bg-sky-50 px-3 p-0.5'
       : isSelected
-      ? 'bg-blue-50 px-3 p-0.5'
-      : 'px-3 p-0.5';
+        ? 'bg-blue-50 px-3 p-0.5'
+        : 'px-3 p-0.5';
   const titleClass =
     status === 'done'
       ? 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-zinc-400 line-through'
       : isSelected
-      ? 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-blue-600'
-      : 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-zinc-800';
+        ? 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-blue-600'
+        : 'text-[16px] font-medium leading-[24px] tracking-[-0.015em] text-zinc-800';
 
   const statusIconMap = {
     heart,
@@ -71,7 +71,7 @@ const HabitItem = ({
                 className="flex h-4.5 w-4.5 items-center justify-center rounded-full text-xs font-bold text-white"
                 style={{
                   backgroundColor:
-                    status === 'done' ? color?.trim() ?? '#a1a1aa' : '#d4d4d8',
+                    status === 'done' ? (color?.trim() ?? '#a1a1aa') : '#d4d4d8',
                 }}
                 aria-label={status === 'done' ? '완료' : '아직 안함'}
               >
