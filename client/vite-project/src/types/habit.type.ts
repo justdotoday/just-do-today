@@ -33,5 +33,8 @@ export type Habit = {
   emoji?: string | null;
   frequency: Frequency;
   days?: number[];
+  /** 습관 자체 상태: ACTIVE | FREEZE */
   status: string;
+  /** 오늘 habit_history 기록: DONE | HEART | null */
+  todayStatus?: string | null;
 };

@@ -26,17 +26,14 @@ export function formatDateLabel(date: Date): string {
   return `${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
-function apiStatusToUiStatus(status: string): HabitItem['status'] {
-  switch (status) {
-    case 'freeze':
-      return 'freeze';
-    case 'done':
-      return 'done';
-    case 'heart':
-      return 'heart';
-    default:
-      return 'notDone';
-  }
+function apiStatusToUiStatus(
+  status: string,
+  todayStatus?: string | null
+): HabitItem['status'] {
+  if (status.toUpperCase() === 'FREEZE') return 'freeze';
+  if (todayStatus?.toUpperCase() === 'DONE') return 'done';
+  if (todayStatus?.toUpperCase() === 'HEART') return 'heart';
+  return 'notDone';
 }
 
 function getCategoryKey(category: string | null | undefined): string {
@@ -78,7 +75,7 @@ export function habitsToSections(habits: Habit[]): Section[] {
       userHabitId: Number(h.id),
       title: h.name,
       color: h.color ?? null,
-      status: apiStatusToUiStatus(h.status),
+      status: apiStatusToUiStatus(h.status, h.todayStatus),
     })),
   }));
 }
