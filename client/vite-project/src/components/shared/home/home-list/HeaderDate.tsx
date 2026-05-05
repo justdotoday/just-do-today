@@ -9,7 +9,7 @@ type Props = {
 const HeaderDate = ({ dateLabel, inProgressCount, doneCount, progressPercent }: Props) => {
   return (
     <div className="flex items-start justify-between">
-      <div className="text-2xl font-semibold leading-none">{dateLabel}</div>
+      <div className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">{dateLabel}</div>
 
       <div className="flex flex-col items-end">
         <div className="flex items-center gap-4 text-sm">

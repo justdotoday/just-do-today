@@ -113,7 +113,7 @@ const EditHabit = () => {
       setIsLoading(true);
       await updateHabit(habit.id, payload);
       showToast.success('습관이 수정되었습니다!');
-      navigate('/home');
+      navigate(-1);
     } catch (err: unknown) {
       const msg =
         err && typeof err === 'object' && 'response' in err
@@ -140,7 +140,7 @@ const EditHabit = () => {
       <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white">
         <div className="pt-[env(safe-area-inset-top)]" />
         <div className="relative flex h-14 items-center justify-center px-4">
-          <button onClick={() => navigate('/home')} className="absolute left-2 p-2">
+          <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
             <IoChevronBack className="text-2xl text-zinc-900" />
           </button>
           <h1 className="text-[16px] font-semibold text-zinc-950">습관 수정하기</h1>

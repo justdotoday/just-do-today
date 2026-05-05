@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { IoCalendarOutline } from 'react-icons/io5';
+import { IoCalendarOutline, IoAddOutline } from 'react-icons/io5';
 import { getHabits } from '../../api/habit';
 import HomeEmpty from '../../components/shared/home/HomeEmpty';
 import HabitHeatmap from '../../components/shared/habit/HabitHeatmap';
@@ -20,6 +20,7 @@ const HabitPage = () => {
   const { data: habits, isLoading } = useQuery({
     queryKey: ['habits', todayStr],
     queryFn: () => getHabits({ date: todayStr }),
+    refetchOnMount: 'always',
   });
 
   const filteredHabits = useMemo(() => {
@@ -33,12 +34,15 @@ const HabitPage = () => {
   if (!habits?.length) {
     return (
       <>
-        <div className="flex items-center justify-between px-4 pt-6 pb-2">
+        <div className="flex items-start justify-between px-4 pt-6 pb-2">
           <h1 className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">
             {today.getMonth() + 1}월
           </h1>
-          <button className="w-9 h-9 flex items-center justify-center rounded-xl border border-zinc-200">
-            <IoCalendarOutline className="text-zinc-600 text-xl" />
+          <button
+            className="w-8 h-8 flex items-center justify-center"
+            onClick={() => navigate('/createHabit')}
+          >
+            <IoAddOutline className="text-zinc-600 text-2xl" />
           </button>
         </div>
         <HomeEmpty hideDate />
@@ -49,11 +53,11 @@ const HabitPage = () => {
   return (
     <>
       {/* 헤더 */}
-      <div className="flex items-center justify-between px-4 pt-6 pb-2">
+      <div className="flex items-start justify-between px-4 pt-6 pb-2">
         <h1 className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">
           {today.getMonth() + 1}월
         </h1>
-        <button className="w-9 h-9 flex items-center justify-center">
+        <button className="w-8 h-8 flex items-center justify-center">
           <IoCalendarOutline className="text-zinc-600 text-xl" />
         </button>
       </div>

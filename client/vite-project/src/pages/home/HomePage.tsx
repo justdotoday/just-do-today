@@ -264,7 +264,16 @@ const HomePage = () => {
   if (isLoading) return <div>로딩중...</div>;
 
   if (!habits?.length || state.view === 'empty') {
-    return <HomeEmpty />;
+    return (
+      <>
+        <div className="px-4 pt-6 pb-2">
+          <h1 className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">
+            {formatDateLabel(new Date())}
+          </h1>
+        </div>
+        <HomeEmpty hideDate />
+      </>
+    );
   }
 
   return (
