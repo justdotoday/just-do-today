@@ -17,7 +17,13 @@ const HomeEmpty = ({ hideDate = false }: Props) => {
   );
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden px-4">
+    <div
+      className="flex flex-col overflow-hidden px-4"
+      style={{
+        height:
+          'calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 80px - 64px)',
+      }}
+    >
       <GlowEffect position="bottom" />
 
       {!hideDate && (

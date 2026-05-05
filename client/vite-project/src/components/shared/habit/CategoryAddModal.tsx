@@ -14,11 +14,14 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onSubmit: (categoryName: string, emoji: string | null) => void;
+  initialName?: string;
+  initialEmoji?: string | null;
+  title?: string;
 };
 
-const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
-  const [value, setValue] = useState('');
-  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(EMOJI_LIST[0]);
+const CategoryAddModal = ({ open, onClose, onSubmit, initialName = '', initialEmoji = EMOJI_LIST[0], title = '카테고리 직접 추가' }: Props) => {
+  const [value, setValue] = useState(initialName);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(initialEmoji);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleSubmit();
@@ -56,7 +59,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit }: Props) => {
       >
         <DragHandle />
         <h2 className="m-4 text-center text-[14px] font-semibold">
-          카테고리 직접 추가
+          {title}
         </h2>
 
         {/* 이모지 + 텍스트 입력 */}

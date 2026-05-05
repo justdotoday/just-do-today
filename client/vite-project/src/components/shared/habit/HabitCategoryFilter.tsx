@@ -9,16 +9,20 @@ type Props = {
   onManage: () => void;
 };
 
-const HabitCategoryFilter = ({ habits, selected, onSelect, onManage }: Props) => {
-  const categoryMap = habits.reduce<Record<string, { count: number; emoji: string | null }>>(
-    (acc, h) => {
-      const key = h.category ?? '미분류';
-      if (!acc[key]) acc[key] = { count: 0, emoji: h.emoji ?? null };
-      acc[key].count++;
-      return acc;
-    },
-    {}
-  );
+const HabitCategoryFilter = ({
+  habits,
+  selected,
+  onSelect,
+  onManage,
+}: Props) => {
+  const categoryMap = habits.reduce<
+    Record<string, { count: number; emoji: string | null }>
+  >((acc, h) => {
+    const key = h.category ?? '미분류';
+    if (!acc[key]) acc[key] = { count: 0, emoji: h.emoji ?? null };
+    acc[key].count++;
+    return acc;
+  }, {});
 
   const categories = Object.entries(categoryMap);
 
@@ -37,9 +41,9 @@ const HabitCategoryFilter = ({ habits, selected, onSelect, onManage }: Props) =>
         style={
           selected === null
             ? {
-                borderColor: '#C0D2FA',
+                borderColor: COLORS.primary_light,
                 color: COLORS.primary,
-                backgroundColor: '#EEF3FE',
+                backgroundColor: COLORS.primary_bg,
               }
             : { borderColor: '#E4E4E7', color: '#52525B' }
         }

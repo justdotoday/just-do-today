@@ -4,6 +4,7 @@ import MainFooter from './MainFooter';
 const HIDE_FOOTER_PATHS = [
   '/createHabit',
   '/editHabit',
+  '/manageCategory',
   '/auth',
   '/login',
   '/signup',
@@ -17,7 +18,7 @@ const Layout = () => {
   return (
     <div className="min-h-screen bg-zinc-100">
       <div className="mx-auto min-h-screen w-full max-w-[420px] bg-white">
-        <main className={`flex flex-col h-[100dvh] overflow-y-auto pt-[env(safe-area-inset-top)] ${hideFooter ? '' : 'pb-[calc(80px+env(safe-area-inset-bottom))]'}`}>
+        <main className={`pt-[env(safe-area-inset-top)] ${hideFooter ? '' : 'pb-[calc(80px+env(safe-area-inset-bottom))]'}`}>
           <Outlet />
         </main>
 

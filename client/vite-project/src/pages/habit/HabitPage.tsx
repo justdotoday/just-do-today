@@ -70,7 +70,7 @@ const HabitPage = () => {
         habits={habits}
         selected={selectedCategory}
         onSelect={setSelectedCategory}
-        onManage={() => {}}
+        onManage={() => navigate('/manageCategory')}
       />
 
       {/* 습관 리스트 */}
