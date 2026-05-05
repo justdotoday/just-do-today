@@ -264,17 +264,12 @@ const HomePage = () => {
   if (isLoading) return <div>로딩중...</div>;
 
   if (!habits?.length || state.view === 'empty') {
-    return (
-      <div className="px-4">
-        <HomeEmpty />
-      </div>
-    );
+    return <HomeEmpty />;
   }
 
   return (
     <>
-      <div className="px-4">
-        <HomeList
+      <HomeList
           sections={sections}
           dateLabel={formatDateLabel(new Date())}
           inProgressCount={inProgressCount}
@@ -286,7 +281,6 @@ const HomePage = () => {
           onIceThaw={handleIceThawClick}
           onCreateHabit={() => navigate('/createHabit')}
         />
-      </div>
 
       <StatusBottomSheet
         open={isStatusSheetOpen}
