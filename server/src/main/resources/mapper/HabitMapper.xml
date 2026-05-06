@@ -39,6 +39,7 @@
         <result property="frozenUntil" column="frozen_until"/>
         <result property="todayStatus" column="today_status"/>
         <result property="startDate" column="start_date"/>
+        <result property="isPublic" column="is_public" javaType="boolean" typeHandler="org.apache.ibatis.type.BooleanTypeHandler"/>
 
         <collection property="days" ofType="java.lang.Integer">
             <result column="day_of_week"/>
@@ -59,7 +60,8 @@
             uh.frozen_until,
             uhs.day_of_week,
             hh.status as today_status,
-            uh.start_date
+            uh.start_date,
+            uh.is_public
         FROM user_habit uh
         LEFT JOIN category_user cu ON uh.category_user_id = cu.id
         LEFT JOIN category c ON cu.category_id = c.id
@@ -82,7 +84,8 @@
             uh.status,
             uh.frozen_until,
             uhs.day_of_week,
-            hh.status as today_status
+            hh.status as today_status,
+            uh.is_public
         FROM user_habit uh
         LEFT JOIN category_user cu ON uh.category_user_id = cu.id
         LEFT JOIN category c ON cu.category_id = c.id
