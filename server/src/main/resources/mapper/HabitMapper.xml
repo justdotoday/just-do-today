@@ -38,6 +38,7 @@
         <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.Enum.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
         <result property="todayStatus" column="today_status"/>
+        <result property="startDate" column="start_date"/>
 
         <collection property="days" ofType="java.lang.Integer">
             <result column="day_of_week"/>
@@ -57,7 +58,8 @@
             uh.status,
             uh.frozen_until,
             uhs.day_of_week,
-            hh.status as today_status
+            hh.status as today_status,
+            uh.start_date
         FROM user_habit uh
         LEFT JOIN category_user cu ON uh.category_user_id = cu.id
         LEFT JOIN category c ON cu.category_id = c.id
@@ -190,6 +192,7 @@
         WHERE user_habit_id = #{userHabitId} AND status = 'DONE'
         ORDER BY check_date DESC
     </select>
+
 
 
 

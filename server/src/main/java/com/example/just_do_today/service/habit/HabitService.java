@@ -131,6 +131,7 @@ public class HabitService {
                     .categoryId(category.getId())
                     .memberId(memberId)
                     .emoji(emoji)
+                    .name(category.getName())
                     .build();
             categoryUserMapper.insertCategoryUser(categoryUser);
         }
@@ -147,4 +148,7 @@ public class HabitService {
             habitMapper.saveSchedule(schedule);
         }
     }
+
+    // 습관 삭제 후 해당 카테고리를 사용하는 습관이 없으면 category_user도 삭제
+
 }
