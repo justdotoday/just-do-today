@@ -37,4 +37,8 @@ export type Habit = {
   status: string;
   /** 오늘 habit_history 기록: DONE | HEART | null */
   todayStatus?: string | null;
+  /** 습관 시작일 (YYYY-MM-DD) */
+  startDate?: string;
+  /** 공개 여부: 0(또는 "0")=비공개, 1(또는 "1")=공개 */
+  isPublic?: number | string;
 };

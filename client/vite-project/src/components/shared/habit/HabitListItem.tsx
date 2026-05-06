@@ -22,7 +22,9 @@ const HabitListItem = ({ habit, onClick }: Props) => {
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-zinc-900 truncate">{habit.name}</p>
-          <p className='text-xs text-zinc-400'>startDate</p>
+          {habit.startDate && (
+            <p className="text-xs text-zinc-400">{habit.startDate}~</p>
+          )}
           <div className="flex flex-wrap gap-2 mt-3">
             <span className="text-xs text-zinc-400 bg-zinc-100 px-2 py-1 rounded-sm">
               {FREQUENCY_LABEL[habit.frequency] ?? habit.frequency}
@@ -35,7 +37,9 @@ const HabitListItem = ({ habit, onClick }: Props) => {
           </div>
         </div>
         <div className="flex items-center gap-1.5 text-zinc-400 pt-0.5 flex-shrink-0">
-          <IoLockClosedOutline className="text-base h-3" />
+          {Number(habit.isPublic) === 0 && (
+            <IoLockClosedOutline className="text-base h-3" />
+          )}
           <IoChevronForward className="text-base" />
         </div>
       </div>

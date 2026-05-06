@@ -4,24 +4,55 @@ import DragHandle from '../../ui/DragHandle';
 import { COLORS } from '../../../constants/colors';
 
 const EMOJI_LIST = [
-  '🧘', '💊', '🥗', '💧', '😴', '✍️',
-  '🙏', '📵', '🍳', '🎵', '💰', '🧹',
-  '🌿', '🐾', '📷', '🚗', '🌍', '🤖',
-  '🎧', '✏️', '🎯', '📌', '💙', '❤️',
+  '🧘',
+  '💊',
+  '🥗',
+  '💧',
+  '😴',
+  '✍️',
+  '🙏',
+  '📵',
+  '🍳',
+  '🎵',
+  '💰',
+  '🧹',
+  '🌿',
+  '🐾',
+  '📷',
+  '🚗',
+  '🌍',
+  '🤖',
+  '🎧',
+  '✏️',
+  '🎯',
+  '📌',
+  '💙',
+  '❤️',
 ];
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onSubmit: (categoryName: string, emoji: string | null) => void;
+  mode?: 'add' | 'edit';
   initialName?: string;
   initialEmoji?: string | null;
   title?: string;
 };
 
-const CategoryAddModal = ({ open, onClose, onSubmit, initialName = '', initialEmoji = EMOJI_LIST[0], title = '카테고리 직접 추가' }: Props) => {
+const CategoryAddModal = ({
+  open,
+  onClose,
+  onSubmit,
+  mode = 'add',
+  initialName = '',
+  initialEmoji = EMOJI_LIST[0],
+  title = '카테고리 직접 추가',
+}: Props) => {
   const [value, setValue] = useState(initialName);
-  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(initialEmoji);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(
+    initialEmoji
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleSubmit();
@@ -58,15 +89,13 @@ const CategoryAddModal = ({ open, onClose, onSubmit, initialName = '', initialEm
         }}
       >
         <DragHandle />
-        <h2 className="m-4 text-center text-[14px] font-semibold">
-          {title}
-        </h2>
+        <h2 className="m-4 text-center text-[14px] font-semibold">{title}</h2>
 
         {/* 이모지 + 텍스트 입력 */}
-        <div
-          className="mb-4 flex h-10 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2E68EF]"
-        >
-          <span className="text-[20px] leading-none">{selectedEmoji ?? '🏷️'}</span>
+        <div className="mb-4 flex h-10 items-center gap-2 rounded-full border border-zinc-200 px-4 focus-within:border-[#2E68EF]">
+          <span className="text-[20px] leading-none">
+            {selectedEmoji ?? '🏷️'}
+          </span>
           <input
             autoFocus
             value={value}
@@ -104,7 +133,7 @@ const CategoryAddModal = ({ open, onClose, onSubmit, initialName = '', initialEm
           onClick={handleSubmit}
           disabled={!canSubmit}
         >
-          완료
+          {mode === 'edit' ? '수정 완료' : '추가하기'}
         </button>
       </motion.div>
     </div>
