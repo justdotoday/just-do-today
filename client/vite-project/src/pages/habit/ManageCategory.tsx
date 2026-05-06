@@ -226,6 +226,7 @@ const ManageCategory = () => {
         <CategoryAddModal
           open={!!editTarget}
           onClose={() => setEditTarget(null)}
+          mode="edit"
           initialName={editTarget.name}
           initialEmoji={editTarget.emoji}
           title="카테고리 수정"
