@@ -20,4 +20,5 @@ public class HabitResponseDto {
     private UserHabitStatus status;
     private LocalDate frozenUntil;
     private String todayStatus; // 오늘 날짜의 habit_history.status (DONE / HEART / null)
+    private LocalDate startDate; // 습관 생성날짜(시작날짜)
 }

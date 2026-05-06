@@ -12,8 +12,8 @@ import java.util.List;
 public interface CategoryUserMapper {
 
     @Insert("""
-        INSERT INTO category_user (category_id, member_id, emoji, created_at)
-        VALUES (#{categoryId}, #{memberId}, #{emoji}, NOW())
+        INSERT INTO category_user (category_id, member_id, emoji, name, created_at)
+        VALUES (#{categoryId}, #{memberId}, #{emoji}, #{name}, NOW())
     """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertCategoryUser(CategoryUser categoryUser);
