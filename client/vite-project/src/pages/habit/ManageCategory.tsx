@@ -16,6 +16,7 @@ import {
 import { COLORS } from '../../constants/colors';
 import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
+import ConfirmModal from '../../components/ui/ConfirmModal';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -24,9 +25,12 @@ const ManageCategory = () => {
   const queryClient = useQueryClient();
 
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState<CategoryManageResponse | null>(null);
+  const [editTarget, setEditTarget] = useState<CategoryManageResponse | null>(
+    null
+  );
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<CategoryManageResponse | null>(null);
+  const [deleteTarget, setDeleteTarget] =
+    useState<CategoryManageResponse | null>(null);
 
   const { data: categories = [] } = useQuery({
     queryKey: ['managedCategories'],
@@ -114,9 +118,7 @@ const ManageCategory = () => {
                   <span className="w-9 h-9 flex items-center justify-center rounded-full">
                     {cat.emoji ?? '🏷️'}
                   </span>
-                  <span className="text-sm text-zinc-600">
-                    {cat.name}
-                  </span>
+                  <span className="text-sm text-zinc-600">{cat.name}</span>
                   <span
                     className={`text-sm ${count > 0 ? 'text-blue-600' : 'text-zinc-400'}`}
                   >
@@ -124,7 +126,9 @@ const ManageCategory = () => {
                   </span>
                 </div>
                 <button
-                  onClick={() => setOpenMenuId(isOpen ? null : cat.categoryUserId)}
+                  onClick={() =>
+                    setOpenMenuId(isOpen ? null : cat.categoryUserId)
+                  }
                   className="p-2"
                 >
                   <IoEllipsisHorizontal className="text-zinc-400 text-xl" />
@@ -183,43 +187,50 @@ const ManageCategory = () => {
       />
 
       {/* 삭제 확인 모달 */}
-      {deleteTarget && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+      {/* 습관 있는 카테고리 삭제 불가 모달 */}
+      <ConfirmModal
+        open={!!deleteTarget && deleteTarget.habitCount > 0}
+        onClose={() => setDeleteTarget(null)}
+        title="습관이 있는 카테고리는 삭제할 수 없어요."
+        description="먼저 습관을 삭제한 후 다시 시도해 주세요."
+      >
+        <button
+          type="button"
+          onClick={() => setDeleteTarget(null)}
+          className="w-full rounded-full py-2.5 text-[15px]"
+          style={{ backgroundColor: COLORS.primary, color: '#fff' }}
+        >
+          닫기
+        </button>
+      </ConfirmModal>
+
+      {/* 카테고리 삭제 확인 모달 */}
+      <ConfirmModal
+        open={!!deleteTarget && deleteTarget.habitCount === 0}
+        onClose={() => setDeleteTarget(null)}
+        title="이 카테고리를 삭제하시겠어요?"
+        description="삭제한 카테고리는 복구할 수 없어요."
+      >
+        <div className="flex gap-2">
           <button
             type="button"
-            aria-label="닫기"
             onClick={() => setDeleteTarget(null)}
-            className="absolute inset-0 bg-black/50"
-          />
-          <div className="relative mx-6 w-full max-w-[320px] rounded-4xl bg-white px-5 py-8 text-center">
-            <p className="text-[18px] font-semibold text-zinc-800">
-              이 카테고리를 삭제하시겠어요?
-            </p>
-            <p className="text-[16px] font-semibold mt-1 text-zinc-500">
-              삭제한 카테고리는 복구할 수 없어요.
-            </p>
-            <div className="mt-6 flex gap-2">
-              <button
-                type="button"
-                onClick={() => setDeleteTarget(null)}
-                className="flex-1 rounded-full border border-zinc-300 py-2.5 text-[15px] font-medium text-zinc-700"
-              >
-                취소
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  deleteMutation.mutate(deleteTarget.categoryUserId);
-                  setDeleteTarget(null);
-                }}
-                className="flex-1 rounded-full bg-[#FFD6D6] py-2.5 text-[15px] font-medium text-[#A80606]"
-              >
-                삭제하기
-              </button>
-            </div>
-          </div>
+            className="flex-1 rounded-full border border-zinc-300 py-2.5 text-[15px] font-medium text-zinc-700"
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              deleteMutation.mutate(deleteTarget!.categoryUserId);
+              setDeleteTarget(null);
+            }}
+            className="flex-1 rounded-full bg-[#FFD6D6] py-2.5 text-[15px] font-medium text-[#A80606]"
+          >
+            삭제하기
+          </button>
         </div>
-      )}
+      </ConfirmModal>
 
       {/* 카테고리 수정 모달 */}
       {editTarget && (
@@ -231,7 +242,11 @@ const ManageCategory = () => {
           initialEmoji={editTarget.emoji}
           title="카테고리 수정"
           onSubmit={(name, emoji) => {
-            updateMutation.mutate({ id: editTarget.categoryUserId, name, emoji });
+            updateMutation.mutate({
+              id: editTarget.categoryUserId,
+              name,
+              emoji,
+            });
             setEditTarget(null);
           }}
         />

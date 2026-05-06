@@ -74,14 +74,16 @@ const EditHabit = () => {
       selectedCategory: habit?.category ?? null,
       frequency: habit?.frequency,
       selectedDays: habit?.days ? mapDaysFromServer(habit.days) : [],
-      isPublic: false,
+      isPublic: Number(habit?.isPublic) !== 0,
     },
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isMonthlyPickerOpen, setIsMonthlyPickerOpen] = useState(false);
-  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(null);
+  const [selectedMonthlyDay, setSelectedMonthlyDay] = useState<number | null>(
+    null
+  );
 
   const canSubmit =
     name.trim().length > 0 &&
@@ -89,6 +91,21 @@ const EditHabit = () => {
     (frequency === 'DAILY' ||
       frequency === 'MONTHLY' ||
       selectedDays.length > 0);
+
+  const hasChanges = useMemo(() => {
+    if (name.trim() !== (habit?.name ?? '')) return true;
+    if (habitColor !== colorToHex(habit?.color)) return true;
+    if (selectedCategory !== (habit?.category ?? null)) return true;
+    if (frequency !== (habit?.frequency ?? 'DAILY')) return true;
+    if (isPublic !== (Number(habit?.isPublic) !== 0)) return true;
+    const sortedCurrent = [...selectedDays].sort().join();
+    const sortedInitial = [
+      ...(habit?.days ? mapDaysFromServer(habit.days) : []),
+    ]
+      .sort()
+      .join();
+    return sortedCurrent !== sortedInitial;
+  }, [name, habitColor, selectedCategory, frequency, isPublic, selectedDays]);
 
   const handleSubmit = async () => {
     if (!canSubmit || isLoading || !habit) return;
@@ -123,7 +140,9 @@ const EditHabit = () => {
       const body = msg?.data;
       console.error('[습관 수정 실패]', { status, body, err });
       const fallback =
-        status != null ? `요청 실패 (${status})` : '네트워크 또는 서버 연결 실패';
+        status != null
+          ? `요청 실패 (${status})`
+          : '네트워크 또는 서버 연결 실패';
       showToast.error(
         typeof body === 'object' && body != null && 'message' in body
           ? String((body as { message: unknown }).message)
@@ -143,7 +162,9 @@ const EditHabit = () => {
           <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
             <IoChevronBack className="text-2xl text-zinc-900" />
           </button>
-          <h1 className="text-[16px] font-semibold text-zinc-950">습관 수정하기</h1>
+          <h1 className="text-[16px] font-semibold text-zinc-950">
+            습관 수정하기
+          </h1>
         </div>
       </header>
 
@@ -197,14 +218,16 @@ const EditHabit = () => {
         <div className="mx-auto w-full max-w-[420px]">
           <button
             onClick={handleSubmit}
-            disabled={!canSubmit || isLoading}
+            disabled={!canSubmit || !hasChanges || isLoading}
             className={`h-14 w-full rounded-full text-[16px] font-bold transition-all ${
-              !canSubmit || isLoading
+              !canSubmit || !hasChanges || isLoading
                 ? 'bg-zinc-200 text-zinc-500'
                 : 'text-white active:scale-[0.98]'
             }`}
             style={
-              canSubmit && !isLoading ? { backgroundColor: COLORS.primary } : undefined
+              canSubmit && hasChanges && !isLoading
+                ? { backgroundColor: COLORS.primary }
+                : undefined
             }
           >
             {isLoading ? '수정 중...' : '수정하기'}

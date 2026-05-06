@@ -24,7 +24,9 @@ export const useHabitForm = ({
   initialValues = {},
 }: UseHabitFormOptions = {}) => {
   const [name, setName] = useState(initialValues.name ?? '');
-  const [habitColor, setHabitColor] = useState(initialValues.color ?? '#3B47B3');
+  const [habitColor, setHabitColor] = useState(
+    initialValues.color ?? '#3B47B3'
+  );
   const [extraCategories, setExtraCategories] = useState<CategoryItem[]>([]);
   const categories = useMemo(
     () => [...baseCategories, ...extraCategories],
@@ -33,13 +35,17 @@ export const useHabitForm = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     initialValues.selectedCategory ?? null
   );
-  const [frequency, setFrequency] = useState<Frequency>(initialValues.frequency ?? 'DAILY');
-  const [selectedDays, setSelectedDays] = useState<string[]>(initialValues.selectedDays ?? []);
+  const [frequency, setFrequency] = useState<Frequency>(
+    initialValues.frequency ?? 'DAILY'
+  );
+  const [selectedDays, setSelectedDays] = useState<string[]>(
+    initialValues.selectedDays ?? []
+  );
   const [alarmEnabled, setAlarmEnabled] = useState(false);
   const [ampm, setAmpm] = useState<'AM' | 'PM'>('AM');
   const [hour, setHour] = useState('00');
   const [minute, setMinute] = useState('00');
-  const [isPublic, setIsPublic] = useState(initialValues.isPublic ?? false);
+  const [isPublic, setIsPublic] = useState(initialValues.isPublic ?? true);
 
   // CUSTOM: 다중 선택 토글
   const toggleDay = useCallback((d: string) => {
