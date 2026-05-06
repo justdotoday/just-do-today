@@ -51,4 +51,5 @@ public interface HabitMapper {
 
     // 5. 습관 수정
     void updateUserHabit(UserHabit userHabit);
+
 }
