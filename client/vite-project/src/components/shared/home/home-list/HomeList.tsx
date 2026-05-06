@@ -32,7 +32,7 @@ const HomeList = ({
   onCreateHabit,
 }: HomeListProps) => {
   return (
-    <div className="px-4 pt-6 pb-28">
+    <div className="px-4 pt-6">
       <HeaderDate
         dateLabel={dateLabel}
         inProgressCount={inProgressCount}

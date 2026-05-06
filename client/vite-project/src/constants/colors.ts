@@ -3,6 +3,8 @@
 export const COLORS = {
   /** 주요 버튼, 강조 텍스트, 포커스 테두리 등에 사용하는 브랜드 컬러 */
   primary: '#2E68EF',
+  primary_light: '#C0D2FA',
+  primary_bg: '#EEF3FE',
 } as const;
 
 // 서버 Color enum 이름 → hex 변환 (서버가 enum name 문자열로 내려줄 때 사용)

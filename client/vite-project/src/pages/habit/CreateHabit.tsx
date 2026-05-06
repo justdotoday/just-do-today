@@ -102,7 +102,7 @@ const CreateHabit = () => {
       setIsLoading(true);
       await createHabit(payload);
       showToast.success('습관이 생성되었습니다!');
-      navigate('/home');
+      navigate(-1);
     } catch (err: unknown) {
       // 디버깅: 원인 확인용 (외부=백엔드/네트워크 vs 내부=프론트 로직)
       const msg =
@@ -132,7 +132,7 @@ const CreateHabit = () => {
       <header className="sticky top-0 z-50 bg-white border-b border-zinc-100">
         <div className="pt-[env(safe-area-inset-top)]" />
         <div className="relative flex h-14 items-center justify-center px-4">
-          <button onClick={() => navigate('/home')} className="absolute left-2 p-2">
+          <button onClick={() => navigate(-1)} className="absolute left-2 p-2">
             <IoChevronBack className="text-2xl text-zinc-900" />
           </button>
           <h1 className="text-[16px] font-semibold text-zinc-950">

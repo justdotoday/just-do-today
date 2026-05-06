@@ -265,16 +265,20 @@ const HomePage = () => {
 
   if (!habits?.length || state.view === 'empty') {
     return (
-      <div className="px-4">
-        <HomeEmpty />
-      </div>
+      <>
+        <div className="px-4 pt-6 pb-2">
+          <h1 className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">
+            {formatDateLabel(new Date())}
+          </h1>
+        </div>
+        <HomeEmpty hideDate />
+      </>
     );
   }
 
   return (
     <>
-      <div className="px-4">
-        <HomeList
+      <HomeList
           sections={sections}
           dateLabel={formatDateLabel(new Date())}
           inProgressCount={inProgressCount}
@@ -286,7 +290,6 @@ const HomePage = () => {
           onIceThaw={handleIceThawClick}
           onCreateHabit={() => navigate('/createHabit')}
         />
-      </div>
 
       <StatusBottomSheet
         open={isStatusSheetOpen}
