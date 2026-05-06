@@ -74,4 +74,4 @@ app:
   allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174} # 디폴트 프론트 주소
   jwt:
     secret: ${JWT_SECRET}
-    access-exp-min: 60
+    access-exp-min: 1440
