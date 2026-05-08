@@ -43,7 +43,7 @@ const Step2 = ({
     selectedCategory,
     setSelectedCategory,
     handleAddCategory,
-  } = useHabitForm({ initialCategories: DEFAULT_CATEGORIES });
+  } = useHabitForm({ baseCategories: DEFAULT_CATEGORIES });
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
