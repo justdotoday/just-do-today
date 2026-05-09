@@ -105,7 +105,7 @@ const EditHabit = () => {
       .sort()
       .join();
     return sortedCurrent !== sortedInitial;
-  }, [name, habitColor, selectedCategory, frequency, isPublic, selectedDays]);
+  }, [name, habitColor, selectedCategory, frequency, isPublic, selectedDays, habit]);
 
   const handleSubmit = async () => {
     if (!canSubmit || isLoading || !habit) return;

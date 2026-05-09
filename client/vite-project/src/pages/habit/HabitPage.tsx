@@ -7,6 +7,7 @@ import HomeEmpty from '../../components/shared/home/HomeEmpty';
 import HabitHeatmap from '../../components/shared/habit/HabitHeatmap';
 import HabitCategoryFilter from '../../components/shared/habit/HabitCategoryFilter';
 import HabitListItem from '../../components/shared/habit/HabitListItem';
+import CalendarBottomSheet from '../../components/shared/habit/CalendarBottomSheet';
 import plusButton from '../../assets/buttons/plus-button.png';
 
 const today = new Date();
@@ -16,6 +17,9 @@ const CONTENT_MAX_WIDTH_PX = 414;
 const HabitPage = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
 
   const { data: habits, isLoading } = useQuery({
     queryKey: ['habits', todayStr],
@@ -55,15 +59,18 @@ const HabitPage = () => {
       {/* 헤더 */}
       <div className="flex items-start justify-between px-4 pt-6 pb-2">
         <h1 className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">
-          {today.getMonth() + 1}월
+          {viewMonth + 1}월
         </h1>
-        <button className="w-8 h-8 flex items-center justify-center">
+        <button
+          className="w-8 h-8 flex items-center justify-center"
+          onClick={() => setIsCalendarOpen(true)}
+        >
           <IoCalendarOutline className="text-zinc-600 text-xl" />
         </button>
       </div>
 
       {/* 잔디 히트맵 */}
-      <HabitHeatmap year={today.getFullYear()} month={today.getMonth()} />
+      <HabitHeatmap year={viewYear} month={viewMonth} />
 
       {/* 카테고리 필터 */}
       <HabitCategoryFilter
@@ -95,6 +102,17 @@ const HabitPage = () => {
       >
         <img src={plusButton} alt="습관 생성" className="h-14 w-14" />
       </button>
+
+      <CalendarBottomSheet
+        open={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
+        selectedYear={viewYear}
+        selectedMonth={viewMonth}
+        onSelect={(year, month) => {
+          setViewYear(year);
+          setViewMonth(month);
+        }}
+      />
     </>
   );
 };

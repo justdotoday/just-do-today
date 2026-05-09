@@ -17,8 +17,9 @@ function getCellColor(rate: number | null): string {
   return '#2E68EF';
 }
 
+const today = new Date();
+
 const HabitHeatmap = ({ year, month }: Props) => {
-  const today = new Date();
 
   const cells = useMemo(() => {
     const firstDay = new Date(year, month, 1).getDay();
@@ -36,7 +37,7 @@ const HabitHeatmap = ({ year, month }: Props) => {
       result.push({ day: d, rate: isFuture ? null : 0 }); // 0 = 데이터 없음 (API 대기)
     }
     return result;
-  }, [year, month]);
+  }, [year, month, today]);
 
   return (
     <div className="px-4 mt-4">

@@ -18,8 +18,6 @@ import { showToast } from '../../components/ui/toast/Toast';
 import CategoryAddModal from '../../components/shared/habit/CategoryAddModal';
 import ConfirmModal from '../../components/ui/ConfirmModal';
 
-const today = new Date().toISOString().split('T')[0];
-
 const ManageCategory = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -112,7 +110,7 @@ const ManageCategory = () => {
           const isOpen = openMenuId === cat.categoryUserId;
 
           return (
-            <div key={cat.categoryId} className="relative">
+            <div key={cat.categoryUserId} className="relative">
               <div className="flex items-center justify-between px-2.5 py-1.5 rounded-full border border-zinc-100">
                 <div className="flex items-center gap-2">
                   <span className="w-9 h-9 flex items-center justify-center rounded-full">
