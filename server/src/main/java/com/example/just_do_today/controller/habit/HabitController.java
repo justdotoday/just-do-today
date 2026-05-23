@@ -40,34 +40,34 @@ public class HabitController {
         return ResponseEntity.ok(habits);
     }
 
-    // 습관별 조회 userHabitId
-    @GetMapping("/{id}")
-    public ResponseEntity<HabitResponseDto> getHabit(@PathVariable Long id) {
-        HabitResponseDto habit = habitService.getHabit(id);
+    // 습관별 조회
+    @GetMapping("/{userHabitId}")
+    public ResponseEntity<HabitResponseDto> getHabit(@PathVariable Long userHabitId) {
+        HabitResponseDto habit = habitService.getHabit(userHabitId);
         return ResponseEntity.ok(habit);
     }
 
-    // 습관 수정 userHabitId
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateHabit(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long id, @RequestBody UpdateHabitRequestDto dto) {
-        habitService.updateHabit(principal.getMemberId(), id, dto);
+    // 습관 수정
+    @PutMapping("/{userHabitId}")
+    public ResponseEntity<String> updateHabit(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long userHabitId, @RequestBody UpdateHabitRequestDto dto) {
+        habitService.updateHabit(principal.getMemberId(), userHabitId, dto);
         return ResponseEntity.ok("습관 수정이 완료되었습니다!");
     }
 
-    // 습관 삭제 userHabitId
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteHabit(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long id) {
-        habitService.deleteHabit(principal.getMemberId(), id);
+    // 습관 삭제
+    @DeleteMapping("/{userHabitId}")
+    public ResponseEntity<String> deleteHabit(@AuthenticationPrincipal UserPrincipal principal, @PathVariable Long userHabitId) {
+        habitService.deleteHabit(principal.getMemberId(), userHabitId);
         return ResponseEntity.ok("습관 삭제가 완료되었습니다!");
     }
 
     // 습관 개별 히트맵 조회
-    @GetMapping("/{id}/heatmap")
+    @GetMapping("/{userHabitId}/heatmap")
     public ResponseEntity<HeatmapResponseDto> getHeatmap(
-            @PathVariable Long id,
+            @PathVariable Long userHabitId,
             @RequestParam int year,
             @RequestParam int month) {
-        return ResponseEntity.ok(dailyLogService.getHeatmap(id, year, month));
+        return ResponseEntity.ok(dailyLogService.getHeatmap(userHabitId, year, month));
     }
 
 }
