@@ -20,4 +20,14 @@
         WHERE member_id = #{memberId} AND user_habit_id = #{userHabitId} AND log_date = #{logDate}
     </select>
 
+    <!-- 히트맵: 습관별 월간 daily_log 조회 -->
+    <select id="findLogsByHabitIdAndYearMonth"
+            resultType="com.example.just_do_today.domain.Habit.DailyLog">
+        SELECT user_habit_id, log_date, mood
+        FROM daily_log
+        WHERE user_habit_id = #{userHabitId}
+        AND YEAR(log_date) = #{year}
+        AND MONTH(log_date) = #{month}
+        ORDER BY log_date ASC
+    </select>
 </mapper>
