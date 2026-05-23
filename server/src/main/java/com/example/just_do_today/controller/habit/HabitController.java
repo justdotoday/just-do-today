@@ -62,12 +62,12 @@ public class HabitController {
     }
 
     // 습관 개별 히트맵 조회
-    @GetMapping("/{id}/heatmap")
+    @GetMapping("/{userHabitId}/heatmap")
     public ResponseEntity<HeatmapResponseDto> getHeatmap(
-            @PathVariable Long id,
+            @PathVariable Long userHabitId,
             @RequestParam int year,
             @RequestParam int month) {
-        return ResponseEntity.ok(dailyLogService.getHeatmap(id, year, month));
+        return ResponseEntity.ok(dailyLogService.getHeatmap(userHabitId, year, month));
     }
 
 }
