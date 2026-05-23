@@ -2,8 +2,10 @@ package com.example.just_do_today.controller.habit;
 
 import com.example.just_do_today.dto.habit.CreateHabitRequestDto;
 import com.example.just_do_today.dto.habit.HabitResponseDto;
+import com.example.just_do_today.dto.habit.HeatmapResponseDto;
 import com.example.just_do_today.dto.habit.UpdateHabitRequestDto;
 import com.example.just_do_today.global.security.UserPrincipal;
+import com.example.just_do_today.service.habit.DailyLogService;
 import com.example.just_do_today.service.habit.HabitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 public class HabitController {
 
     private final HabitService habitService;
+    private final DailyLogService dailyLogService;
 
     // 습관 생성
     @PostMapping
@@ -58,5 +61,13 @@ public class HabitController {
         return ResponseEntity.ok("습관 삭제가 완료되었습니다!");
     }
 
+    // 습관 개별 히트맵 조회
+    @GetMapping("/{id}/heatmap")
+    public ResponseEntity<HeatmapResponseDto> getHeatmap(
+            @PathVariable Long id,
+            @RequestParam int year,
+            @RequestParam int month) {
+        return ResponseEntity.ok(dailyLogService.getHeatmap(id, year, month));
+    }
 
 }
