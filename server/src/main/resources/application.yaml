@@ -75,3 +75,7 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     access-exp-min: 60
+  vapid:
+    public-key: ${VAPID_PUBLIC_KEY}
+    private-key: ${VAPID_PRIVATE_KEY}
+    subject: ${VAPID_SUBJECT:mailto:khjoo0318@gmail.com}
