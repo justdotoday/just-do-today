@@ -78,4 +78,4 @@ app:
   vapid:
     public-key: ${VAPID_PUBLIC_KEY}
     private-key: ${VAPID_PRIVATE_KEY}
-    subject: ${VAPID_SUBJECT:mailto:khjoo0318@gmail.com}
+    subject: ${VAPID_SUBJECT:https://zaksim30days.com}
