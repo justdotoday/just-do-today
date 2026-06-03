@@ -4,6 +4,7 @@ import com.example.just_do_today.domain.Habit.HabitHistory;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
 import com.example.just_do_today.dto.habit.HabitResponseDto;
+import com.example.just_do_today.dto.habit.HeatmapDayDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -51,5 +52,13 @@ public interface HabitMapper {
 
     // 5. 습관 수정
     void updateUserHabit(UserHabit userHabit);
+
+    // 월별 날짜별 완료 습관 개수 조회 (Done + Heart)
+    List<HeatmapDayDto>
+    findDailyCompletionCount(
+            @Param("memberId") Long memberId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
 
 }
