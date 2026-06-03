@@ -3,6 +3,7 @@ package com.example.just_do_today.mapper.habit;
 import com.example.just_do_today.domain.Habit.HabitHistory;
 import com.example.just_do_today.domain.Habit.UserHabit;
 import com.example.just_do_today.domain.Habit.UserHabitSchedule;
+import com.example.just_do_today.dto.habit.HabitDoneHistoryDto;
 import com.example.just_do_today.dto.habit.HabitResponseDto;
 import com.example.just_do_today.dto.habit.HeatmapDayDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -40,6 +41,9 @@ public interface HabitMapper {
 
     // 특정 습관의 DONE 기록 날짜 목록 조회 (연속 성공 일수 계산용, 최신순)
     List<LocalDate> findDoneHistoryDates(Long userHabitId);
+
+    // 여러 습관의 완료 기록을 한 번에 조회 (N+1 방지, 최신순)
+    List<HabitDoneHistoryDto> findDoneHistoryByHabitIds(@Param("habitIds") List<Long> habitIds);
 
     // 유저-습관 상태 및 프리즈 해제 날짜 업데이트
     void updateUserHabitStatusAndFrozenUntil(UserHabit userHabit);

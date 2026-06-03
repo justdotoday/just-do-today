@@ -196,6 +196,18 @@
         ORDER BY check_date DESC
     </select>
 
+    <!-- 여러 습관의 완료 기록을 한 번에 조회 (N+1 방지, 최신순) -->
+    <select id="findDoneHistoryByHabitIds" resultType="com.example.just_do_today.dto.habit.HabitDoneHistoryDto">
+        SELECT user_habit_id, check_date
+        FROM habit_history
+        WHERE status IN ('DONE', 'HEART')
+        AND user_habit_id IN
+        <foreach item="id" collection="habitIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY check_date DESC
+    </select>
+
     <!-- 캘린더: 날짜별 완료 습관 갯수 조회 (DONE + HEART) -->
     <select id="findDailyCompletionCount"
             resultType="com.example.just_do_today.dto.habit.HeatmapDayDto">
