@@ -19,6 +19,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.example.just_do_today.domain.Habit.Enum.UserHabitStatus.ACTIVE;
@@ -58,17 +59,29 @@ public class HabitService {
 
     @Transactional(readOnly = true)
     public List<HabitResponseDto> getHabitList(Long memberId, LocalDate date) {
-        List<HabitResponseDto> habits =
-                habitMapper.findAllByMemberId(memberId, date);
-                //각 습관에 칩 텍스트 및 상태 문구 세팅
-                habits.forEach(this::setChipData);
-                return habits;
+        List<HabitResponseDto> habits = habitMapper.findAllByMemberId(memberId, date);
+        if (habits.isEmpty()) return habits;
+
+        // N+1 방지: 모든 습관의 완료 기록을 한 번에 조회 후 습관별로 그룹핑
+        List<Long> habitIds = habits.stream().map(HabitResponseDto::getId).toList();
+        Map<Long, List<LocalDate>> doneDatesMap = habitMapper.findDoneHistoryByHabitIds(habitIds).stream()
+                .collect(Collectors.groupingBy(
+                        HabitDoneHistoryDto::getUserHabitId,
+                        Collectors.mapping(HabitDoneHistoryDto::getCheckDate, Collectors.toList())
+                ));
+
+        // 각 습관에 칩 텍스트 및 상태 문구 세팅
+        habits.forEach(habit ->
+                setChipData(habit, doneDatesMap.getOrDefault(habit.getId(), Collections.emptyList())));
+        return habits;
     }
 
     @Transactional(readOnly = true)
     public HabitResponseDto getHabit(Long userHabitId) {
         HabitResponseDto habit = habitMapper.findByUserHabitId(userHabitId);
-        if (habit != null) setChipData(habit);
+        if (habit != null) {
+            setChipData(habit, habitMapper.findDoneHistoryDates(userHabitId));
+        }
         return habit;
     }
 
@@ -166,17 +179,17 @@ public class HabitService {
         return response;
     }
 
-    // 습관 DTO에 왼쪽 칩(recentSuccessText)과 오른쪽 칩(statusPhrase) 세팅
-    private void setChipData(HabitResponseDto habit){
+    // 습관 DTO에 왼쪽 칩(successChip)과 오른쪽 칩(statusChip) 세팅
+    // doneDates는 check_date DESC 정렬 전제 (호출부에서 주입)
+    private void setChipData(HabitResponseDto habit, List<LocalDate> doneDates){
         LocalDate today = LocalDate.now();
-        // findDoneHistoryDates는 check_date DESC 정렬로 반환
-        List<LocalDate> doneDates =
-                habitMapper.findDoneHistoryDates(habit.getId());
         List<LocalDate> targetDates =
                 getHabitDates(habit.getStartDate(),habit.getFrequency(),habit.getDays());
+        // 날짜 포함 여부 조회용 Set은 한 번만 생성해 두 칩 계산에 공유
+        Set<LocalDate> doneSet = new HashSet<>(doneDates);
 
-        habit.setSuccessChip(getSuccessChip(habit.getFrequency(), doneDates, today));
-        habit.setStatusChip(getStatusChip(doneDates, targetDates, habit.getTodayStatus(),today));
+        habit.setSuccessChip(getSuccessChip(habit.getFrequency(), doneDates, doneSet, today));
+        habit.setStatusChip(getStatusChip(doneDates, doneSet, targetDates, habit.getTodayStatus(), today));
     }
 
     // frequency + startDate + days 기준으로 최근 7 대상일 목록 계산 (오름차순)
@@ -204,9 +217,7 @@ public class HabitService {
     }
 
     // 왼쪽 칩: frequency 기준 성공 횟수 텍스트
-    private String getSuccessChip(Frequency frequency, List<LocalDate> doneDates, LocalDate today) {
-        Set<LocalDate> doneSet = new HashSet<>(doneDates);
-
+    private String getSuccessChip(Frequency frequency, List<LocalDate> doneDates, Set<LocalDate> doneSet, LocalDate today) {
         return switch (frequency) {
             case DAILY -> {
                 long count = IntStream.range(0, 7)
@@ -233,14 +244,12 @@ public class HabitService {
     }
 
     // 오른쪽 칩: 우선순위 기준 상태 문구
-    private String getStatusChip(List<LocalDate> doneDates, List<LocalDate> targetDates, String todayStatus, LocalDate today) {
-        Set<LocalDate> doneSet = new HashSet<>(doneDates);
-
+    private String getStatusChip(List<LocalDate> doneDates, Set<LocalDate> doneSet, List<LocalDate> targetDates, String todayStatus, LocalDate today) {
         // 1순위: 전체 완료 횟수 3회 이내
         if (doneDates.size() <= 3) return "습관 시작 단계";
 
-        // 2순위: 오늘 달성 완료
-        if ("DONE".equals(todayStatus)) return "오늘 완료";
+        // 2순위: 오늘 달성 완료 (하트 사용 완료 포함)
+        if ("DONE".equals(todayStatus) || "HEART".equals(todayStatus)) return "오늘 완료";
 
         // 3순위: 마지막 완료일로부터 오늘까지 실제 경과일 2일 이상
         LocalDate lastDone = doneDates.get(0);
