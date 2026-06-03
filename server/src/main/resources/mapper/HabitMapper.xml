@@ -192,11 +192,22 @@
     <select id="findDoneHistoryDates" resultType="java.time.LocalDate">
         SELECT check_date
         FROM habit_history
-        WHERE user_habit_id = #{userHabitId} AND status = 'DONE'
+        WHERE user_habit_id = #{userHabitId} AND status IN ('DONE', 'HEART')
         ORDER BY check_date DESC
     </select>
 
-
+    <!-- 캘린더: 날짜별 완료 습관 갯수 조회 (DONE + HEART) -->
+    <select id="findDailyCompletionCount"
+            resultType="com.example.just_do_today.dto.habit.HeatmapDayDto">
+        SELECT hh.check_date AS date, COUNT(*) AS count
+        FROM habit_history hh
+        JOIN user_habit uh ON hh.user_habit_id = uh.id
+        WHERE uh.member_id = #{memberId}
+        AND YEAR(hh.check_date) = #{year}
+        AND MONTH(hh.check_date) = #{month}
+        GROUP BY hh.check_date
+        ORDER BY hh.check_date ASC
+    </select>
 
 
 

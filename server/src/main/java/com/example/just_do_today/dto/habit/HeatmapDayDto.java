@@ -7,5 +7,5 @@ import java.time.LocalDate;
 @Data
 public class HeatmapDayDto {
     private LocalDate date;
-    private String mood;
+    private int count;
 }
