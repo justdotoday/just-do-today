@@ -192,7 +192,7 @@
     <select id="findDoneHistoryDates" resultType="java.time.LocalDate">
         SELECT check_date
         FROM habit_history
-        WHERE user_habit_id = #{userHabitId} AND status = ('DONE','HEART')
+        WHERE user_habit_id = #{userHabitId} AND status IN ('DONE', 'HEART')
         ORDER BY check_date DESC
     </select>
 

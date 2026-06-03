@@ -179,28 +179,27 @@ public class HabitService {
         habit.setStatusChip(getStatusChip(doneDates, targetDates, habit.getTodayStatus(),today));
     }
 
-    //frequency + startDate + days 기준으로 습관 대상일 목록 계산 (오름차순)
-    private List<LocalDate> getHabitDates
-        (LocalDate startDate,
-         Frequency frequency,
-         List<Integer> days){
+    // frequency + startDate + days 기준으로 최근 7 대상일 목록 계산 (오름차순)
+    // 오늘부터 역순으로 최근 7개만 수집하여 불필요한 전체 날짜 생성 방지
+    private List<LocalDate> getHabitDates(LocalDate startDate, Frequency frequency, List<Integer> days) {
         if (startDate == null) return Collections.emptyList();
 
-        List<LocalDate> targetDates = new ArrayList<>(); // 결과 담을 리스트 생성
-        LocalDate today = LocalDate.now();
-        LocalDate current = startDate;
+        List<LocalDate> targetDates = new ArrayList<>();
+        LocalDate current = LocalDate.now();
 
-        while(!current.isAfter(today)){
-            boolean isTarget = switch (frequency){
+        // days : java DayOfWeek 값 (0=MON ~ 6=SUN) ordinal = 선언된 순서의 인덱스를 반환하는 메서드
+        while (!current.isBefore(startDate) && targetDates.size() < 7) {
+            boolean isTarget = switch (frequency) {
                 case DAILY -> true;
-                // days : java DayOfWeek 값 (0=MON ~ 6=SUN) ordinal = 선언된 순서의 인덱스를 반환하는 메서드
                 case WEEKLY, CUSTOM -> days != null && days.contains(current.getDayOfWeek().ordinal());
                 // 매월 시작일과 동일한 일(day of month)
                 case MONTHLY -> current.getDayOfMonth() == startDate.getDayOfMonth();
             };
             if (isTarget) targetDates.add(current);
-            current = current.plusDays(1);
+            current = current.minusDays(1);
         }
+        // 역순 수집했으므로 오름차순으로 변환
+        Collections.reverse(targetDates);
         return targetDates;
     }
 
@@ -248,18 +247,14 @@ public class HabitService {
         long daysSinceLastDone = ChronoUnit.DAYS.between(lastDone, today);
         if (daysSinceLastDone >= 2) return daysSinceLastDone + "일 쉬는 중";
 
-        // 4~6순위: 최근 7 대상일 중 성공 횟수
-        int targetSize = targetDates.size();
-        List<LocalDate> recent7Targets = targetSize > 7
-                ? targetDates.subList(targetSize - 7, targetSize)
-                : targetDates;
-
-        long successCount = recent7Targets.stream().filter(doneSet::contains).count();
+        // 4~6순위: 최근 7 대상일 중 성공 횟수 (getHabitDates에서 최근 7개만 반환하므로 그대로 사용)
+        long successCount = targetDates.stream().filter(doneSet::contains).count();
 
         if (successCount >= 6) return "완벽한 유지 중";
         if (successCount >= 4) return "꾸준히 유지 중";
         if (successCount >= 1) return "노력 중";
 
-        return null;
+        // 성공 횟수 0회인 경우 빈 문자열 반환
+        return "";
     }
 }
