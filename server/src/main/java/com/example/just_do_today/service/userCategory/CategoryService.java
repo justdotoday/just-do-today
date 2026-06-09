@@ -34,11 +34,13 @@ public class CategoryService {
     // 카테고리 추가
     @Transactional
     public void addCategory(Long memberId, CategoryAddReqDto dto) {
+        String trimmedName = dto.getName().trim();
+
         // 동일 이름의 category 없으면 생성
-        Category category = categoryMapper.findByName(dto.getName());
+        Category category = categoryMapper.findByName(trimmedName);
         if (category == null) {
             category = new Category();
-            category.setName(dto.getName());
+            category.setName(trimmedName);
             categoryMapper.insertCategory(category);
         }
 
@@ -53,7 +55,7 @@ public class CategoryService {
                 .categoryId(category.getId())
                 .memberId(memberId)
                 .emoji(dto.getEmoji())
-                .name(dto.getName())
+                .name(trimmedName)
                 .build();
         categoryUserMapper.insertCategoryUser(newCategoryUser);
     }
@@ -65,7 +67,7 @@ public class CategoryService {
         if (categoryUser == null) throw new IllegalArgumentException("존재하지 않는 카테고리입니다.");
         if (!categoryUser.getMemberId().equals(memberId)) throw new IllegalArgumentException("본인의 카테고리만 수정할 수 있습니다.");
 
-        categoryUserMapper.updateNameAndEmoji(categoryUserId, dto.getName(), dto.getEmoji());
+        categoryUserMapper.updateNameAndEmoji(categoryUserId, dto.getName().trim(), dto.getEmoji());
     }
 
     // 카테고리 삭제
