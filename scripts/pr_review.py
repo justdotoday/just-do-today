@@ -1,24 +1,18 @@
 import os
 import sys
-import json
 import requests
 
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-REPO = os.environ.get("GITHUB_REPOSITORY")  # e.g. justdotoday/just-do-today
+REPO = os.environ.get("GITHUB_REPOSITORY")
 PR_NUMBER = os.environ.get("PR_NUMBER")
 
 GITHUB_API = "https://api.github.com"
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 
 HEADERS_GH = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json",
-}
-
-HEADERS_ANTHROPIC = {
-    "x-api-key": ANTHROPIC_API_KEY,
-    "anthropic-version": "2023-06-01",
-    "content-type": "application/json",
 }
 
 REVIEW_SYSTEM_PROMPT = """
@@ -54,23 +48,21 @@ def get_pr_diff():
 
     diff_text = ""
     total_len = 0
-    MAX_TOTAL = 8000  # 전체 diff 최대 길이
+    MAX_TOTAL = 8000
 
     for f in files:
         filename = f["filename"]
-        status = f["status"]  # added, modified, removed
-        patch = f.get("patch", "")  # 실제 diff 내용
+        status = f["status"]
+        patch = f.get("patch", "")
 
         if not patch:
             continue
 
-        # 파일 하나당 최대 2000자
         if len(patch) > 2000:
             patch = patch[:2000] + "\n... (파일 일부 생략)"
 
         chunk = f"\n### [{status}] {filename}\n```\n{patch}\n```\n"
 
-        # 전체 합산 초과하면 중단
         if total_len + len(chunk) > MAX_TOTAL:
             diff_text += "\n... (이후 파일 생략: 변경사항이 너무 많습니다)"
             break
@@ -95,42 +87,47 @@ def get_pr_info():
     }
 
 
-def call_claude(diff_text, pr_info):
-    """Claude API 호출해서 리뷰 받기"""
-    user_message = f"""
+def call_gemini(diff_text, pr_info):
+    """Gemini API 호출해서 리뷰 받기"""
+    full_prompt = f"""{REVIEW_SYSTEM_PROMPT}
+
 PR 제목: {pr_info['title']}
 브랜치: {pr_info['head']} → {pr_info['base']}
 PR 설명: {pr_info['body'] or '없음'}
 
 --- 변경된 코드 ---
 {diff_text}
-""".strip()
+"""
 
     payload = {
-        "model": "claude-sonnet-4-6",
-        "max_tokens": 2000,
-        "system": REVIEW_SYSTEM_PROMPT,
-        "messages": [
-            {"role": "user", "content": user_message}
+        "contents": [
+            {
+                "parts": [{"text": full_prompt}]
+            }
         ],
+        "generationConfig": {
+            "maxOutputTokens": 2000,
+            "temperature": 0.3,
+        }
     }
 
     res = requests.post(
-        "https://api.anthropic.com/v1/messages",
-        headers=HEADERS_ANTHROPIC,
+        f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
+        headers={"Content-Type": "application/json"},
         json=payload,
     )
     if not res.ok:
-        print(f"❌ Claude API 에러 {res.status_code}: {res.text}")
+        print(f"❌ Gemini API 에러 {res.status_code}: {res.text}")
     res.raise_for_status()
+
     data = res.json()
-    return data["content"][0]["text"]
+    return data["candidates"][0]["content"]["parts"][0]["text"]
 
 
 def post_pr_comment(review_text):
     """PR에 코멘트 달기"""
     url = f"{GITHUB_API}/repos/{REPO}/issues/{PR_NUMBER}/comments"
-    body = f"## 🤖 AI 코드 리뷰\n\n{review_text}\n\n---\n*Powered by Claude Sonnet*"
+    body = f"## 🤖 AI 코드 리뷰\n\n{review_text}\n\n---\n*Powered by Gemini 1.5 Flash*"
     res = requests.post(url, headers=HEADERS_GH, json={"body": body})
     res.raise_for_status()
     print(f"✅ 코멘트 작성 완료: {res.json()['html_url']}")
@@ -139,8 +136,8 @@ def post_pr_comment(review_text):
 def main():
     print(f"🔍 PR #{PR_NUMBER} 리뷰 시작...")
 
-    if not all([ANTHROPIC_API_KEY, GITHUB_TOKEN, REPO, PR_NUMBER]):
-        print("❌ 환경변수 누락. ANTHROPIC_API_KEY, GITHUB_TOKEN, GITHUB_REPOSITORY, PR_NUMBER 확인")
+    if not all([GEMINI_API_KEY, GITHUB_TOKEN, REPO, PR_NUMBER]):
+        print("❌ 환경변수 누락. GEMINI_API_KEY, GITHUB_TOKEN, GITHUB_REPOSITORY, PR_NUMBER 확인")
         sys.exit(1)
 
     pr_info = get_pr_info()
@@ -151,8 +148,8 @@ def main():
         print("ℹ️ 변경된 파일 없음. 종료.")
         return
 
-    print("🧠 Claude에게 리뷰 요청 중...")
-    review = call_claude(diff_text, pr_info)
+    print("🧠 Gemini에게 리뷰 요청 중...")
+    review = call_gemini(diff_text, pr_info)
 
     print("💬 GitHub PR에 코멘트 작성 중...")
     post_pr_comment(review)
