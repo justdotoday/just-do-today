@@ -15,7 +15,7 @@
         updated_at = NOW()
     </insert>
 
-    <select id="findLogByHabitAndDate" resultType="com.example.just_do_today.domain.Habit.DailyLog">
+    <select id="findLogByHabitAndDate" resultType="com.example.just_do_today.habit.domain.DailyLog">
         SELECT * FROM daily_log
         WHERE member_id = #{memberId} AND user_habit_id = #{userHabitId} AND log_date = #{logDate}
     </select>

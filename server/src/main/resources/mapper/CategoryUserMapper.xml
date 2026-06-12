@@ -6,7 +6,7 @@
 
     <!-- 카테고리 관리 화면용: 유저 카테고리 목록 + 습관 수 -->
     <select id="findAllWithCountByMemberId"
-            resultType="com.example.just_do_today.dto.userCategory.CategoryManageResDto"
+            resultType="com.example.just_do_today.userCategory.dto.CategoryManageResDto"
             parameterType="long">
         SELECT
             cu.id        AS categoryUserId,

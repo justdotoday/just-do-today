@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@MapperScan("com.example.just_do_today.mapper")
+@MapperScan("com.example.just_do_today")
 @SpringBootApplication
 @EnableScheduling
 public class JustDoTodayApplication {
