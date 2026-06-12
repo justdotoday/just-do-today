@@ -53,6 +53,9 @@ def get_pr_diff():
     files = res.json()
 
     diff_text = ""
+    total_len = 0
+    MAX_TOTAL = 8000  # 전체 diff 최대 길이
+
     for f in files:
         filename = f["filename"]
         status = f["status"]  # added, modified, removed
@@ -61,11 +64,19 @@ def get_pr_diff():
         if not patch:
             continue
 
-        # 너무 큰 파일은 앞부분만 (토큰 절약)
-        if len(patch) > 3000:
-            patch = patch[:3000] + "\n... (이하 생략)"
+        # 파일 하나당 최대 2000자
+        if len(patch) > 2000:
+            patch = patch[:2000] + "\n... (파일 일부 생략)"
 
-        diff_text += f"\n### [{status}] {filename}\n```\n{patch}\n```\n"
+        chunk = f"\n### [{status}] {filename}\n```\n{patch}\n```\n"
+
+        # 전체 합산 초과하면 중단
+        if total_len + len(chunk) > MAX_TOTAL:
+            diff_text += "\n... (이후 파일 생략: 변경사항이 너무 많습니다)"
+            break
+
+        diff_text += chunk
+        total_len += len(chunk)
 
     return diff_text
 
@@ -109,6 +120,8 @@ PR 설명: {pr_info['body'] or '없음'}
         headers=HEADERS_ANTHROPIC,
         json=payload,
     )
+    if not res.ok:
+        print(f"❌ Claude API 에러 {res.status_code}: {res.text}")
     res.raise_for_status()
     data = res.json()
     return data["content"][0]["text"]
