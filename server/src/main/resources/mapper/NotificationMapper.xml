@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.just_do_today.mapper.notification.NotificationMapper">
+<mapper namespace="com.example.just_do_today.notification.mapper.NotificationMapper">
 
     <resultMap id="notificationSettingMap" type="com.example.just_do_today.domain.NotificationSetting">
         <id property="memberId" column="member_id"/>
