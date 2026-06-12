@@ -52,7 +52,40 @@ REVIEW_SYSTEM_PROMPT = """
 - 잘 작성된 부분도 언급 (칭찬도 중요!)
 - 마지막에 전체 요약 한 줄
 
-Java/Spring Boot 외 파일(TypeScript 등)은 간략하게만.
+---
+
+## 프론트엔드 컨텍스트 (client/vite-project/src/)
+- 기술 스택: React 19.2 + TypeScript 5.9(strict) / Vite 7 / Tailwind CSS 4 / react-router-dom 7
+- 서버 상태: TanStack Query v5 (useQuery/useMutation + invalidateQueries로 갱신)
+- HTTP: axios 커스텀 인스턴스 (api/client.ts) — localStorage 'AccessToken' 자동 주입
+- 클라이언트 상태: zustand 설치됨, 현재 실사용 store 없음 (대부분 로컬 useState)
+- 폴더: api/ / auth/ / components/shared/ / components/ui/ / hooks/ / pages/ / types/ / constants/
+- 주요 페이지: 소셜로그인, 온보딩(4단계), 홈(습관목록/카테고리/상태변경), 습관 CRUD, 카테고리 관리, 설정
+
+## 프론트엔드 리뷰 체크포인트
+1. 패턴: rafce (화살표 함수 컴포넌트 + default export), TypeScript strict 준수
+2. 파일 상단 책임 주석: 각 파일 최상단에 1~2줄 JSDoc (/** 홈 페이지. ... */)
+3. 타입: import type 명시적 사용, 도메인 타입은 types/habit.type.ts에 집중
+4. 상태 관리 원칙: 서버 데이터는 TanStack Query, UI 상태는 로컬 useState
+5. 인증/라우팅: ProtectedRoute로 미인증 시 /signup 리다이렉트
+6. 매직값 처리: 매핑 상수(DAY_TO_NUMBER 등)는 모듈 스코프 상수로 분리
+7. 렌더 중 setState 금지: effect 대신 동기화 방식 사용 (React 권장 패턴)
+8. 컴포넌트 분리 기준: 역할이 다른 UI는 컴포넌트 분리, 바텀시트류는 bottom-sheet/ 하위
+9. API 계약: 요일은 클라 MON~SUN ↔ 서버 숫자 0~6 변환 필요, 옵셔널 필드는 조건부 스프레드 패턴
+10. 입력 검증: 앞뒤 공백 등은 프론트에서 1차 차단 (서버와 이중 방어)
+
+## 알아둘 특이사항 (프론트)
+- localStorage 토큰 키는 'AccessToken' (대소문자 정확히)
+- 서버 응답에 categoryIcon 미포함 → fallback(📌) 처리 중
+- react-calendar는 index.css에서 커스텀 스타일 오버라이드
+
+## 리뷰 형식
+- 각 이슈마다 [심각도: 높음/중간/낮음] 태그
+- 백엔드/프론트엔드 규칙 위반 시 몇 번 규칙인지 함께 언급
+- 왜 문제인지 + 어떻게 고치는지 (필요시 예시 코드)
+- 잘 작성된 부분도 언급 (칭찬도 중요!)
+- 마지막에 전체 요약 한 줄
+
 리뷰할 내용이 없으면 "리뷰할 변경사항이 없습니다." 라고만 답하세요.
 """.strip()
 
