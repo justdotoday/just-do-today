@@ -8,7 +8,7 @@ REPO = os.environ.get("GITHUB_REPOSITORY")
 PR_NUMBER = os.environ.get("PR_NUMBER")
 
 GITHUB_API = "https://api.github.com"
-GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent"
 
 HEADERS_GH = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
