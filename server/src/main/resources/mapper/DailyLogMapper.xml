@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.just_do_today.mapper.habit.DailyLogMapper">
+<mapper namespace="com.example.just_do_today.habit.mapper.DailyLogMapper">
 
     <!--습관 수행 기록-->
     <insert id="saveDailyLog">
@@ -15,7 +15,7 @@
         updated_at = NOW()
     </insert>
 
-    <select id="findLogByHabitAndDate" resultType="com.example.just_do_today.domain.Habit.DailyLog">
+    <select id="findLogByHabitAndDate" resultType="com.example.just_do_today.habit.domain.DailyLog">
         SELECT * FROM daily_log
         WHERE member_id = #{memberId} AND user_habit_id = #{userHabitId} AND log_date = #{logDate}
     </select>

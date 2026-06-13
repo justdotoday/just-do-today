@@ -1,8 +1,8 @@
 package com.example.just_do_today.global.security;
 
-import com.example.just_do_today.domain.Member;
-import com.example.just_do_today.dto.auth.LoginRequest;
-import com.example.just_do_today.service.member.MemberService;
+import com.example.just_do_today.member.domain.Member;
+import com.example.just_do_today.auth.dto.LoginRequest;
+import com.example.just_do_today.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
