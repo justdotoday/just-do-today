@@ -88,3 +88,31 @@ export const thawHabit = async (userHabitId: number): Promise<void> => {
 export const toggleHeart = async (userHabitId: number): Promise<void> => {
   await api.post(`/api/user-habits/${userHabitId}/heart`);
 };
+
+export type HeatmapDay = {
+  /** 'YYYY-MM-DD' */
+  date: string;
+  mood: string;
+};
+
+export type HeatmapResponse = {
+  year: number;
+  month: number;
+  days: HeatmapDay[];
+};
+
+/**
+ * 습관 월별 히트맵 조회
+ * GET /api/habits/{userHabitId}/heatmap?year=&month=
+ * month: 1-indexed
+ */
+export const getHabitHeatmap = async (
+  userHabitId: number,
+  year: number,
+  month: number
+): Promise<HeatmapResponse> => {
+  const res = await api.get(`/api/habits/${userHabitId}/heatmap`, {
+    params: { year, month },
+  });
+  return res.data;
+};

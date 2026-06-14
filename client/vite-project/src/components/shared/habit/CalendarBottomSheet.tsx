@@ -13,7 +13,13 @@ type Props = {
 
 const today = new Date();
 
-const CalendarBottomSheet = ({ open, onClose, selectedYear, selectedMonth, onSelect }: Props) => {
+const CalendarBottomSheet = ({
+  open,
+  onClose,
+  selectedYear,
+  selectedMonth,
+  onSelect,
+}: Props) => {
   const [viewYear, setViewYear] = useState(selectedYear);
 
   const isPastOrCurrent = (month: number) => {
@@ -83,8 +89,8 @@ const CalendarBottomSheet = ({ open, onClose, selectedYear, selectedMonth, onSel
                   isSelected
                     ? 'border bg-blue-50 text-blue-600 font-semibold'
                     : active
-                    ? 'border border-zinc-200 text-zinc-800'
-                    : 'border border-zinc-200 text-zinc-300'
+                      ? 'border border-zinc-200 text-zinc-800'
+                      : 'border border-zinc-200 text-zinc-300'
                 }`}
               >
                 {i + 1}월
