@@ -92,7 +92,7 @@ export const toggleHeart = async (userHabitId: number): Promise<void> => {
 export type HeatmapDay = {
   /** 'YYYY-MM-DD' */
   date: string;
-  mood: string;
+  count: number;
 };
 
 export type HeatmapResponse = {
@@ -102,16 +102,15 @@ export type HeatmapResponse = {
 };
 
 /**
- * 습관 월별 히트맵 조회
- * GET /api/habits/{userHabitId}/heatmap?year=&month=
+ * 월별 습관 완료 히트맵 조회
+ * GET /api/habits/calendar?year=&month=
  * month: 1-indexed
  */
 export const getHabitHeatmap = async (
-  userHabitId: number,
   year: number,
   month: number
 ): Promise<HeatmapResponse> => {
-  const res = await api.get(`/api/habits/${userHabitId}/heatmap`, {
+  const res = await api.get(`/api/habits/calendar`, {
     params: { year, month },
   });
   return res.data;

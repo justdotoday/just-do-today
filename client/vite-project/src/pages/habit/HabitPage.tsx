@@ -4,8 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { IoCalendarOutline, IoAddOutline } from 'react-icons/io5';
 import { getHabits } from '../../api/habit';
 import { getHabitHeatmap } from '../../api/habit';
-import { FEELING_TO_STATUS } from '../../constants/heatmapColors';
-import { colorToHex } from '../../constants/colors';
 import HomeEmpty from '../../components/shared/home/HomeEmpty';
 import HabitHeatmap from '../../components/shared/habit/HabitHeatmap';
 import HabitCategoryFilter from '../../components/shared/habit/HabitCategoryFilter';
@@ -47,28 +45,19 @@ const HabitPage = () => {
 
   // 히트맵에 쓸 monthly logs 조회
   const { data: heatmapData } = useQuery({
-    queryKey: ['heatmap', selectedHabit?.id, viewYear, viewMonth],
-    queryFn: () =>
-      getHabitHeatmap(
-        Number(selectedHabit!.id),
-        viewYear,
-        viewMonth + 1, // API는 1-indexed
-      ),
-    enabled: !!selectedHabit?.id,
-    staleTime: 1000 * 60, // 1분 캐시
+    queryKey: ['heatmap', viewYear, viewMonth],
+    queryFn: () => getHabitHeatmap(viewYear, viewMonth + 1), // API는 1-indexed
   });
 
-  // HeatmapDay[] → { 'YYYY-MM-DD': mood } 맵으로 변환
-  const logMap = useMemo<Record<string, string>>(() => {
+  // HeatmapDay[] → { 'YYYY-MM-DD': count } 맵으로 변환
+  const logMap = useMemo<Record<string, number>>(() => {
     if (!heatmapData?.days) return {};
     return Object.fromEntries(
       heatmapData.days
-        .filter((d) => d.mood && FEELING_TO_STATUS[d.mood])
-        .map((d) => [d.date, d.mood])
+        .filter((d) => d.count > 0)
+        .map((d) => [d.date, d.count])
     );
   }, [heatmapData]);
-
-  const habitHex = colorToHex(selectedHabit?.color);
 
   if (isLoading) return null;
 
@@ -99,11 +88,6 @@ const HabitPage = () => {
           <h1 className="text-2xl font-semibold tracking-[-0.02em] text-zinc-950">
             {viewMonth + 1}월
           </h1>
-          {selectedHabit && (
-            <p className="text-[12px] text-zinc-400 mt-0.5">
-              {selectedHabit.name}
-            </p>
-          )}
         </div>
         <button
           className="w-8 h-8 flex items-center justify-center"
@@ -117,7 +101,6 @@ const HabitPage = () => {
       <HabitHeatmap
         year={viewYear}
         month={viewMonth}
-        habitHex={habitHex}
         logs={logMap}
       />
 
