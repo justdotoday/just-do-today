@@ -47,11 +47,15 @@ const HabitListItem = ({ habit, isSelected, onSelect, onClick }: Props) => {
               <span className="text-xs text-zinc-400 bg-zinc-100 px-2 py-1 rounded-sm">
                 {FREQUENCY_LABEL[habit.frequency] ?? habit.frequency}
               </span>
-              {habit.status === 'FREEZE' && (
+              {habit.status === 'FREEZE' ? (
                 <span className="text-xs text-blue-500 bg-blue-50 px-2.5 py-1 rounded-sm">
                   🧊 프리즈 중
                 </span>
-              )}
+              ) : habit.statusChip ? (
+                <span className="text-xs text-zinc-400 bg-zinc-100 px-2.5 py-1 rounded-sm">
+                  {habit.statusChip}
+                </span>
+              ) : null}
             </div>
           </div>
         </div>

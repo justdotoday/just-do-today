@@ -4,6 +4,7 @@ import MainFooter from './MainFooter';
 const HIDE_FOOTER_PATHS = [
   '/createHabit',
   '/editHabit',
+  '/habitDetail',
   '/manageCategory',
   '/auth',
   '/login',

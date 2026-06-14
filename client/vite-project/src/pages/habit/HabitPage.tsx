@@ -118,9 +118,8 @@ const HabitPage = () => {
           <HabitListItem
             key={habit.id}
             habit={habit}
-            isSelected={selectedHabit?.id === habit.id}
-            onSelect={() => setSelectedHabit(habit)}
-            onClick={() => navigate('/editHabit', { state: { habit } })}
+            onSelect={() => navigate('/habitDetail', { state: { habit } })}
+            onClick={() => navigate('/habitDetail', { state: { habit } })}
           />
         ))}
       </div>

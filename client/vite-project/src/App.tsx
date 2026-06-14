@@ -5,6 +5,7 @@ import OAuthCallback from './auth/OAuthCallback';
 import MainPage from './pages/onboarding/MainPage';
 import CreateHabit from './pages/habit/CreateHabit';
 import EditHabit from './pages/habit/EditHabit';
+import HabitDetailPage from './pages/habit/HabitDetailPage';
 import HabitPage from './pages/habit/HabitPage';
 import ManageCategory from './pages/habit/ManageCategory';
 import Layout from './components/shared/layout/Layout';
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/home/list" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/createHabit" element={<ProtectedRoute><CreateHabit /></ProtectedRoute>} />
           <Route path="/editHabit" element={<ProtectedRoute><EditHabit /></ProtectedRoute>} />
+          <Route path="/habitDetail" element={<ProtectedRoute><HabitDetailPage /></ProtectedRoute>} />
           <Route path="/manageCategory" element={<ProtectedRoute><ManageCategory /></ProtectedRoute>} />
         </Route>
       </Routes>

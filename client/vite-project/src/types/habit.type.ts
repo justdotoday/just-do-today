@@ -41,4 +41,8 @@ export type Habit = {
   startDate?: string;
   /** 공개 여부: 0(또는 "0")=비공개, 1(또는 "1")=공개 */
   isPublic?: number | string;
+  /** 상태 문구 칩 (예: "오늘 완료", "꾸준히 유지 중", "3일 쉬는 중") */
+  statusChip?: string | null;
+  /** 성공 횟수 칩 (예: "최근 7일 중 5일 성공") */
+  successChip?: string | null;
 };
