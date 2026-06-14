@@ -86,6 +86,8 @@ jobs:
             OAUTH_SUCCESS_REDIRECT=${{ secrets.OAUTH_SUCCESS_REDIRECT }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             ALLOWED_ORIGINS=${{ secrets.ALLOWED_ORIGINS }}
+            VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
+            VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
             EOF
 
       - name: Execute deployment script on EC2

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.just_do_today.notification.mapper.NotificationMapper">
+
+    <resultMap id="notificationSettingMap" type="com.example.just_do_today.notification.domain.NotificationSetting">
+        <id property="memberId" column="member_id"/>
+        <result property="isActive" column="is_active"/>
+        <result property="pushEndpoint" column="push_endpoint"/>
+        <result property="pushP256dh" column="push_p256dh"/>
+        <result property="pushAuth" column="push_auth"/>
+        <result property="notifyTime" column="notify_time"/>
+    </resultMap>
+
+    <!-- subscription 저장 (없으면 INSERT, 있으면 endpoint/p256dh/auth만 UPDATE) -->
+    <insert id="upsertSubscription" parameterType="com.example.just_do_today.notification.domain.NotificationSetting">
+        INSERT INTO just_do_today.notification_setting (member_id, push_endpoint, push_p256dh, push_auth, is_active)
+        VALUES (#{memberId}, #{pushEndpoint}, #{pushP256dh}, #{pushAuth}, '1')
+        ON DUPLICATE KEY UPDATE
+            push_endpoint = #{pushEndpoint},
+            push_p256dh   = #{pushP256dh},
+            push_auth     = #{pushAuth}
+    </insert>
+
+    <!-- 알림 시간/활성화 여부 설정 -->
+    <update id="upsertSetting" parameterType="com.example.just_do_today.notification.domain.NotificationSetting">
+        INSERT INTO just_do_today.notification_setting (member_id, is_active, notify_time)
+        VALUES (#{memberId}, #{isActive}, #{notifyTime})
+        ON DUPLICATE KEY UPDATE
+            is_active   = #{isActive},
+            notify_time = #{notifyTime}
+    </update>
+
+    <select id="findByMemberId" resultMap="notificationSettingMap">
+        SELECT * FROM just_do_today.notification_setting
+        WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 현재 시각에 알림을 받아야 하는 구독자 조회 -->
+    <select id="findActiveSubscriptionsForTime" resultMap="notificationSettingMap">
+        SELECT ns.*
+        FROM just_do_today.notification_setting ns
+        WHERE ns.is_active = '1'
+          AND ns.push_endpoint IS NOT NULL
+          AND TIME_FORMAT(ns.notify_time, '%H:%i') = #{currentTime}
+    </select>
+
+</mapper>

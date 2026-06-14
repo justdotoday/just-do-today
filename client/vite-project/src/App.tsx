@@ -12,6 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/home/HomePage';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
+import PushTestPage from './pages/test/PushTestPage';
 
 // 토큰 유무에 따라 /home 또는 /signup으로 리다이렉트
 const RootRedirect = () => {
@@ -35,6 +36,7 @@ export default function App() {
       <Routes>
         {/* OAuth 콜백: Layout 없이 토큰 저장 후 즉시 리다이렉트 */}
         <Route path="/oauth/callback" element={<OAuthCallback />} />
+        <Route path="/test/push" element={<PushTestPage />} />
 
         {/* Layout 적용 구간 */}
         <Route element={<Layout />}>

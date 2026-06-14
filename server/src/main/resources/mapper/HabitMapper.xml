@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.just_do_today.mapper.habit.HabitMapper">
+<mapper namespace="com.example.just_do_today.habit.mapper.HabitMapper">
 
     <!--습관 생성-->
     <insert id="saveUserHabit" useGeneratedKeys="true" keyProperty="id">
@@ -27,7 +27,7 @@
     </insert>
 
     <!--습관 조회-->
-    <resultMap id="HabitResultMap" type="com.example.just_do_today.dto.habit.HabitResponseDto">
+    <resultMap id="HabitResultMap" type="com.example.just_do_today.habit.dto.HabitResponseDto">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="color" column="color"/>
@@ -35,7 +35,7 @@
         <result property="category" column="category_name"/>
         <result property="emoji" column="emoji"/>
         <result property="frequency" column="frequency"/>
-        <result property="status" column="status" javaType="com.example.just_do_today.domain.Habit.Enum.UserHabitStatus"/>
+        <result property="status" column="status" javaType="com.example.just_do_today.habit.domain.enums.UserHabitStatus"/>
         <result property="frozenUntil" column="frozen_until"/>
         <result property="todayStatus" column="today_status"/>
         <result property="startDate" column="start_date"/>
@@ -111,7 +111,7 @@
         WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
     </select>
 
-    <resultMap id="HabitHistoryResultMap" type="com.example.just_do_today.domain.Habit.HabitHistory">
+    <resultMap id="HabitHistoryResultMap" type="com.example.just_do_today.habit.domain.HabitHistory">
         <id property="id" column="id"/>
         <result property="userHabitId" column="user_habit_id"/>
         <result property="checkDate" column="check_date"/>
@@ -130,7 +130,7 @@
         WHERE user_habit_id = #{userHabitId} AND check_date = #{checkDate}
     </select>
 
-    <select id="findUserHabitById" resultType="com.example.just_do_today.domain.Habit.UserHabit">
+    <select id="findUserHabitById" resultType="com.example.just_do_today.habit.domain.UserHabit">
         SELECT
             id,
             member_id,
@@ -192,11 +192,34 @@
     <select id="findDoneHistoryDates" resultType="java.time.LocalDate">
         SELECT check_date
         FROM habit_history
-        WHERE user_habit_id = #{userHabitId} AND status = 'DONE'
+        WHERE user_habit_id = #{userHabitId} AND status IN ('DONE', 'HEART')
         ORDER BY check_date DESC
     </select>
 
+    <!-- 여러 습관의 완료 기록을 한 번에 조회 (N+1 방지, 최신순) -->
+    <select id="findDoneHistoryByHabitIds" resultType="com.example.just_do_today.habit.dto.HabitDoneHistoryDto">
+        SELECT user_habit_id, check_date
+        FROM habit_history
+        WHERE status IN ('DONE', 'HEART')
+        AND user_habit_id IN
+        <foreach item="id" collection="habitIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY check_date DESC
+    </select>
 
+    <!-- 캘린더: 날짜별 완료 습관 갯수 조회 (DONE + HEART) -->
+    <select id="findDailyCompletionCount"
+            resultType="com.example.just_do_today.habit.dto.HeatmapDayDto">
+        SELECT hh.check_date AS date, COUNT(*) AS count
+        FROM habit_history hh
+        JOIN user_habit uh ON hh.user_habit_id = uh.id
+        WHERE uh.member_id = #{memberId}
+        AND YEAR(hh.check_date) = #{year}
+        AND MONTH(hh.check_date) = #{month}
+        GROUP BY hh.check_date
+        ORDER BY hh.check_date ASC
+    </select>
 
 
 
