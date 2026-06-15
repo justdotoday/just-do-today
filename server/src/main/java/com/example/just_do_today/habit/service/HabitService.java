@@ -1,12 +1,12 @@
 package com.example.just_do_today.habit.service;
 
-import com.example.just_do_today.habit.domain.Category;
-import com.example.just_do_today.habit.domain.CategoryUser;
+import com.example.just_do_today.habit.domain.*;
 import com.example.just_do_today.habit.domain.enums.Color;
+import com.example.just_do_today.habit.domain.enums.DailyLogMood;
 import com.example.just_do_today.habit.domain.enums.Frequency;
-import com.example.just_do_today.habit.domain.UserHabit;
-import com.example.just_do_today.habit.domain.UserHabitSchedule;
+import com.example.just_do_today.habit.domain.enums.HabitHistoryStatus;
 import com.example.just_do_today.habit.dto.*;
+import com.example.just_do_today.habit.mapper.DailyLogMapper;
 import com.example.just_do_today.userCategory.mapper.CategoryMapper;
 import com.example.just_do_today.userCategory.mapper.CategoryUserMapper;
 import com.example.just_do_today.habit.mapper.HabitMapper;
@@ -31,6 +31,7 @@ public class HabitService {
     private final HabitMapper habitMapper;
     private final CategoryMapper categoryMapper;
     private final CategoryUserMapper categoryUserMapper;
+    private final DailyLogMapper dailyLogMapper; // 캘린더 mood 조회용 추가
 
     // 습관 생성
     @Transactional
@@ -177,6 +178,110 @@ public class HabitService {
         response.setMonth(month);
         response.setDays(days);
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    public HabitCalendarResponseDto getHabitCalendar(Long memberId, Long userHabitId, int year, int month){
+        UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
+        if (userHabit == null) throw new IllegalArgumentException("존재하지 않는 습관입니다.");
+        //소유권 검증: 본인 습관만 조회 가능 (보안 규칙)
+        if (!userHabit.getMemberId().equals(memberId))
+            throw new IllegalArgumentException("본인의 습관만 조회할 수 있습니다");
+        LocalDate today = LocalDate.now();
+        LocalDate firstDay = LocalDate.of(year,month, 1);
+        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+        // 날짜별 상태 계산에 필요한 3개 소스를 각각 단순 조회
+        // toMap merge 함수 : 같은 날 중복 행이 들어와도 예외 없이 첫 값 유지(방어적)
+        Map<LocalDate, HabitHistoryStatus> historyMap = habitMapper
+                .findHistoriesByMonth(userHabitId, year, month).stream()
+                .collect(Collectors.toMap(HabitHistory::getCheckDate, HabitHistory::getStatus, (a, b) -> a));
+
+        Map<LocalDate, DailyLogMood> moodMap = dailyLogMapper
+                .findLogsByHabitAndMonth(userHabitId, year, month).stream()
+                .filter(log -> log.getMood() != null)
+                .collect(Collectors.toMap(DailyLog::getLogDate, DailyLog::getMood, (a, b) -> a));
+
+        List<UserHabitFreezeHistory> freezeHistories = habitMapper.findFreezeHistoriesByMonth(userHabitId, firstDay, lastDay);
+
+        List<HabitCalendarDayDto> days = buildCalendarDays(historyMap, moodMap, freezeHistories, year, month, today);
+
+        // 헤더 칩: 경과일(시작일 포함) / 연속일 / 오늘 완료 여부
+        LocalDate startDate = userHabit.getStartDate() != null ? userHabit.getStartDate() : today;
+        long elapsedDays = ChronoUnit.DAYS.between(startDate, today) + 1;
+        int streakDays = countConsecutiveDays(habitMapper.findDoneHistoryDates(userHabitId));
+        boolean isCompletedToday = historyMap.containsKey(today);
+
+        // 하단 통계: 이번 달 실천일 / 누적 실천일
+        int thisMonthCount = habitMapper.countCompletionsByMonth(userHabitId, year, month);
+        int totalCount = habitMapper.countTotalCompletions(userHabitId);
+
+        HabitCalendarResponseDto response = new HabitCalendarResponseDto();
+        response.setYear(year);
+        response.setMonth(month);
+        response.setElapsedDays(elapsedDays);
+        response.setStreakDays(streakDays);
+        response.setCompletedToday(isCompletedToday);
+        response.setThisMonthCount(thisMonthCount);
+        response.setTotalCount(totalCount);
+        response.setDays(days);
+        return response;
+    }
+
+    // 3개 소스 + 오늘을 우선순위(HEART > ICE > mood(DONE) > TODAY)로 합쳐 날짜별 상태 목록 생성
+    private List<HabitCalendarDayDto> buildCalendarDays(
+            Map<LocalDate, HabitHistoryStatus> historyMap,
+            Map<LocalDate, DailyLogMood> moodMap,
+            List<UserHabitFreezeHistory> freezeHistories,
+            int year, int month, LocalDate today) {
+
+        List<HabitCalendarDayDto> result = new ArrayList<>();
+
+        // 1) habit_history 기반: HEART는 그대로, DONE은 mood로 표시(없으면 ATTEMPT 디폴트)
+        historyMap.forEach((date, status) -> {
+            String dayStatus;
+            if (status == HabitHistoryStatus.HEART) {
+                dayStatus = "HEART";
+            } else {
+                DailyLogMood mood = moodMap.get(date);
+                dayStatus = mood != null ? mood.name() : DailyLogMood.ATTEMPT.name();
+            }
+            result.add(new HabitCalendarDayDto(date, dayStatus));
+        });
+
+        // 2) freeze 기간(ICE): habit_history 없는 날만, 해당 월 범위로 한정
+        for (UserHabitFreezeHistory freeze : freezeHistories) {
+            LocalDate d = freeze.getFrozenFrom();
+            while (!d.isAfter(freeze.getFrozenUntil())) {
+                if (!historyMap.containsKey(d) && d.getYear() == year && d.getMonthValue() == month) {
+                    result.add(new HabitCalendarDayDto(d, "ICE"));
+                }
+                d = d.plusDays(1);
+            }
+        }
+
+        // 3) 오늘: 완료 기록 없고 조회 월에 해당하면 TODAY
+        if (today.getYear() == year && today.getMonthValue() == month && !historyMap.containsKey(today)) {
+            result.add(new HabitCalendarDayDto(today, "TODAY"));
+        }
+
+        result.sort(Comparator.comparing(HabitCalendarDayDto::getDate));
+        return result;
+    }
+
+    // 오늘부터 역순으로 연속 성공 일수 계산 (doneDates는 check_date DESC 정렬 전제)
+    private int countConsecutiveDays(List<LocalDate> doneDates) {
+        LocalDate expected = LocalDate.now();
+        int count = 0;
+        for (LocalDate date : doneDates) {
+            if (date.equals(expected)) {
+                count++;
+                expected = expected.minusDays(1);
+            } else {
+                break;
+            }
+        }
+        return count;
     }
 
     // 습관 DTO에 왼쪽 칩(successChip)과 오른쪽 칩(statusChip) 세팅

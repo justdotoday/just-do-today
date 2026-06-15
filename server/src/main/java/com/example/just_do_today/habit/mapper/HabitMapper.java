@@ -69,4 +69,27 @@ public interface HabitMapper {
     // freeze 이력 저장
     void insertFreezeHistory(UserHabitFreezeHistory freezeHistory);
 
+    // 캘린더 : 특정 습관의 특정 월 habit_history 조회
+    List<HabitHistory> findHistoriesByMonth(
+            @Param("userHabitId") Long userHabitId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
+
+    // 캘린더 : 해당 월과 겹치는 freeze 이력 조회
+    List<UserHabitFreezeHistory> findFreezeHistoriesByMonth(
+            @Param("userHabitId") Long userHabitId,
+            @Param("firstDay") LocalDate firstDay,
+            @Param("lastDay") LocalDate lastDay
+    );
+
+    // 이번 달 실천일 수 (DONE + HEART)
+    int countCompletionsByMonth(
+            @Param("userHabitId") Long userHabitId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
+
+    // 누적 실천일 수
+    int countTotalCompletions(Long userHabitId);
 }

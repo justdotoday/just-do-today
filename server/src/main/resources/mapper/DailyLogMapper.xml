@@ -20,4 +20,13 @@
         WHERE member_id = #{memberId} AND user_habit_id = #{userHabitId} AND log_date = #{logDate}
     </select>
 
+
+    <select id="findLogByHabitAndMonth" resultType="com.example.just_do_today.habit.domain.DailyLog">
+        SELECT log_date, mood
+        FROM daily_log
+        WHERE user_habit_id = #{userHabitId}
+            AND YEAR(log_date) = #{year}
+            AND MONTH(log_date) = #{month}
+    </select>
+
 </mapper>
