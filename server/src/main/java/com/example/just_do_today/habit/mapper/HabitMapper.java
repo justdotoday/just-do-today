@@ -2,6 +2,7 @@ package com.example.just_do_today.habit.mapper;
 
 import com.example.just_do_today.habit.domain.HabitHistory;
 import com.example.just_do_today.habit.domain.UserHabit;
+import com.example.just_do_today.habit.domain.UserHabitFreezeHistory;
 import com.example.just_do_today.habit.domain.UserHabitSchedule;
 import com.example.just_do_today.habit.dto.HabitDoneHistoryDto;
 import com.example.just_do_today.habit.dto.HabitResponseDto;
@@ -64,5 +65,8 @@ public interface HabitMapper {
             @Param("year") int year,
             @Param("month") int month
     );
+
+    // freeze 이력 저장
+    void insertFreezeHistory(UserHabitFreezeHistory freezeHistory);
 
 }

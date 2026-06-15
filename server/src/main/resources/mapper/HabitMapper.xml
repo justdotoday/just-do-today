@@ -221,6 +221,9 @@
         ORDER BY hh.check_date ASC
     </select>
 
-
+    <insert id="insertFreezeHistory">
+        INSERT INTO user_habit_freeze_history (user_habit_id, frozen_from, frozen_until, created_at)
+        VALUES (#{userHabitId}, #{frozenFrom}, #{frozenUntil}, NOW())
+    </insert>
 
 </mapper>

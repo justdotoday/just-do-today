@@ -1,6 +1,7 @@
 package com.example.just_do_today.habit.service;
 
 import com.example.just_do_today.habit.domain.HabitHistory;
+import com.example.just_do_today.habit.domain.UserHabitFreezeHistory;
 import com.example.just_do_today.habit.domain.enums.HabitHistoryStatus;
 import com.example.just_do_today.habit.domain.UserHabit;
 import com.example.just_do_today.habit.domain.enums.UserHabitStatus;
@@ -135,6 +136,12 @@ public class UserHabitService {
             memberService.deductFreeze(member);
             userHabit.setFrozenUntil(LocalDate.now().plusDays(postponeDays));
             userHabit.setStatus(UserHabitStatus.FREEZE);
+            // 프리즈 사용 이력 추가
+            UserHabitFreezeHistory freezeHistory = new UserHabitFreezeHistory();
+            freezeHistory.setUserHabitId(userHabitId);
+            freezeHistory.setFrozenFrom(LocalDate.now());
+            freezeHistory.setFrozenUntil(LocalDate.now());
+            habitMapper.insertFreezeHistory(freezeHistory);
         } else {
             throw new IllegalStateException("습관 상태를 확인해주세요.");
         }
