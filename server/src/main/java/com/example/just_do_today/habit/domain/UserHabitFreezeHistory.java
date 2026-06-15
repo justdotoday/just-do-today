@@ -12,5 +12,5 @@ public class UserHabitFreezeHistory {
     private Long userHabitId;
     private LocalDate frozenFrom;
     private LocalDate frozenUntil;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }

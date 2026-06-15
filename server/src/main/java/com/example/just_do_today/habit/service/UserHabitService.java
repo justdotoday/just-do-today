@@ -140,7 +140,7 @@ public class UserHabitService {
             UserHabitFreezeHistory freezeHistory = new UserHabitFreezeHistory();
             freezeHistory.setUserHabitId(userHabitId);
             freezeHistory.setFrozenFrom(LocalDate.now());
-            freezeHistory.setFrozenUntil(LocalDate.now());
+            freezeHistory.setFrozenUntil(LocalDate.now().plusDays(postponeDays));
             habitMapper.insertFreezeHistory(freezeHistory);
         } else {
             throw new IllegalStateException("습관 상태를 확인해주세요.");
