@@ -227,7 +227,7 @@
     </insert>
 
     <!-- 캘린더: 특정 습관의 특정 월 habit_history 조회 -->
-    <select id="findHistoriesByMonth" resultType="HabitHistoryResultMap">
+    <select id="findHistoriesByMonth" resultMap="HabitHistoryResultMap">
         SELECT id, user_habit_id, check_date, status, created_at
         FROM habit_history
         WHERE user_habit_id = #{userHabitId}

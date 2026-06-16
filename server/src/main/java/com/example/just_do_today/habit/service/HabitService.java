@@ -294,7 +294,8 @@ public class HabitService {
         Set<LocalDate> doneSet = new HashSet<>(doneDates);
 
         habit.setSuccessChip(getSuccessChip(habit.getFrequency(), doneDates, doneSet, today));
-        habit.setStatusChip(getStatusChip(doneDates, doneSet, targetDates, habit.getTodayStatus(), today));
+        habit.setStatusChip(getStatusChip(doneDates, doneSet, targetDates, habit.getTodayStatus(), today,
+                habit.getFrequency(), habit.getDays(), habit.getStartDate()));
     }
 
     // frequency + startDate + days 기준으로 최근 7 대상일 목록 계산 (오름차순)
@@ -349,26 +350,51 @@ public class HabitService {
     }
 
     // 오른쪽 칩: 우선순위 기준 상태 문구
-    private String getStatusChip(List<LocalDate> doneDates, Set<LocalDate> doneSet, List<LocalDate> targetDates, String todayStatus, LocalDate today) {
+    private String getStatusChip(List<LocalDate> doneDates, Set<LocalDate> doneSet, List<LocalDate> targetDates,
+                                  String todayStatus, LocalDate today,
+                                  Frequency frequency, List<Integer> days, LocalDate startDate) {
         // 1순위: 전체 완료 횟수 3회 이내
         if (doneDates.size() <= 3) return "습관 시작 단계";
 
         // 2순위: 오늘 달성 완료 (하트 사용 완료 포함)
         if ("DONE".equals(todayStatus) || "HEART".equals(todayStatus)) return "오늘 완료";
 
-        // 3순위: 마지막 완료일로부터 오늘까지 실제 경과일 2일 이상
+        // 3순위: 마지막 완료일 이후 대상일 중 미완료 날 수 (오늘 포함)
         LocalDate lastDone = doneDates.get(0);
-        long daysSinceLastDone = ChronoUnit.DAYS.between(lastDone, today);
-        if (daysSinceLastDone >= 2) return daysSinceLastDone + "일 쉬는 중";
+        long missedCount = countMissedTargetDays(lastDone, today, frequency, days, startDate, doneSet);
+        if (missedCount >= 1) return missedCount + "일 쉬는 중";
 
-        // 4~6순위: 최근 7 대상일 중 성공 횟수 (getHabitDates에서 최근 7개만 반환하므로 그대로 사용)
+        // 4~6순위: 최근 7 대상일 중 성공 횟수
         long successCount = targetDates.stream().filter(doneSet::contains).count();
 
         if (successCount >= 6) return "완벽한 유지 중";
         if (successCount >= 4) return "꾸준히 유지 중";
         if (successCount >= 1) return "노력 중";
 
-        // 성공 횟수 0회인 경우 빈 문자열 반환
         return "";
+    }
+
+    // 마지막 완료일 다음날 ~ 오늘까지, 대상일이면서 미완료인 날 수 카운트
+    private long countMissedTargetDays(LocalDate lastDone, LocalDate today,
+                                        Frequency frequency, List<Integer> days,
+                                        LocalDate startDate, Set<LocalDate> doneSet) {
+        long count = 0;
+        LocalDate d = lastDone.plusDays(1);
+        while (!d.isAfter(today)) {
+            if (isTargetDay(d, frequency, days, startDate) && !doneSet.contains(d)) {
+                count++;
+            }
+            d = d.plusDays(1);
+        }
+        return count;
+    }
+
+    // 해당 날짜가 습관 스케줄의 대상일인지 확인
+    private boolean isTargetDay(LocalDate date, Frequency frequency, List<Integer> days, LocalDate startDate) {
+        return switch (frequency) {
+            case DAILY -> true;
+            case WEEKLY, CUSTOM -> days != null && days.contains(date.getDayOfWeek().ordinal());
+            case MONTHLY -> startDate != null && date.getDayOfMonth() == startDate.getDayOfMonth();
+        };
     }
 }
