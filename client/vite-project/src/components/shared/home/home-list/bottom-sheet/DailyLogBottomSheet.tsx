@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import DragHandle from '../../../../ui/DragHandle';
 import { COLORS } from '../../../../../constants/colors';
 
-const FEELING_OPTIONS = [
-  '시도한 것에 의미를 둬요 🥲',
-  '계획했던 흐름을 잘 이어갔어요 👍',
-  '아주 뿌듯해요! 완벽하게 해냈어요 🔥',
+const FEELING_OPTIONS: { label: string; value: string }[] = [
+  { label: '시도한 것에 의미를 둬요 🥲', value: 'ATTEMPT' },
+  { label: '계획했던 흐름을 잘 이어갔어요 👍', value: 'MAINTAIN' },
+  { label: '아주 뿌듯해요! 완벽하게 해냈어요 🔥', value: 'PERFECT' },
 ];
 
 type Props = {
@@ -50,17 +50,17 @@ const DailyLogBottomSheet = ({ open, onClose, onFinish }: Props) => {
           <div className="flex flex-col gap-2">
             {FEELING_OPTIONS.map((option) => (
               <button
-                key={option}
+                key={option.value}
                 type="button"
-                onClick={() => setMood(option)}
+                onClick={() => setMood(option.value)}
                 className="rounded-full border px-4 py-2.5 text-left text-[13px] transition"
                 style={{
-                  borderColor: mood === option ? COLORS.primary : '#e4e4e7',
-                  color: mood === option ? COLORS.primary : '#a1a1aa',
-                  backgroundColor: mood === option ? '#eff1ff' : 'white',
+                  borderColor: mood === option.value ? COLORS.primary : '#e4e4e7',
+                  color: mood === option.value ? COLORS.primary : '#a1a1aa',
+                  backgroundColor: mood === option.value ? '#eff1ff' : 'white',
                 }}
               >
-                {option}
+                {option.label}
               </button>
             ))}
           </div>

@@ -2,6 +2,10 @@
 import api from './client';
 import type { Day } from '../types/habit.type';
 
+const DAY_TO_NUMBER: Record<Day, number> = {
+  MON: 0, TUE: 1, WED: 2, THU: 3, FRI: 4, SAT: 5, SUN: 6,
+};
+
 export interface OnboardingHabitPayload {
   name: string;
   categoryName: string;
@@ -19,5 +23,12 @@ export interface CompleteOnboardingRequest {
   habit: OnboardingHabitPayload | null;
 }
 
-export const completeOnboarding = (data: CompleteOnboardingRequest) =>
-  api.post('/api/onboarding/complete', data);
+export const completeOnboarding = (data: CompleteOnboardingRequest) => {
+  const body = {
+    ...data,
+    habit: data.habit
+      ? { ...data.habit, days: data.habit.days?.map((d) => DAY_TO_NUMBER[d]) }
+      : null,
+  };
+  return api.post('/api/onboarding/complete', body);
+};
