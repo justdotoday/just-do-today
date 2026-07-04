@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoChevronBack, IoChevronForward, IoChevronBack as IoChevronLeft, IoEllipsisVertical } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
 import { colorToHex } from '../../constants/colors';
 import { getHabitHeatmap } from '../../api/habit';
+import api from '../../api/client';
 import type { Habit } from '../../types/habit.type';
+import DailyLogViewBottomSheet from '../../components/shared/home/home-list/bottom-sheet/DailyLogViewBottomSheet';
 
 type LocationState = { habit: Habit };
 
@@ -26,6 +28,30 @@ const HabitDetailPage = () => {
 
   const [viewYear, setViewYear] = useState(todayObj.getFullYear());
   const [viewMonth, setViewMonth] = useState(todayObj.getMonth()); // 0-indexed
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log('[selectedDate]', selectedDate);
+  }, [selectedDate]);
+
+  const { data: dailyLogData, isLoading: isLogLoading } = useQuery({
+    queryKey: ['dailyLog', habit?.id, selectedDate],
+    queryFn: async () => {
+      console.log('[queryFn 실행]', habit?.id, selectedDate);
+      try {
+        const res = await api.get(`/api/daily-logs/today`, {
+          params: { userHabitId: Number(habit?.userHabitId ?? habit?.id), logDate: selectedDate },
+        });
+        console.log('[dailyLog 응답]', res.data);
+        return res.data as { mood: string; note: string };
+      } catch (e) {
+        console.error('[dailyLog 에러]', e);
+        throw e;
+      }
+    },
+    enabled: !!selectedDate,
+    retry: false,
+  });
 
   const { data: heatmapData } = useQuery({
     queryKey: ['heatmap', viewYear, viewMonth],
@@ -244,8 +270,10 @@ const HabitDetailPage = () => {
             }
 
             return (
-              <div
+              <button
                 key={i}
+                type="button"
+                onClick={() => setSelectedDate(dateKey)}
                 className="aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5"
                 style={{ backgroundColor: bg }}
               >
@@ -255,11 +283,24 @@ const HabitDetailPage = () => {
                 <span className="text-[12px] font-semibold" style={{ color: textColor }}>
                   {cell.day}
                 </span>
-              </div>
+              </button>
             );
           })}
         </div>
       </div>
+
+      {/* 회고 바텀시트 */}
+      {selectedDate && (
+        <DailyLogViewBottomSheet
+          open
+          date={selectedDate}
+          mood={isLogLoading ? '' : (dailyLogData?.mood ?? '')}
+          note={isLogLoading ? '' : (dailyLogData?.note ?? '')}
+          habitColor={habitHex}
+          onClose={() => setSelectedDate(null)}
+          onSave={() => setSelectedDate(null)}
+        />
+      )}
 
       {/* 통계 */}
       <div className="px-5 border-t border-zinc-100">
