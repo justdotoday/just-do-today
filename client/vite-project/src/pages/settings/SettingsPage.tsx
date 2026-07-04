@@ -5,6 +5,7 @@ import alarmset from '../../assets/setting/alarmset.svg';
 import notice from '../../assets/setting/notice.svg';
 import contract from '../../assets/setting/contract.svg';
 import next from '../../assets/next.svg';
+import { useNavigate } from 'react-router-dom';
 
 // type Props = {
 //   profileImageUrl: string;
@@ -14,6 +15,8 @@ import next from '../../assets/next.svg';
 // };
 
 const SettingsPage = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
       <TabPageHeader title="설정" />
@@ -28,7 +31,7 @@ const SettingsPage = () => {
             <img src={kakao} className="w-7"></img>
           </div>
           <p className="text-xs text-gray-400">2026.02.02 ~ ing</p>
-          <button className="bg-gray-100 w-full py-2 rounded-lg text-xs text-gray-500">
+          <button className="bg-gray-100 w-full py-2 rounded-lg text-xs text-gray-500" onClick={() => navigate('/myaccount')}>
             내 정보 수정
           </button>
         </div>
