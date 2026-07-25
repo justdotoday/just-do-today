@@ -1,6 +1,7 @@
 /** 홈 리스트용 순수 로직: habits → 카테고리별 섹션, 진행률 계산. */
 import type { Habit } from '../../../../types/habit.type';
 import { DEFAULT_CATEGORIES } from '../../../../constants/categories';
+import { colorToHex } from '../../../../constants/colors';
 
 const UNCATEGORIZED_LABEL = '미분류';
 const DONE_STATUSES: ReadonlySet<string> = new Set(['done', 'heart']);
@@ -74,7 +75,7 @@ export function habitsToSections(habits: Habit[]): Section[] {
       id: String(h.id),
       userHabitId: Number(h.id),
       title: h.name,
-      color: h.color ?? null,
+      color: colorToHex(h.color),
       status: apiStatusToUiStatus(h.status, h.todayStatus),
     })),
   }));

@@ -11,3 +11,4 @@ export type CreateDailyLogPayload = {
 export const createDailyLog = async (payload: CreateDailyLogPayload): Promise<void> => {
   await api.post('/api/daily-logs', payload);
 };
+

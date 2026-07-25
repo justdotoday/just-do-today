@@ -214,12 +214,12 @@ const EditHabit = () => {
       </main>
 
       {/* 수정하기 버튼: 하단 고정 */}
-      <div className="fixed bottom-0 z-50 bg-white px-4 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
+      <div className="fixed bottom-0 z-50 px-4 pb-[calc(24px+env(safe-area-inset-bottom))] left-[max(0px,calc((100vw-414px)/2))] right-[max(0px,calc((100vw-414px)/2))]">
         <div className="mx-auto w-full max-w-[420px]">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit || !hasChanges || isLoading}
-            className={`h-14 w-full rounded-full text-[16px] font-bold transition-all ${
+            className={`h-12 w-full rounded-full text-[14px] font-bold transition-all ${
               !canSubmit || !hasChanges || isLoading
                 ? 'bg-zinc-200 text-zinc-500'
                 : 'text-white active:scale-[0.98]'

@@ -5,6 +5,7 @@ import OAuthCallback from './auth/OAuthCallback';
 import MainPage from './pages/onboarding/MainPage';
 import CreateHabit from './pages/habit/CreateHabit';
 import EditHabit from './pages/habit/EditHabit';
+import HabitDetailPage from './pages/habit/HabitDetailPage';
 import HabitPage from './pages/habit/HabitPage';
 import ManageCategory from './pages/habit/ManageCategory';
 import Layout from './components/shared/layout/Layout';
@@ -13,6 +14,7 @@ import HomePage from './pages/home/HomePage';
 import SocialPage from './pages/social/SocialPage';
 import SettingsPage from './pages/settings/SettingsPage';
 import PushTestPage from './pages/test/PushTestPage';
+import ManageAccountPage from './pages/settings/ManageAccountPage';
 
 // 토큰 유무에 따라 /home 또는 /signup으로 리다이렉트
 const RootRedirect = () => {
@@ -51,9 +53,11 @@ export default function App() {
           <Route path="/habit" element={<ProtectedRoute><HabitPage /></ProtectedRoute>} />
           <Route path="/social" element={<ProtectedRoute><SocialPage /></ProtectedRoute>} />
           <Route path="/my" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/myaccount" element={<ProtectedRoute><ManageAccountPage /></ProtectedRoute>} />
           <Route path="/home/list" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/createHabit" element={<ProtectedRoute><CreateHabit /></ProtectedRoute>} />
           <Route path="/editHabit" element={<ProtectedRoute><EditHabit /></ProtectedRoute>} />
+          <Route path="/habitDetail" element={<ProtectedRoute><HabitDetailPage /></ProtectedRoute>} />
           <Route path="/manageCategory" element={<ProtectedRoute><ManageCategory /></ProtectedRoute>} />
         </Route>
       </Routes>

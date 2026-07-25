@@ -4,7 +4,6 @@ import com.example.just_do_today.auth.dto.kakao.KakaoMe;
 import com.example.just_do_today.auth.dto.kakao.KakaoToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
