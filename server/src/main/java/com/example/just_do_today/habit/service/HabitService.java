@@ -1,12 +1,12 @@
 package com.example.just_do_today.habit.service;
 
-import com.example.just_do_today.habit.domain.Category;
-import com.example.just_do_today.habit.domain.CategoryUser;
+import com.example.just_do_today.habit.domain.*;
 import com.example.just_do_today.habit.domain.enums.Color;
+import com.example.just_do_today.habit.domain.enums.DailyLogMood;
 import com.example.just_do_today.habit.domain.enums.Frequency;
-import com.example.just_do_today.habit.domain.UserHabit;
-import com.example.just_do_today.habit.domain.UserHabitSchedule;
+import com.example.just_do_today.habit.domain.enums.HabitHistoryStatus;
 import com.example.just_do_today.habit.dto.*;
+import com.example.just_do_today.habit.mapper.DailyLogMapper;
 import com.example.just_do_today.userCategory.mapper.CategoryMapper;
 import com.example.just_do_today.userCategory.mapper.CategoryUserMapper;
 import com.example.just_do_today.habit.mapper.HabitMapper;
@@ -31,6 +31,7 @@ public class HabitService {
     private final HabitMapper habitMapper;
     private final CategoryMapper categoryMapper;
     private final CategoryUserMapper categoryUserMapper;
+    private final DailyLogMapper dailyLogMapper; // 캘린더 mood 조회용 추가
 
     // 습관 생성
     @Transactional
@@ -179,6 +180,110 @@ public class HabitService {
         return response;
     }
 
+    @Transactional(readOnly = true)
+    public HabitCalendarResponseDto getHabitCalendar(Long memberId, Long userHabitId, int year, int month){
+        UserHabit userHabit = habitMapper.findUserHabitById(userHabitId);
+        if (userHabit == null) throw new IllegalArgumentException("존재하지 않는 습관입니다.");
+        //소유권 검증: 본인 습관만 조회 가능 (보안 규칙)
+        if (!userHabit.getMemberId().equals(memberId))
+            throw new IllegalArgumentException("본인의 습관만 조회할 수 있습니다");
+        LocalDate today = LocalDate.now();
+        LocalDate firstDay = LocalDate.of(year,month, 1);
+        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+        // 날짜별 상태 계산에 필요한 3개 소스를 각각 단순 조회
+        // toMap merge 함수 : 같은 날 중복 행이 들어와도 예외 없이 첫 값 유지(방어적)
+        Map<LocalDate, HabitHistoryStatus> historyMap = habitMapper
+                .findHistoriesByMonth(userHabitId, year, month).stream()
+                .collect(Collectors.toMap(HabitHistory::getCheckDate, HabitHistory::getStatus, (a, b) -> a));
+
+        Map<LocalDate, DailyLogMood> moodMap = dailyLogMapper
+                .findLogsByHabitAndMonth(userHabitId, year, month).stream()
+                .filter(log -> log.getMood() != null)
+                .collect(Collectors.toMap(DailyLog::getLogDate, DailyLog::getMood, (a, b) -> a));
+
+        List<UserHabitFreezeHistory> freezeHistories = habitMapper.findFreezeHistoriesByMonth(userHabitId, firstDay, lastDay);
+
+        List<HabitCalendarDayDto> days = buildCalendarDays(historyMap, moodMap, freezeHistories, year, month, today);
+
+        // 헤더 칩: 경과일(시작일 포함) / 연속일 / 오늘 완료 여부
+        LocalDate startDate = userHabit.getStartDate() != null ? userHabit.getStartDate() : today;
+        long elapsedDays = ChronoUnit.DAYS.between(startDate, today) + 1;
+        int streakDays = countConsecutiveDays(habitMapper.findDoneHistoryDates(userHabitId));
+        boolean isCompletedToday = historyMap.containsKey(today);
+
+        // 하단 통계: 이번 달 실천일 / 누적 실천일
+        int thisMonthCount = habitMapper.countCompletionsByMonth(userHabitId, year, month);
+        int totalCount = habitMapper.countTotalCompletions(userHabitId);
+
+        HabitCalendarResponseDto response = new HabitCalendarResponseDto();
+        response.setYear(year);
+        response.setMonth(month);
+        response.setElapsedDays(elapsedDays);
+        response.setStreakDays(streakDays);
+        response.setCompletedToday(isCompletedToday);
+        response.setThisMonthCount(thisMonthCount);
+        response.setTotalCount(totalCount);
+        response.setDays(days);
+        return response;
+    }
+
+    // 3개 소스 + 오늘을 우선순위(HEART > ICE > mood(DONE) > TODAY)로 합쳐 날짜별 상태 목록 생성
+    private List<HabitCalendarDayDto> buildCalendarDays(
+            Map<LocalDate, HabitHistoryStatus> historyMap,
+            Map<LocalDate, DailyLogMood> moodMap,
+            List<UserHabitFreezeHistory> freezeHistories,
+            int year, int month, LocalDate today) {
+
+        List<HabitCalendarDayDto> result = new ArrayList<>();
+
+        // 1) habit_history 기반: HEART는 그대로, DONE은 mood로 표시(없으면 ATTEMPT 디폴트)
+        historyMap.forEach((date, status) -> {
+            String dayStatus;
+            if (status == HabitHistoryStatus.HEART) {
+                dayStatus = "HEART";
+            } else {
+                DailyLogMood mood = moodMap.get(date);
+                dayStatus = mood != null ? mood.name() : DailyLogMood.ATTEMPT.name();
+            }
+            result.add(new HabitCalendarDayDto(date, dayStatus));
+        });
+
+        // 2) freeze 기간(ICE): habit_history 없는 날만, 해당 월 범위로 한정
+        for (UserHabitFreezeHistory freeze : freezeHistories) {
+            LocalDate d = freeze.getFrozenFrom();
+            while (!d.isAfter(freeze.getFrozenUntil())) {
+                if (!historyMap.containsKey(d) && d.getYear() == year && d.getMonthValue() == month) {
+                    result.add(new HabitCalendarDayDto(d, "ICE"));
+                }
+                d = d.plusDays(1);
+            }
+        }
+
+        // 3) 오늘: 완료 기록 없고 조회 월에 해당하면 TODAY
+        if (today.getYear() == year && today.getMonthValue() == month && !historyMap.containsKey(today)) {
+            result.add(new HabitCalendarDayDto(today, "TODAY"));
+        }
+
+        result.sort(Comparator.comparing(HabitCalendarDayDto::getDate));
+        return result;
+    }
+
+    // 오늘부터 역순으로 연속 성공 일수 계산 (doneDates는 check_date DESC 정렬 전제)
+    private int countConsecutiveDays(List<LocalDate> doneDates) {
+        LocalDate expected = LocalDate.now();
+        int count = 0;
+        for (LocalDate date : doneDates) {
+            if (date.equals(expected)) {
+                count++;
+                expected = expected.minusDays(1);
+            } else {
+                break;
+            }
+        }
+        return count;
+    }
+
     // 습관 DTO에 왼쪽 칩(successChip)과 오른쪽 칩(statusChip) 세팅
     // doneDates는 check_date DESC 정렬 전제 (호출부에서 주입)
     private void setChipData(HabitResponseDto habit, List<LocalDate> doneDates){
@@ -189,7 +294,8 @@ public class HabitService {
         Set<LocalDate> doneSet = new HashSet<>(doneDates);
 
         habit.setSuccessChip(getSuccessChip(habit.getFrequency(), doneDates, doneSet, today));
-        habit.setStatusChip(getStatusChip(doneDates, doneSet, targetDates, habit.getTodayStatus(), today));
+        habit.setStatusChip(getStatusChip(doneDates, doneSet, targetDates, habit.getTodayStatus(), today,
+                habit.getFrequency(), habit.getDays(), habit.getStartDate()));
     }
 
     // frequency + startDate + days 기준으로 최근 7 대상일 목록 계산 (오름차순)
@@ -244,26 +350,51 @@ public class HabitService {
     }
 
     // 오른쪽 칩: 우선순위 기준 상태 문구
-    private String getStatusChip(List<LocalDate> doneDates, Set<LocalDate> doneSet, List<LocalDate> targetDates, String todayStatus, LocalDate today) {
+    private String getStatusChip(List<LocalDate> doneDates, Set<LocalDate> doneSet, List<LocalDate> targetDates,
+                                  String todayStatus, LocalDate today,
+                                  Frequency frequency, List<Integer> days, LocalDate startDate) {
         // 1순위: 전체 완료 횟수 3회 이내
         if (doneDates.size() <= 3) return "습관 시작 단계";
 
         // 2순위: 오늘 달성 완료 (하트 사용 완료 포함)
         if ("DONE".equals(todayStatus) || "HEART".equals(todayStatus)) return "오늘 완료";
 
-        // 3순위: 마지막 완료일로부터 오늘까지 실제 경과일 2일 이상
+        // 3순위: 마지막 완료일 이후 대상일 중 미완료 날 수 (오늘 포함)
         LocalDate lastDone = doneDates.get(0);
-        long daysSinceLastDone = ChronoUnit.DAYS.between(lastDone, today);
-        if (daysSinceLastDone >= 2) return daysSinceLastDone + "일 쉬는 중";
+        long missedCount = countMissedTargetDays(lastDone, today, frequency, days, startDate, doneSet);
+        if (missedCount >= 1) return missedCount + "일 쉬는 중";
 
-        // 4~6순위: 최근 7 대상일 중 성공 횟수 (getHabitDates에서 최근 7개만 반환하므로 그대로 사용)
+        // 4~6순위: 최근 7 대상일 중 성공 횟수
         long successCount = targetDates.stream().filter(doneSet::contains).count();
 
         if (successCount >= 6) return "완벽한 유지 중";
         if (successCount >= 4) return "꾸준히 유지 중";
         if (successCount >= 1) return "노력 중";
 
-        // 성공 횟수 0회인 경우 빈 문자열 반환
         return "";
+    }
+
+    // 마지막 완료일 다음날 ~ 오늘까지, 대상일이면서 미완료인 날 수 카운트
+    private long countMissedTargetDays(LocalDate lastDone, LocalDate today,
+                                        Frequency frequency, List<Integer> days,
+                                        LocalDate startDate, Set<LocalDate> doneSet) {
+        long count = 0;
+        LocalDate d = lastDone.plusDays(1);
+        while (!d.isAfter(today)) {
+            if (isTargetDay(d, frequency, days, startDate) && !doneSet.contains(d)) {
+                count++;
+            }
+            d = d.plusDays(1);
+        }
+        return count;
+    }
+
+    // 해당 날짜가 습관 스케줄의 대상일인지 확인
+    private boolean isTargetDay(LocalDate date, Frequency frequency, List<Integer> days, LocalDate startDate) {
+        return switch (frequency) {
+            case DAILY -> true;
+            case WEEKLY, CUSTOM -> days != null && days.contains(date.getDayOfWeek().ordinal());
+            case MONTHLY -> startDate != null && date.getDayOfMonth() == startDate.getDayOfMonth();
+        };
     }
 }

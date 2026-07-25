@@ -221,6 +221,42 @@
         ORDER BY hh.check_date ASC
     </select>
 
+    <insert id="insertFreezeHistory">
+        INSERT INTO user_habit_freeze_history (user_habit_id, frozen_from, frozen_until, created_at)
+        VALUES (#{userHabitId}, #{frozenFrom}, #{frozenUntil}, NOW())
+    </insert>
 
+    <!-- 캘린더: 특정 습관의 특정 월 habit_history 조회 -->
+    <select id="findHistoriesByMonth" resultMap="HabitHistoryResultMap">
+        SELECT id, user_habit_id, check_date, status, created_at
+        FROM habit_history
+        WHERE user_habit_id = #{userHabitId}
+            AND YEAR(check_date) = #{year}
+            AND MONTH(check_date) = #{month}
+    </select>
 
+    <!-- 캘린더: 해당 월과 겹치는 freeze 이력 조회 (기간이 월에 걸치기만 해도 포함) -->
+    <select id="findFreezeHistoriesByMonth" resultType="com.example.just_do_today.habit.domain.UserHabitFreezeHistory">
+        <![CDATA[SELECT id, user_habit_id, frozen_from, frozen_until, created_at
+        FROM user_habit_freeze_history
+        WHERE user_habit_id = #{userHabitId}
+            AND frozen_until >= #{firstDay}
+            AND frozen_from <= #{lastDay}]]>
+    </select>
+
+    <!-- 이번 달 실천일 수 (DONE + HEART) -->
+    <select id="countCompletionsByMonth" resultType="int">
+        SELECT COUNT(*)
+        FROM habit_history
+        WHERE user_habit_id = #{userHabitId}
+            AND YEAR(check_date) = #{year}
+            AND MONTH(check_date) = #{month}
+    </select>
+
+    <!-- 누적 실천일 수 -->
+    <select id="countTotalCompletions" resultType="int">
+        SELECT COUNT(*)
+        FROM habit_history
+        WHERE user_habit_id = #{userHabitId}
+    </select>
 </mapper>

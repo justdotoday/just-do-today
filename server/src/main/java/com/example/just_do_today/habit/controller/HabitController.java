@@ -1,9 +1,6 @@
 package com.example.just_do_today.habit.controller;
 
-import com.example.just_do_today.habit.dto.CreateHabitRequestDto;
-import com.example.just_do_today.habit.dto.HabitResponseDto;
-import com.example.just_do_today.habit.dto.HeatmapResponseDto;
-import com.example.just_do_today.habit.dto.UpdateHabitRequestDto;
+import com.example.just_do_today.habit.dto.*;
 import com.example.just_do_today.global.security.UserPrincipal;
 import com.example.just_do_today.habit.service.HabitService;
 import lombok.RequiredArgsConstructor;
@@ -68,4 +65,13 @@ public class HabitController {
         return ResponseEntity.ok(habitService.getCalendar(principal.getMemberId(), year, month));
     }
 
+    // 습관 상세 캘린더 : 날짜별 상태 + 헤더 칩 + 하단 통계
+    @GetMapping("/{userHabitId}/calendar")
+    public ResponseEntity<HabitCalendarResponseDto> getHabitCalendar(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long userHabitId,
+            @RequestParam int year,
+            @RequestParam int month){
+        return ResponseEntity.ok(habitService.getHabitCalendar(principal.getMemberId(), userHabitId, year, month));
+    }
 }
